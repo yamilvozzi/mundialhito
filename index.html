@@ -159,6 +159,27 @@
 
   .login-btn-secondary:hover { border-color: var(--text-sec); color: var(--text); }
 
+  .login-btn-google {
+    width: 100%;
+    max-width: 300px;
+    padding: 12px 16px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    font-family: 'Nunito', sans-serif;
+    font-weight: 600;
+    font-size: 0.78rem;
+    letter-spacing: 0.06em;
+    color: var(--text);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+  .login-btn-google:hover { border-color: var(--text-sec); background: #141f1b; }
+
   .login-error {
     font-size: 0.72rem;
     color: var(--red);
@@ -803,6 +824,16 @@
   <button class="login-btn-primary" id="btnLogin">Ingresar</button>
   <div class="login-divider"><span>o</span></div>
   <button class="login-btn-secondary" id="btnRegister">Crear cuenta nueva</button>
+  <div class="login-divider"><span>o</span></div>
+  <button class="login-btn-google" id="btnGoogle">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+      <path d="M15.68 8.18c0-.57-.05-1.11-.14-1.64H8v3.1h4.3a3.67 3.67 0 0 1-1.6 2.41v2h2.58c1.51-1.39 2.4-3.44 2.4-5.87z" fill="#4285F4"/>
+      <path d="M8 16c2.16 0 3.97-.72 5.3-1.94l-2.58-2a4.8 4.8 0 0 1-2.72.75 4.79 4.79 0 0 1-4.5-3.31H.84v2.06A8 8 0 0 0 8 16z" fill="#34A853"/>
+      <path d="M3.5 9.5A4.84 4.84 0 0 1 3.25 8c0-.52.09-1.02.25-1.5V4.44H.84A8.01 8.01 0 0 0 0 8c0 1.29.31 2.51.84 3.56L3.5 9.5z" fill="#FBBC05"/>
+      <path d="M8 3.19c1.22 0 2.31.42 3.17 1.24l2.38-2.38A8 8 0 0 0 8 0 8 8 0 0 0 .84 4.44L3.5 6.5A4.79 4.79 0 0 1 8 3.19z" fill="#EA4335"/>
+    </svg>
+    Continuar con Google
+  </button>
 </div>
 
 <!-- ── APP ── -->
@@ -1056,6 +1087,18 @@ document.getElementById('btnRegister').addEventListener('click', async function(
   state = defaultState();
   await guardar();
   mostrarApp();
+});
+
+document.getElementById('btnGoogle').addEventListener('click', async function() {
+  const errEl = document.getElementById('loginError');
+  errEl.textContent = '';
+  const { error } = await sb.auth.signInWithOAuth({
+    provider: 'google',
+    options: {
+      redirectTo: 'https://yamilvozzi.github.io/mundialhito/'
+    }
+  });
+  if (error) { errEl.textContent = 'Error al conectar con Google.'; }
 });
 
 document.getElementById('btnLogout').addEventListener('click', async function() {
