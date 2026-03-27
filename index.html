@@ -912,6 +912,10 @@
     margin: 10px 12px;
   }
 
+  .panel-footer {
+    padding: 0 12px 8px;
+  }
+
   /* ── COPA TRIGGER ── */
   .brand-icon-btn {
     background: none;
@@ -1348,14 +1352,7 @@
         Reiniciar todo
       </button>
     </div>
-    <button class="btn-footer logout full-width" id="btnLogout">
-      <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-        <path d="M4.5 1.5H2C1.44772 1.5 1 1.94772 1 2.5V8.5C1 9.05228 1.44772 9.5 2 9.5H4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-        <path d="M7.5 3.5L10 5.5L7.5 7.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-        <line x1="10" y1="5.5" x2="4.5" y2="5.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-      </svg>
-      Salir
-    </button>
+
   </div>
 
 </div><!-- fin #appScreen -->
@@ -1465,12 +1462,7 @@ document.getElementById('btnGoogle').addEventListener('click', async function() 
   if (error) { errEl.textContent = 'Error al conectar con Google.'; }
 });
 
-document.getElementById('btnLogout').addEventListener('click', async function() {
-  await sb.auth.signOut();
-  currentUser = null;
-  state = defaultState();
-  mostrarLogin();
-});
+// btnLogout moved to panel lateral
 
 // ── PERSISTENCIA (Supabase) ───────────────────────────
 async function guardar() {
@@ -1755,6 +1747,18 @@ document.addEventListener('DOMContentLoaded', function() {
     cerrarPanel();
     abrirModalArchivar();
   });
+
+  document.getElementById('panelBtnLogout').addEventListener('click', async function() {
+    cerrarPanel();
+    await sb.auth.signOut();
+    currentUser = null;
+    state = defaultState();
+    mostrarLogin();
+  });
+
+  document.getElementById('btnAbrirPanelHistorial').addEventListener('click', function() {
+    panelAbierto ? cerrarPanel() : abrirPanel();
+  });
 });
 
 // ── NAVEGACIÓN ENTRE PANTALLAS ─────────────────────────
@@ -1852,8 +1856,11 @@ async function renderizarHistorial() {
     const fechaStr = String(fecha.getDate()).padStart(2,'0') + '/' +
                      String(fecha.getMonth()+1).padStart(2,'0') + '/' +
                      String(fecha.getFullYear()).slice(2);
-    return '<div class="temporada-card">' +
-      '<div class="temporada-nombre">' + s.name + '</div>' +
+    return '<div class="temporada-card" data-id="' + s.id + '">' +
+      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px;">' +
+        '<div class="temporada-nombre" style="margin-bottom:0;">' + s.name + '</div>' +
+        '<button onclick="eliminarTemporada('' + s.id + '')" style="background:transparent;border:none;cursor:pointer;color:var(--text-dim);padding:2px 4px;border-radius:4px;font-size:0.75rem;line-height:1;flex-shrink:0;transition:color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-dim)'" title="Eliminar temporada">✕</button>' +
+      '</div>' +
       '<div class="temporada-stats">' +
         '<div class="temp-stat"><div class="temp-stat-num">' + s.jugados + '</div><div class="temp-stat-label">Jugados</div></div>' +
         '<div class="temp-stat"><div class="temp-stat-num g">' + s.ganados + '</div><div class="temp-stat-label">Ganados</div></div>' +
@@ -1864,6 +1871,24 @@ async function renderizarHistorial() {
       '<div class="temporada-fecha">Archivado el ' + fechaStr + '</div>' +
     '</div>';
   }).join('');
+}
+
+// ── ELIMINAR TEMPORADA ────────────────────────────────
+async function eliminarTemporada(id) {
+  if (!confirm('¿Eliminar esta temporada? No se puede deshacer.')) return;
+  const { error } = await sb
+    .from('seasons')
+    .delete()
+    .eq('id', id)
+    .eq('user_id', currentUser.id);
+  if (error) { flash('Error al eliminar.', 'red'); return; }
+  const card = document.querySelector('.temporada-card[data-id="' + id + '"]');
+  if (card) card.remove();
+  flash('Temporada eliminada.', 'yellow');
+  const lista = document.getElementById('historialLista');
+  if (!lista.querySelector('.temporada-card')) {
+    lista.innerHTML = '<div class="hist-empty">No hay temporadas archivadas todavía.<br>Cuando quieras guardar el progreso actual, usá la opción Archivar.</div>';
+  }
 }
 
 // ── ARRANCAR ──────────────────────────────────────────
@@ -1881,12 +1906,13 @@ inicializar();
   </div>
   <nav class="panel-nav">
     <button class="panel-nav-item active" id="panelBtnApp">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/>
-        <path d="M4.5 9C4.5 9 5.5 10.5 7 10.5C8.5 10.5 9.5 9 9.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-        <circle cx="5" cy="6" r="0.8" fill="currentColor"/>
-        <circle cx="9" cy="6" r="0.8" fill="currentColor"/>
-      </svg>
+        <svg viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
+          <path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/>
+          <path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+          <path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+          <line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/>
+          <line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+        </svg>
       Mundialhito
     </button>
     <button class="panel-nav-item" id="panelBtnArchivar">
@@ -1910,6 +1936,17 @@ inicializar();
       Historial
     </button>
   </nav>
+  <div class="panel-footer">
+    <div class="panel-separator" style="margin: 0 0 10px 0;"></div>
+    <button class="panel-nav-item" id="panelBtnLogout">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        <line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      Salir
+    </button>
+  </div>
 </div>
 
 <!-- ── MODAL ARCHIVAR ── -->
@@ -1926,9 +1963,24 @@ inicializar();
 <!-- ── PANTALLA HISTORIAL ── -->
 <div id="historialScreen">
   <div class="hist-screen-header">
-    <div>
-      <div class="hist-screen-title">Historial</div>
-      <div class="hist-screen-sub">Temporadas archivadas</div>
+    <div style="display:flex;align-items:center;gap:12px;">
+      <button class="brand-icon-btn" id="btnAbrirPanelHistorial" aria-label="Menú de temporadas">
+        <div class="brand-icon">
+          <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 5H5C5 5 4 10.5 8 12.5" stroke="#f2c85a" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M18 5H21C21 5 22 10.5 18 12.5" stroke="#f2c85a" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M8 3H18V13C18 16.3137 15.7614 19 13 19C10.2386 19 8 16.3137 8 13V3Z" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="1.2"/>
+            <ellipse cx="13" cy="10" rx="3" ry="3" fill="none" stroke="#f2c85a" stroke-width="1.1" opacity="0.85"/>
+            <path d="M13 7V13M10 10H16" stroke="#f2c85a" stroke-width="0.75" opacity="0.65"/>
+            <rect x="11.5" y="19" width="3" height="2.5" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="1"/>
+            <rect x="9" y="21.5" width="8" height="1.8" rx="0.9" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="0.9" opacity="0.85"/>
+          </svg>
+        </div>
+      </button>
+      <div>
+        <div class="hist-screen-title">Historial</div>
+        <div class="hist-screen-sub">Temporadas archivadas</div>
+      </div>
     </div>
   </div>
   <div id="historialLista"></div>
