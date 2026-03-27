@@ -1493,12 +1493,24 @@ document.getElementById('btnGoogle').addEventListener('click', async function() 
 // btnLogout moved to panel lateral
 
 // ── PERSISTENCIA (Supabase) ───────────────────────────
+let guardarTimeout = null;
+
+function guardarConDebounce() {
+  // Espera 800ms desde el último cambio antes de escribir en la DB.
+  // Evita múltiples escrituras seguidas si el usuario toca botones rápido.
+  clearTimeout(guardarTimeout);
+  guardarTimeout = setTimeout(guardar, 800);
+}
+
 async function guardar() {
   if (!currentUser) return;
+  // El snapshot es solo para uso en memoria (undo). No lo persistimos en la DB
+  // porque puede ser un objeto enorme y duplica el peso de cada escritura.
+  const { snapshot, ...stateToSave } = state;
   const { error } = await sb
     .from('game_state')
     .upsert(
-      { user_id: currentUser.id, state: state, updated_at: new Date().toISOString() },
+      { user_id: currentUser.id, state: stateToSave, updated_at: new Date().toISOString() },
       { onConflict: 'user_id' }
     );
   if (error) console.error('Error guardando:', error.message);
@@ -1522,22 +1534,7 @@ async function cargarEstado() {
 async function inicializar() {
   mostrarLoading();
 
-  // Listener global: captura el retorno del OAuth de Google (token en el hash de la URL)
-  // y también cualquier cambio de sesión posterior (logout, refresh de token, etc.)
-  sb.auth.onAuthStateChange(async function(event, session) {
-    if (event === 'SIGNED_IN' && session && !currentUser) {
-      currentUser = session.user;
-      await cargarEstado();
-      mostrarApp();
-    }
-    if (event === 'SIGNED_OUT') {
-      currentUser = null;
-      state = defaultState();
-      mostrarLogin();
-    }
-  });
-
-  // Verificar si ya hay sesión activa (usuario que venía logueado antes)
+  // Primero verificamos si ya hay sesión activa (carga normal o retorno de OAuth)
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
     currentUser = session.user;
@@ -1546,6 +1543,20 @@ async function inicializar() {
   } else {
     mostrarLogin();
   }
+
+  // onAuthStateChange SOLO para manejar TOKEN_REFRESHED y SIGNED_OUT
+  // NO manejamos SIGNED_IN aquí para evitar la race condition con getSession()
+  sb.auth.onAuthStateChange(function(event, session) {
+    if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      state = defaultState();
+      mostrarLogin();
+    }
+    // TOKEN_REFRESHED: actualizar referencia del usuario pero sin recargar datos
+    if (event === 'TOKEN_REFRESHED' && session) {
+      currentUser = session.user;
+    }
+  });
 }
 
 // ── LÓGICA DEL JUEGO ──────────────────────────────────
@@ -1586,7 +1597,7 @@ document.getElementById('btnUndo').addEventListener('click', async function() {
 
 document.getElementById('btnRenovar').addEventListener('click', async function() {
   state.contadorRenov = 1;
-  await guardar();
+  guardarConDebounce();
   renderizar();
   flash('Plan renovado desde 1', 'cyan');
 });
@@ -1690,7 +1701,7 @@ async function procesarResultado(resultado, fueEmpate) {
       state.fase = 'FG'; state.fgResultados = []; state.eliminatoriasDone = [];
     }
   }
-  await guardar();
+  guardarConDebounce();
   renderizar();
 }
 
