@@ -1734,25 +1734,27 @@ function actualizarPanelActivo() {
   document.getElementById('panelBtnArchivar').classList.remove('active');
 }
 
-document.getElementById('btnAbrirPanel').addEventListener('click', function() {
-  panelAbierto ? cerrarPanel() : abrirPanel();
-});
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('btnAbrirPanel').addEventListener('click', function() {
+    panelAbierto ? cerrarPanel() : abrirPanel();
+  });
 
-document.getElementById('panelOverlay').addEventListener('click', cerrarPanel);
+  document.getElementById('panelOverlay').addEventListener('click', cerrarPanel);
 
-document.getElementById('panelBtnApp').addEventListener('click', function() {
-  cerrarPanel();
-  irAApp();
-});
+  document.getElementById('panelBtnApp').addEventListener('click', function() {
+    cerrarPanel();
+    irAApp();
+  });
 
-document.getElementById('panelBtnHistorial').addEventListener('click', async function() {
-  cerrarPanel();
-  await irAHistorial();
-});
+  document.getElementById('panelBtnHistorial').addEventListener('click', async function() {
+    cerrarPanel();
+    await irAHistorial();
+  });
 
-document.getElementById('panelBtnArchivar').addEventListener('click', function() {
-  cerrarPanel();
-  abrirModalArchivar();
+  document.getElementById('panelBtnArchivar').addEventListener('click', function() {
+    cerrarPanel();
+    abrirModalArchivar();
+  });
 });
 
 // ── NAVEGACIÓN ENTRE PANTALLAS ─────────────────────────
