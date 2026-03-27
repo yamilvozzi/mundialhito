@@ -6,6 +6,11 @@
 <title>Mundialhito</title>
 <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon.png">
+<!-- Android PWA -->
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0A0F0D">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="application-name" content="Mundialhito">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -1427,9 +1432,18 @@ document.getElementById('btnLogin').addEventListener('click', async function() {
   errEl.textContent = '';
   if (!email || !password) { errEl.textContent = 'Completá email y contraseña.'; return; }
   this.textContent = 'Ingresando...';
+  this.disabled = true;
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
   this.textContent = 'Ingresar';
-  if (error) { errEl.textContent = 'Email o contraseña incorrectos.'; return; }
+  this.disabled = false;
+  if (error) {
+    if (error.message && error.message.toLowerCase().includes('email not confirmed')) {
+      errEl.textContent = 'Confirmá tu email antes de ingresar. Revisá tu casilla.';
+    } else {
+      errEl.textContent = 'Email o contraseña incorrectos.';
+    }
+    return;
+  }
   currentUser = data.user;
   await cargarEstado();
   mostrarApp();
@@ -1443,9 +1457,17 @@ document.getElementById('btnRegister').addEventListener('click', async function(
   if (!email || !password) { errEl.textContent = 'Completá email y contraseña.'; return; }
   if (password.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
   this.textContent = 'Creando cuenta...';
+  this.disabled = true;
   const { data, error } = await sb.auth.signUp({ email, password });
   this.textContent = 'Crear cuenta nueva';
+  this.disabled = false;
   if (error) { errEl.textContent = 'Error: ' + error.message; return; }
+  // Supabase puede requerir confirmación de email antes de dar sesión activa
+  if (!data.session) {
+    errEl.style.color = 'var(--green)';
+    errEl.textContent = '¡Cuenta creada! Revisá tu email para confirmarla y luego ingresá.';
+    return;
+  }
   currentUser = data.user;
   state = defaultState();
   await guardar();
@@ -1455,12 +1477,16 @@ document.getElementById('btnRegister').addEventListener('click', async function(
 document.getElementById('btnGoogle').addEventListener('click', async function() {
   const errEl = document.getElementById('loginError');
   errEl.textContent = '';
+  this.textContent = 'Conectando...';
+  this.disabled = true;
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
     options: {
       redirectTo: 'https://yamilvozzi.github.io/mundialhito/'
     }
   });
+  this.textContent = 'Continuar con Google';
+  this.disabled = false;
   if (error) { errEl.textContent = 'Error al conectar con Google.'; }
 });
 
@@ -1495,6 +1521,23 @@ async function cargarEstado() {
 // ── ARRANQUE ──────────────────────────────────────────
 async function inicializar() {
   mostrarLoading();
+
+  // Listener global: captura el retorno del OAuth de Google (token en el hash de la URL)
+  // y también cualquier cambio de sesión posterior (logout, refresh de token, etc.)
+  sb.auth.onAuthStateChange(async function(event, session) {
+    if (event === 'SIGNED_IN' && session && !currentUser) {
+      currentUser = session.user;
+      await cargarEstado();
+      mostrarApp();
+    }
+    if (event === 'SIGNED_OUT') {
+      currentUser = null;
+      state = defaultState();
+      mostrarLogin();
+    }
+  });
+
+  // Verificar si ya hay sesión activa (usuario que venía logueado antes)
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
     currentUser = session.user;
