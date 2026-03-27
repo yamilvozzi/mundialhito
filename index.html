@@ -822,6 +822,303 @@
   .loading-dot:nth-child(3) { animation-delay: 0.4s; }
 
   @keyframes blink { 0%,100%{opacity:0.2} 50%{opacity:1} }
+
+  /* ── PANEL LATERAL ── */
+  .panel-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0);
+    z-index: 300;
+    pointer-events: none;
+    transition: background 0.3s;
+  }
+  .panel-overlay.show {
+    background: rgba(0,0,0,0.55);
+    pointer-events: all;
+  }
+
+  .panel-lateral {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 220px;
+    background: #0D1914;
+    border-right: 1px solid var(--border);
+    z-index: 301;
+    transform: translateX(-100%);
+    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+    padding: 40px 0 32px;
+    display: flex;
+    flex-direction: column;
+  }
+  .panel-lateral.show { transform: translateX(0); }
+
+  .panel-header {
+    padding: 0 20px 24px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 16px;
+  }
+
+  .panel-logo {
+    font-size: 0.95rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    line-height: 1;
+  }
+  .panel-logo .w { color: var(--text); }
+  .panel-logo .h { color: var(--yellow-id); }
+
+  .panel-sub {
+    font-size: 0.55rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-top: 4px;
+  }
+
+  .panel-nav { flex: 1; padding: 0 12px; }
+
+  .panel-nav-item {
+    width: 100%;
+    padding: 11px 12px;
+    background: transparent;
+    border: none;
+    border-radius: 8px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.72rem;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    text-align: left;
+    margin-bottom: 2px;
+  }
+  .panel-nav-item:hover { background: rgba(242,200,90,0.06); color: var(--text-sec); }
+  .panel-nav-item.active { color: var(--yellow-id); background: rgba(242,200,90,0.08); }
+  .panel-nav-item svg { flex-shrink: 0; opacity: 0.7; }
+  .panel-nav-item.active svg { opacity: 1; }
+
+  .panel-separator {
+    height: 1px;
+    background: var(--border);
+    margin: 10px 12px;
+  }
+
+  /* ── COPA TRIGGER ── */
+  .brand-icon-btn {
+    background: none;
+    border: none;
+    padding: 6px;
+    margin: -6px;
+    cursor: pointer;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .brand-icon-btn:hover { background: rgba(242,200,90,0.08); }
+  .brand-icon-btn .brand-icon { margin: 0; }
+
+  /* ── SCREEN HISTORIAL ── */
+  #historialScreen {
+    display: none;
+    padding: 28px 18px 48px;
+  }
+
+  .hist-screen-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 28px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .hist-screen-title {
+    font-size: 1rem;
+    font-weight: 800;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--yellow-id);
+  }
+
+  .hist-screen-sub {
+    font-size: 0.6rem;
+    font-weight: 400;
+    color: var(--text-sec);
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    margin-top: 3px;
+  }
+
+  .temporada-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 16px 18px;
+    margin-bottom: 10px;
+  }
+
+  .temporada-nombre {
+    font-size: 0.82rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text);
+    margin-bottom: 12px;
+  }
+
+  .temporada-stats {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 6px;
+  }
+
+  .temp-stat {
+    text-align: center;
+  }
+
+  .temp-stat-num {
+    font-size: 1.3rem;
+    font-weight: 700;
+    line-height: 1;
+    color: var(--text-sec);
+  }
+
+  .temp-stat-num.g { color: var(--green); }
+  .temp-stat-num.p { color: var(--red); }
+  .temp-stat-num.e { color: var(--yellow); }
+  .temp-stat-num.c { color: var(--yellow-id); }
+
+  .temp-stat-label {
+    font-size: 0.5rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    margin-top: 4px;
+  }
+
+  .temporada-fecha {
+    font-size: 0.58rem;
+    font-weight: 400;
+    color: var(--text-dim);
+    margin-top: 10px;
+    letter-spacing: 0.06em;
+  }
+
+  .hist-empty {
+    text-align: center;
+    padding: 48px 20px;
+    color: var(--text-dim);
+    font-size: 0.75rem;
+    font-weight: 400;
+    line-height: 1.6;
+  }
+
+  /* ── MODAL ARCHIVAR ── */
+  .archivar-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(5,10,8,0.9);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 500;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s;
+    backdrop-filter: blur(6px);
+  }
+  .archivar-overlay.show { opacity: 1; pointer-events: all; }
+
+  .archivar-modal {
+    background: var(--surface);
+    border: 1px solid rgba(242,200,90,0.25);
+    border-radius: 16px;
+    padding: 28px 24px;
+    max-width: 280px;
+    width: 90%;
+  }
+
+  .archivar-title {
+    font-size: 0.78rem;
+    font-weight: 700;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--yellow-id);
+    margin-bottom: 6px;
+  }
+
+  .archivar-desc {
+    font-size: 0.68rem;
+    font-weight: 400;
+    color: var(--text-sec);
+    margin-bottom: 18px;
+    line-height: 1.5;
+  }
+
+  .archivar-input {
+    width: 100%;
+    padding: 11px 14px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    color: var(--text);
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    outline: none;
+    transition: border-color 0.2s;
+    margin-bottom: 12px;
+  }
+  .archivar-input:focus { border-color: var(--yellow); }
+  .archivar-input::placeholder { color: var(--text-dim); font-weight: 400; }
+
+  .archivar-btn-guardar {
+    width: 100%;
+    padding: 12px;
+    background: var(--yellow-id);
+    border: none;
+    border-radius: 9px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: #1A1200;
+    cursor: pointer;
+    transition: filter 0.2s;
+    margin-bottom: 8px;
+  }
+  .archivar-btn-guardar:hover { filter: brightness(1.08); }
+
+  .archivar-btn-cancel {
+    width: 100%;
+    padding: 10px;
+    background: transparent;
+    border: 1px solid var(--border);
+    border-radius: 9px;
+    font-family: 'Nunito', sans-serif;
+    font-size: 0.68rem;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--text-dim);
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .archivar-btn-cancel:hover { border-color: var(--text-sec); color: var(--text-sec); }
 </style>
 </head>
 <body>
@@ -899,17 +1196,19 @@
   <!-- ── HEADER ── -->
   <div class="header">
     <div class="brand">
-      <div class="brand-icon">
-        <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M8 5H5C5 5 4 10.5 8 12.5" stroke="#4A6258" stroke-width="1.4" stroke-linecap="round"/>
-          <path d="M18 5H21C21 5 22 10.5 18 12.5" stroke="#4A6258" stroke-width="1.4" stroke-linecap="round"/>
-          <path d="M8 3H18V13C18 16.3137 15.7614 19 13 19C10.2386 19 8 16.3137 8 13V3Z" fill="#2A3E36" stroke="#3E5A50" stroke-width="1.2"/>
-          <ellipse cx="13" cy="10" rx="3" ry="3" fill="none" stroke="#f2c85a" stroke-width="1.1" opacity="0.85"/>
-          <path d="M13 7V13M10 10H16" stroke="#f2c85a" stroke-width="0.75" opacity="0.55"/>
-          <rect x="11.5" y="19" width="3" height="2.5" fill="#2A3E36" stroke="#3E5A50" stroke-width="1"/>
-          <rect x="9" y="21.5" width="8" height="1.8" rx="0.9" fill="#2A3E36" stroke="#f2c85a" stroke-width="0.9" opacity="0.7"/>
-        </svg>
-      </div>
+      <button class="brand-icon-btn" id="btnAbrirPanel" aria-label="Menú de temporadas">
+        <div class="brand-icon">
+          <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M8 5H5C5 5 4 10.5 8 12.5" stroke="#f2c85a" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M18 5H21C21 5 22 10.5 18 12.5" stroke="#f2c85a" stroke-width="1.4" stroke-linecap="round"/>
+            <path d="M8 3H18V13C18 16.3137 15.7614 19 13 19C10.2386 19 8 16.3137 8 13V3Z" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="1.2"/>
+            <ellipse cx="13" cy="10" rx="3" ry="3" fill="none" stroke="#f2c85a" stroke-width="1.1" opacity="0.85"/>
+            <path d="M13 7V13M10 10H16" stroke="#f2c85a" stroke-width="0.75" opacity="0.65"/>
+            <rect x="11.5" y="19" width="3" height="2.5" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="1"/>
+            <rect x="9" y="21.5" width="8" height="1.8" rx="0.9" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="0.9" opacity="0.85"/>
+          </svg>
+        </div>
+      </button>
       <div>
         <div class="brand-name"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
         <div class="brand-sub">Tracker personal</div>
@@ -1411,8 +1710,224 @@ function renderizar() {
   }
 }
 
+
+// ── PANEL LATERAL ─────────────────────────────────────
+let panelAbierto = false;
+let pantallaActiva = 'app'; // 'app' | 'historial'
+
+function abrirPanel() {
+  panelAbierto = true;
+  document.getElementById('panelLateral').classList.add('show');
+  document.getElementById('panelOverlay').classList.add('show');
+  actualizarPanelActivo();
+}
+
+function cerrarPanel() {
+  panelAbierto = false;
+  document.getElementById('panelLateral').classList.remove('show');
+  document.getElementById('panelOverlay').classList.remove('show');
+}
+
+function actualizarPanelActivo() {
+  document.getElementById('panelBtnApp').classList.toggle('active', pantallaActiva === 'app');
+  document.getElementById('panelBtnHistorial').classList.toggle('active', pantallaActiva === 'historial');
+  document.getElementById('panelBtnArchivar').classList.remove('active');
+}
+
+document.getElementById('btnAbrirPanel').addEventListener('click', function() {
+  panelAbierto ? cerrarPanel() : abrirPanel();
+});
+
+document.getElementById('panelOverlay').addEventListener('click', cerrarPanel);
+
+document.getElementById('panelBtnApp').addEventListener('click', function() {
+  cerrarPanel();
+  irAApp();
+});
+
+document.getElementById('panelBtnHistorial').addEventListener('click', async function() {
+  cerrarPanel();
+  await irAHistorial();
+});
+
+document.getElementById('panelBtnArchivar').addEventListener('click', function() {
+  cerrarPanel();
+  abrirModalArchivar();
+});
+
+// ── NAVEGACIÓN ENTRE PANTALLAS ─────────────────────────
+function irAApp() {
+  pantallaActiva = 'app';
+  document.getElementById('appScreen').style.display = 'block';
+  document.getElementById('historialScreen').style.display = 'none';
+  renderizar();
+}
+
+async function irAHistorial() {
+  pantallaActiva = 'historial';
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('historialScreen').style.display = 'block';
+  await renderizarHistorial();
+}
+
+// ── ARCHIVAR ──────────────────────────────────────────
+function abrirModalArchivar() {
+  document.getElementById('archivarNombre').value = '';
+  document.getElementById('archivarOverlay').classList.add('show');
+  setTimeout(() => document.getElementById('archivarNombre').focus(), 100);
+}
+
+function cerrarModalArchivar() {
+  document.getElementById('archivarOverlay').classList.remove('show');
+}
+
+document.getElementById('btnArchivarCancelar').addEventListener('click', cerrarModalArchivar);
+
+document.getElementById('archivarOverlay').addEventListener('click', function(e) {
+  if (e.target === this) cerrarModalArchivar();
+});
+
+document.getElementById('btnArchivarGuardar').addEventListener('click', async function() {
+  const nombre = document.getElementById('archivarNombre').value.trim();
+  if (!nombre) {
+    document.getElementById('archivarNombre').focus();
+    return;
+  }
+  if (!currentUser) return;
+
+  this.textContent = 'Guardando...';
+  this.disabled = true;
+
+  const { error } = await sb.from('seasons').insert({
+    user_id:  currentUser.id,
+    name:     nombre,
+    jugados:  state.totalJugados,
+    ganados:  state.totalGanados,
+    perdidos: state.totalPerdidos,
+    empatados: state.totalEmpatados,
+    copas:    state.copas
+  });
+
+  this.textContent = 'Guardar';
+  this.disabled = false;
+
+  if (error) {
+    flash('Error al guardar. Intentá de nuevo.', 'red');
+    return;
+  }
+
+  cerrarModalArchivar();
+  flash('Temporada "' + nombre + '" archivada.', 'yellow');
+});
+
+// ── HISTORIAL ─────────────────────────────────────────
+async function renderizarHistorial() {
+  const lista = document.getElementById('historialLista');
+  lista.innerHTML = '<div class="hist-empty">Cargando...</div>';
+
+  if (!currentUser) return;
+
+  const { data, error } = await sb
+    .from('seasons')
+    .select('*')
+    .eq('user_id', currentUser.id)
+    .order('created_at', { ascending: false });
+
+  if (error) {
+    lista.innerHTML = '<div class="hist-empty">Error al cargar el historial.</div>';
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    lista.innerHTML = '<div class="hist-empty">No hay temporadas archivadas todavía.<br>Cuando quieras guardar el progreso actual, usá la opción Archivar.</div>';
+    return;
+  }
+
+  lista.innerHTML = data.map(function(s) {
+    const fecha = new Date(s.created_at);
+    const fechaStr = String(fecha.getDate()).padStart(2,'0') + '/' +
+                     String(fecha.getMonth()+1).padStart(2,'0') + '/' +
+                     String(fecha.getFullYear()).slice(2);
+    return '<div class="temporada-card">' +
+      '<div class="temporada-nombre">' + s.name + '</div>' +
+      '<div class="temporada-stats">' +
+        '<div class="temp-stat"><div class="temp-stat-num">' + s.jugados + '</div><div class="temp-stat-label">Jugados</div></div>' +
+        '<div class="temp-stat"><div class="temp-stat-num g">' + s.ganados + '</div><div class="temp-stat-label">Ganados</div></div>' +
+        '<div class="temp-stat"><div class="temp-stat-num e">' + s.empatados + '</div><div class="temp-stat-label">Empates</div></div>' +
+        '<div class="temp-stat"><div class="temp-stat-num p">' + s.perdidos + '</div><div class="temp-stat-label">Perdidos</div></div>' +
+        '<div class="temp-stat"><div class="temp-stat-num c">' + s.copas + '</div><div class="temp-stat-label">Copas</div></div>' +
+      '</div>' +
+      '<div class="temporada-fecha">Archivado el ' + fechaStr + '</div>' +
+    '</div>';
+  }).join('');
+}
+
 // ── ARRANCAR ──────────────────────────────────────────
 inicializar();
 </script>
+
+<!-- ── PANEL OVERLAY ── -->
+<div class="panel-overlay" id="panelOverlay"></div>
+
+<!-- ── PANEL LATERAL ── -->
+<div class="panel-lateral" id="panelLateral">
+  <div class="panel-header">
+    <div class="panel-logo"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
+    <div class="panel-sub">Tracker personal</div>
+  </div>
+  <nav class="panel-nav">
+    <button class="panel-nav-item active" id="panelBtnApp">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <circle cx="7" cy="7" r="6" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M4.5 9C4.5 9 5.5 10.5 7 10.5C8.5 10.5 9.5 9 9.5 9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+        <circle cx="5" cy="6" r="0.8" fill="currentColor"/>
+        <circle cx="9" cy="6" r="0.8" fill="currentColor"/>
+      </svg>
+      Mundialhito
+    </button>
+    <button class="panel-nav-item" id="panelBtnArchivar">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
+      </svg>
+      Archivar
+    </button>
+    <div class="panel-separator"></div>
+    <button class="panel-nav-item" id="panelBtnHistorial">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+        <path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        <path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        <circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/>
+        <path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
+      </svg>
+      Historial
+    </button>
+  </nav>
+</div>
+
+<!-- ── MODAL ARCHIVAR ── -->
+<div class="archivar-overlay" id="archivarOverlay">
+  <div class="archivar-modal">
+    <div class="archivar-title">Archivar temporada</div>
+    <div class="archivar-desc">Guardá las estadísticas actuales con un nombre. Podés seguir jugando normalmente después.</div>
+    <input class="archivar-input" id="archivarNombre" type="text" placeholder="Ej: Temporada 2026" maxlength="40">
+    <button class="archivar-btn-guardar" id="btnArchivarGuardar">Guardar</button>
+    <button class="archivar-btn-cancel" id="btnArchivarCancelar">Cancelar</button>
+  </div>
+</div>
+
+<!-- ── PANTALLA HISTORIAL ── -->
+<div id="historialScreen">
+  <div class="hist-screen-header">
+    <div>
+      <div class="hist-screen-title">Historial</div>
+      <div class="hist-screen-sub">Temporadas archivadas</div>
+    </div>
+  </div>
+  <div id="historialLista"></div>
+</div>
 </body>
 </html>
