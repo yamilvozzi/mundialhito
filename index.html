@@ -1783,43 +1783,45 @@ function cerrarModalArchivar() {
   document.getElementById('archivarOverlay').classList.remove('show');
 }
 
-document.getElementById('btnArchivarCancelar').addEventListener('click', cerrarModalArchivar);
+document.addEventListener('DOMContentLoaded', function() {
+  document.getElementById('btnArchivarCancelar').addEventListener('click', cerrarModalArchivar);
 
-document.getElementById('archivarOverlay').addEventListener('click', function(e) {
-  if (e.target === this) cerrarModalArchivar();
-});
-
-document.getElementById('btnArchivarGuardar').addEventListener('click', async function() {
-  const nombre = document.getElementById('archivarNombre').value.trim();
-  if (!nombre) {
-    document.getElementById('archivarNombre').focus();
-    return;
-  }
-  if (!currentUser) return;
-
-  this.textContent = 'Guardando...';
-  this.disabled = true;
-
-  const { error } = await sb.from('seasons').insert({
-    user_id:  currentUser.id,
-    name:     nombre,
-    jugados:  state.totalJugados,
-    ganados:  state.totalGanados,
-    perdidos: state.totalPerdidos,
-    empatados: state.totalEmpatados,
-    copas:    state.copas
+  document.getElementById('archivarOverlay').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModalArchivar();
   });
 
-  this.textContent = 'Guardar';
-  this.disabled = false;
+  document.getElementById('btnArchivarGuardar').addEventListener('click', async function() {
+    const nombre = document.getElementById('archivarNombre').value.trim();
+    if (!nombre) {
+      document.getElementById('archivarNombre').focus();
+      return;
+    }
+    if (!currentUser) return;
 
-  if (error) {
-    flash('Error al guardar. Intentá de nuevo.', 'red');
-    return;
-  }
+    this.textContent = 'Guardando...';
+    this.disabled = true;
 
-  cerrarModalArchivar();
-  flash('Temporada "' + nombre + '" archivada.', 'yellow');
+    const { error } = await sb.from('seasons').insert({
+      user_id:   currentUser.id,
+      name:      nombre,
+      jugados:   state.totalJugados,
+      ganados:   state.totalGanados,
+      perdidos:  state.totalPerdidos,
+      empatados: state.totalEmpatados,
+      copas:     state.copas
+    });
+
+    this.textContent = 'Guardar';
+    this.disabled = false;
+
+    if (error) {
+      flash('Error al guardar. Intentá de nuevo.', 'red');
+      return;
+    }
+
+    cerrarModalArchivar();
+    flash('Temporada "' + nombre + '" archivada.', 'yellow');
+  });
 });
 
 // ── HISTORIAL ─────────────────────────────────────────
