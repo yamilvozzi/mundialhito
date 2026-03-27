@@ -1161,10 +1161,12 @@
     </div>
   </div>
 
+  <form id="loginForm" style="display:contents;">
   <input class="login-input" id="loginEmail" type="email" placeholder="Email" autocomplete="email">
   <input class="login-input" id="loginPassword" type="password" placeholder="Contraseña" autocomplete="current-password">
   <div class="login-error" id="loginError"></div>
-  <button class="login-btn-primary" id="btnLogin">Ingresar</button>
+  <button type="button" class="login-btn-primary" id="btnLogin">Ingresar</button>
+  </form>
   <div class="login-divider"><span>o</span></div>
   <button class="login-btn-secondary" id="btnRegister">Crear cuenta nueva</button>
   <div class="login-divider"><span>o</span></div>
@@ -1859,7 +1861,7 @@ async function renderizarHistorial() {
     return '<div class="temporada-card" data-id="' + s.id + '">' +
       '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px;">' +
         '<div class="temporada-nombre" style="margin-bottom:0;">' + s.name + '</div>' +
-        '<button onclick="eliminarTemporada('' + s.id + '')" style="background:transparent;border:none;cursor:pointer;color:var(--text-dim);padding:2px 4px;border-radius:4px;font-size:0.75rem;line-height:1;flex-shrink:0;transition:color 0.2s;" onmouseover="this.style.color='var(--red)'" onmouseout="this.style.color='var(--text-dim)'" title="Eliminar temporada">✕</button>' +
+        '<button onclick="eliminarTemporada(\'' + s.id + '\')" style="background:transparent;border:none;cursor:pointer;color:var(--text-dim);padding:2px 4px;border-radius:4px;font-size:0.75rem;line-height:1;flex-shrink:0;transition:color 0.2s;" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text-dim)\'" title="Eliminar temporada">✕</button>' +
       '</div>' +
       '<div class="temporada-stats">' +
         '<div class="temp-stat"><div class="temp-stat-num">' + s.jugados + '</div><div class="temp-stat-label">Jugados</div></div>' +
