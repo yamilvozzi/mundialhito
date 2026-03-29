@@ -1651,26 +1651,49 @@ function confirmarEmpate() {
   procesarResultado(pendingResult, true);
 }
 
-async function procesarResultado(resultado, fueEmpate) {
+async function procesarResultado(resultadoCompetitivo, fueEmpate) {
+  // resultadoCompetitivo: 'win' o 'loss' — define el avance en el torneo
+  // fueEmpate: true si el partido terminó empatado y se definió por penales
+  //
+  // ESTADÍSTICAS: si fue empate, solo suma al contador de empates.
+  // El resultado de los penales NO impacta en ganados/perdidos.
+  // LÓGICA DE JUEGO: usa resultadoCompetitivo para determinar si avanza o retrocede.
+
   // Guardar snapshot del estado anterior para poder deshacer
   const snapCopy = JSON.parse(JSON.stringify(state));
-  snapCopy.snapshot = state.snapshot; // preservar el snapshot anterior
+  snapCopy.snapshot = state.snapshot;
   state.snapshot = JSON.stringify(snapCopy);
 
   state.totalJugados++;
-  if (fueEmpate) state.totalEmpatados++;
-  if (resultado === 'win') state.totalGanados++;
-  if (resultado === 'loss') state.totalPerdidos++;
   state.contadorRenov++;
   if (state.contadorRenov > 10) state.contadorRenov = 1;
 
+  if (fueEmpate) {
+    // Partido empatado: solo suma empate, sin tocar ganados/perdidos
+    state.totalEmpatados++;
+  } else {
+    // Partido sin empate: suma al resultado directo
+    if (resultadoCompetitivo === 'win') state.totalGanados++;
+    if (resultadoCompetitivo === 'loss') state.totalPerdidos++;
+  }
+
+  // Color del pip en el historial: empate siempre amarillo,
+  // aunque el resultado competitivo sea win/loss por penales
+  const pipColor = fueEmpate ? 'draw' : resultadoCompetitivo;
+
+  const fecha = new Date();
+  const fechaStr = String(fecha.getDate()).padStart(2,'0') + '/' +
+                   String(fecha.getMonth()+1).padStart(2,'0') + '/' +
+                   String(fecha.getFullYear()).slice(2);
+
   if (state.fase === 'FG') {
-    state.fgResultados.push(resultado);
+    state.fgResultados.push(resultadoCompetitivo);
     const n = state.fgResultados.length;
     const wins = state.fgResultados.filter(function(r){ return r === 'win'; }).length;
-    const label = fueEmpate ? 'Empate → ' + (resultado === 'win' ? 'victoria penales' : 'derrota penales') : (resultado === 'win' ? 'Victoria' : 'Derrota');
-    const _d1 = new Date(); const _fecha1 = String(_d1.getDate()).padStart(2,'0') + '/' + String(_d1.getMonth()+1).padStart(2,'0') + '/' + String(_d1.getFullYear()).slice(2);
-    state.historial.push({ res: resultado, draw: fueEmpate, texto: _fecha1 + ' · FG · P' + n + ' — ' + label });
+    const label = fueEmpate
+      ? 'Empate → ' + (resultadoCompetitivo === 'win' ? 'ganó por penales' : 'perdió por penales')
+      : (resultadoCompetitivo === 'win' ? 'Victoria' : 'Derrota');
+    state.historial.push({ res: pipColor, draw: fueEmpate, texto: fechaStr + ' · FG · P' + n + ' — ' + label });
     if (n === 3) {
       if (wins >= 2) {
         flash('Clasificaste a Octavos (' + wins + '/3)', 'green');
@@ -1680,13 +1703,17 @@ async function procesarResultado(resultado, fueEmpate) {
         state.fase = 'FG'; state.fgResultados = [];
       }
     } else {
-      flash((resultado === 'win' ? '✓ Victoria' : '✗ Derrota') + ' · P' + n + '/3', resultado === 'win' ? 'green' : 'red');
+      const flashLabel = fueEmpate
+        ? '≈ Empate (penales) · P' + n + '/3'
+        : (resultadoCompetitivo === 'win' ? '✓ Victoria' : '✗ Derrota') + ' · P' + n + '/3';
+      flash(flashLabel, fueEmpate ? 'yellow' : (resultadoCompetitivo === 'win' ? 'green' : 'red'));
     }
   } else {
-    const label = fueEmpate ? 'Empate → ' + (resultado === 'win' ? 'victoria penales' : 'derrota penales') : (resultado === 'win' ? 'Victoria' : 'Derrota');
-    const _d2 = new Date(); const _fecha2 = String(_d2.getDate()).padStart(2,'0') + '/' + String(_d2.getMonth()+1).padStart(2,'0') + '/' + String(_d2.getFullYear()).slice(2);
-    state.historial.push({ res: resultado, draw: fueEmpate, texto: _fecha2 + ' · ' + FASE_NOMBRES[state.fase] + ' — ' + label });
-    if (resultado === 'win') {
+    const label = fueEmpate
+      ? 'Empate → ' + (resultadoCompetitivo === 'win' ? 'ganó por penales' : 'perdió por penales')
+      : (resultadoCompetitivo === 'win' ? 'Victoria' : 'Derrota');
+    state.historial.push({ res: pipColor, draw: fueEmpate, texto: fechaStr + ' · ' + FASE_NOMBRES[state.fase] + ' — ' + label });
+    if (resultadoCompetitivo === 'win') {
       state.eliminatoriasDone.push(state.fase);
       if (state.fase === 'FINAL') {
         state.copas++;
