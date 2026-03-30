@@ -10,7 +10,7 @@
 <meta name="theme-color" content="#2A2A2A">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Mundialhito">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root {
@@ -37,9 +37,9 @@
   --cyan:        #6AABB0;
   --cyan-dim:    rgba(106,171,176,0.15);
 
-  --text:        #F0EDE6;
-  --text-sec:    #A8A39C;
-  --text-dim:    #666260;
+  --text:        #F2F0EB;
+  --text-sec:    #C8C4BC;
+  --text-dim:    #7A7570;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -289,7 +289,7 @@ body {
 .modal-sub {
   font-size: 0.76rem;
   font-weight: 400;
-  color: var(--text-sec);
+  color: var(--text);
   margin-bottom: 24px;
   line-height: 1.5;
 }
@@ -471,7 +471,7 @@ body {
 }
 .archivar-desc {
   font-size: 0.74rem;
-  color: var(--text-sec);
+  color: var(--text);
   margin-bottom: 18px;
   line-height: 1.55;
 }
@@ -558,7 +558,7 @@ body {
 
 /* Desktop sidebar */
 .dt-sidebar {
-  width: 220px;
+  width: 240px;
   flex-shrink: 0;
   background: #242424;
   border-right: 1px solid var(--border);
@@ -642,16 +642,16 @@ body {
 
 .dt-center {
   flex: 1;
-  padding: 32px 28px;
-  max-width: 560px;
+  padding: 36px 40px;
+  max-width: 620px;
   overflow-y: auto;
 }
 
 .dt-right {
-  width: 300px;
+  width: 320px;
   flex-shrink: 0;
   border-left: 1px solid var(--border);
-  padding: 32px 22px;
+  padding: 36px 26px;
   overflow-y: auto;
   background: var(--bg2);
 }
@@ -697,7 +697,7 @@ body {
 .brand { display: flex; align-items: center; gap: 12px; }
 
 .brand-name {
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 800;
   letter-spacing: 0.14em;
   text-transform: uppercase;
@@ -721,7 +721,7 @@ body {
   font-weight: 800;
   color: var(--yellow);
   line-height: 1;
-  font-family: 'DM Mono', monospace;
+  font-family: 'Nunito', sans-serif;
 }
 .copas-label {
   font-size: 0.56rem;
@@ -762,7 +762,7 @@ body {
   font-weight: 700;
   color: var(--text-sec);
   line-height: 1;
-  font-family: 'DM Mono', monospace;
+  font-family: 'Nunito', sans-serif;
 }
 .stat-card.g .stat-num { color: var(--green); }
 .stat-card.p .stat-num { color: var(--red); }
@@ -800,9 +800,9 @@ body {
 }
 
 .fase-desc {
-  font-size: 0.68rem;
+  font-size: 0.74rem;
   font-weight: 400;
-  color: var(--text-sec);
+  color: var(--text);
   margin-top: 5px;
   line-height: 1.45;
 }
@@ -884,7 +884,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--text-sec);
   margin-bottom: 13px;
 }
 
@@ -900,7 +900,7 @@ body {
   border-radius: 10px;
   border: 1px solid transparent;
   font-family: 'Nunito', sans-serif;
-  font-size: 0.74rem;
+  font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -960,7 +960,7 @@ body {
   color: var(--cyan);
   line-height: 1;
   opacity: 0.7;
-  font-family: 'DM Mono', monospace;
+  font-family: 'Nunito', sans-serif;
   flex-shrink: 0;
 }
 .plan-num-label {
@@ -1034,9 +1034,9 @@ body {
   gap: 9px;
   padding: 6px 0;
   border-bottom: 1px solid var(--border-soft);
-  font-size: 0.72rem;
+  font-size: 0.76rem;
   font-weight: 400;
-  color: var(--text-sec);
+  color: var(--text);
   line-height: 1.3;
 }
 .hist-item:last-child { border-bottom: none; }
@@ -1121,7 +1121,7 @@ body {
 .hist-screen-sub {
   font-size: 0.6rem;
   font-weight: 500;
-  color: var(--text-sec);
+  color: var(--text);
   letter-spacing: 0.14em;
   text-transform: uppercase;
   margin-top: 3px;
@@ -1138,7 +1138,7 @@ body {
 .temporada-card:hover { border-color: var(--border); }
 
 .temporada-nombre {
-  font-size: 0.88rem;
+  font-size: 0.92rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -1158,7 +1158,7 @@ body {
   font-weight: 700;
   line-height: 1;
   color: var(--text-sec);
-  font-family: 'DM Mono', monospace;
+  font-family: 'Nunito', sans-serif;
 }
 .temp-stat-num.g { color: var(--green); }
 .temp-stat-num.p { color: var(--red); }
@@ -1206,36 +1206,45 @@ body {
 
 .hist-dt-main {
   flex: 1;
-  padding: 32px 28px;
+  padding: 36px 40px;
   overflow-y: auto;
-  max-width: 700px;
+  max-width: 780px;
 }
 
 /* ── DESKTOP SPECIFIC TWEAKS ── */
 @media (min-width: 900px) {
-  .stats-row { gap: 10px; margin-bottom: 18px; }
-  .stat-card { padding: 16px 8px 14px; }
-  .stat-num { font-size: 1.9rem; }
-  .stat-label { font-size: 0.62rem; }
-  .fase-card { padding: 18px 20px; }
-  .fase-nombre { font-size: 1rem; }
-  .result-section { padding: 20px 18px 18px; }
-  .btn { padding: 16px 8px 14px; font-size: 0.78rem; }
+  .stats-row { gap: 10px; margin-bottom: 20px; }
+  .stat-card { padding: 18px 10px 16px; }
+  .stat-num { font-size: 2.1rem; }
+  .stat-label { font-size: 0.66rem; letter-spacing: 0.14em; }
+  .fase-card { padding: 20px 22px; }
+  .fase-nombre { font-size: 1.05rem; }
+  .fase-desc { font-size: 0.78rem; }
+  .result-section { padding: 22px 20px 20px; }
+  .btn { padding: 17px 8px 15px; font-size: 0.82rem; }
+  .btn svg { width: 22px; height: 22px; }
   .historial { max-height: none; }
+  .hist-item { font-size: 0.8rem; padding: 7px 0; }
   .footer-actions { margin-top: 0; padding-top: 0; border-top: none; }
+  .section-label { font-size: 0.62rem; }
+  .br-label { font-size: 0.82rem; }
+  .br-sub { font-size: 0.58rem; }
+  .plan-num { font-size: 2.3rem; }
+  .plan-dots-label { font-size: 0.62rem; }
+  .plan-dot { width: 15px; height: 15px; }
 
   /* Right panel section label */
   .dt-right-label {
-    font-size: 0.6rem;
+    font-size: 0.62rem;
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
-    color: var(--text-dim);
+    color: var(--text-sec);
     margin-bottom: 14px;
     display: block;
   }
 
-  .dt-right-section { margin-bottom: 28px; }
+  .dt-right-section { margin-bottom: 30px; }
 }
 
 /* ── TROPHY SVG OVERRIDE FOR YELLOW ── */
@@ -1442,7 +1451,7 @@ body {
       <div style="padding:16px 20px 0;border-bottom:1px solid var(--border-soft);padding-bottom:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
           <span style="font-size:0.58rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);">Copas ganadas</span>
-          <span style="font-size:1.5rem;font-weight:800;color:var(--yellow);font-family:'DM Mono',monospace;" id="copasNumDt">0</span>
+          <span style="font-size:1.5rem;font-weight:800;color:var(--yellow);font-family:'Nunito',sans-serif;" id="copasNumDt">0</span>
         </div>
         <div class="copas-trophies" style="justify-content:flex-start;margin-top:6px;" id="copasIconsDt"></div>
       </div>
