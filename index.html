@@ -6,1158 +6,1270 @@
 <title>Mundialhito</title>
 <link rel="apple-touch-icon" sizes="180x180" href="icon.png">
 <link rel="icon" type="image/png" sizes="512x512" href="icon.png">
-<!-- Android PWA -->
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#0A0F0D">
+<meta name="theme-color" content="#2A2A2A">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Mundialhito">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
-  :root {
-    --bg:         #0A0F0D;
-    --surface:    #0F1A16;
-    --border:     #1A2822;
-    --green:      #6CBD9E;
-    --green-bg:   rgba(108,189,158,0.11);
-    --green-hov:  rgba(108,189,158,0.20);
-    --yellow:     #D6B86A;
-    --yellow-id:  #f2c85a;
-    --yellow-bg:  rgba(214,184,106,0.12);
-    --yellow-hov: rgba(214,184,106,0.22);
-    --red:        #CF7A7A;
-    --red-bg:     rgba(207,122,122,0.10);
-    --red-hov:    rgba(207,122,122,0.19);
-    --cyan:       #7AABB0;
-    --cyan-bg:    rgba(122,171,176,0.14);
-    --text:       #E6F1EC;
-    --text-sec:   #8FA39A;
-    --text-dim:   #425E58;
-  }
+:root {
+  --bg:          #272727;
+  --bg2:         #2f2f2f;
+  --surface:     #333333;
+  --surface2:    #3a3a3a;
+  --border:      #444444;
+  --border-soft: #3d3d3d;
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+  --yellow:      #FFD700;
+  --yellow-dim:  rgba(255,215,0,0.18);
+  --yellow-hov:  rgba(255,215,0,0.28);
+  --yellow-text: #FFE033;
 
-  body {
-    background: var(--bg);
-    color: var(--text);
-    font-family: 'Nunito', sans-serif;
-    font-weight: 400;
-    min-height: 100vh;
-  }
+  --green:       #5BBF8A;
+  --green-dim:   rgba(91,191,138,0.14);
+  --green-hov:   rgba(91,191,138,0.24);
 
-  body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    pointer-events: none;
-    z-index: 0;
-    opacity: 0.018;
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-    background-size: 256px 256px;
-  }
+  --red:         #E06B6B;
+  --red-dim:     rgba(224,107,107,0.12);
+  --red-hov:     rgba(224,107,107,0.22);
 
-  * { position: relative; z-index: 1; }
+  --cyan:        #6AABB0;
+  --cyan-dim:    rgba(106,171,176,0.15);
 
-  /* ── LOGIN SCREEN ── */
-  #loginScreen {
-    display: none;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    padding: 32px 24px;
-    gap: 10px;
-  }
+  --text:        #F0EDE6;
+  --text-sec:    #A8A39C;
+  --text-dim:    #666260;
+}
 
-  .login-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-  }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  .login-logo-icon {
-    width: 48px;
-    height: 48px;
-    background: #101A17;
-    border-radius: 14px;
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-weight: 400;
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
 
-  .login-logo-icon svg { width: 28px; height: 28px; }
+/* ── LOADING ── */
+#loadingScreen {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  flex-direction: column;
+  gap: 20px;
+  background: var(--bg);
+}
 
-  .login-title {
-    font-size: 1.4rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    line-height: 1;
-  }
+.loading-brand {
+  font-size: 1.2rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+.loading-brand .w { color: var(--text); }
+.loading-brand .h { color: var(--yellow); }
 
-  .login-title .w { color: var(--text); }
-  .login-title .h { color: var(--yellow-id); }
+.loading-dots { display: flex; gap: 7px; }
+.loading-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--yellow);
+  opacity: 0.3;
+  animation: ldot 1.2s infinite;
+}
+.loading-dot:nth-child(2) { animation-delay: 0.2s; }
+.loading-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes ldot { 0%,100%{opacity:0.2} 50%{opacity:1} }
 
-  .login-sub {
-    font-size: 0.62rem;
-    font-weight: 400;
-    color: var(--text-sec);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-top: 3px;
-  }
+/* ── LOGIN ── */
+#loginScreen {
+  display: none;
+  min-height: 100vh;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  padding: 32px 24px;
+  gap: 10px;
+  background: var(--bg);
+}
 
-  .login-input {
-    width: 100%;
-    max-width: 300px;
-    padding: 13px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    color: var(--text);
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.88rem;
-    font-weight: 400;
-    outline: none;
-    transition: border-color 0.2s;
-  }
+.login-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+}
 
-  .login-input:focus { border-color: var(--yellow); }
-  .login-input::placeholder { color: var(--text-dim); }
+.login-logo-icon {
+  width: 52px; height: 52px;
+  background: var(--surface);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.login-logo-icon svg { width: 30px; height: 30px; }
 
-  .login-btn-primary {
-    width: 100%;
-    max-width: 300px;
-    padding: 13px;
-    background: var(--yellow);
-    border: none;
-    border-radius: 10px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 800;
-    font-size: 0.82rem;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: #1A1200;
-    cursor: pointer;
-    transition: filter 0.2s;
-    margin-top: 4px;
-  }
+.login-title {
+  font-size: 1.5rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.login-title .w { color: var(--text); }
+.login-title .h { color: var(--yellow); }
 
-  .login-btn-primary:hover { filter: brightness(1.08); }
+.login-sub {
+  font-size: 0.62rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
 
-  .login-btn-secondary {
-    width: 100%;
-    max-width: 300px;
-    padding: 12px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 600;
-    font-size: 0.75rem;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-sec);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
+.login-input {
+  width: 100%; max-width: 320px;
+  padding: 13px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.9rem;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.login-input:focus { border-color: var(--yellow); }
+.login-input::placeholder { color: var(--text-dim); }
 
-  .login-btn-secondary:hover { border-color: var(--text-sec); color: var(--text); }
+.login-btn-primary {
+  width: 100%; max-width: 320px;
+  padding: 13px;
+  background: var(--yellow);
+  border: none;
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 800;
+  font-size: 0.82rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #1A1000;
+  cursor: pointer;
+  transition: filter 0.2s;
+  margin-top: 4px;
+}
+.login-btn-primary:hover { filter: brightness(1.08); }
+.login-btn-primary:disabled { opacity: 0.6; cursor: default; }
 
-  .login-btn-google {
-    width: 100%;
-    max-width: 300px;
-    padding: 12px 16px;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    font-family: 'Nunito', sans-serif;
-    font-weight: 600;
-    font-size: 0.78rem;
-    letter-spacing: 0.06em;
-    color: var(--text);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 10px;
-  }
-  .login-btn-google:hover { border-color: var(--text-sec); background: #141f1b; }
+.login-btn-secondary {
+  width: 100%; max-width: 320px;
+  padding: 12px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 0.78rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-sec);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.login-btn-secondary:hover { border-color: var(--text-sec); color: var(--text); }
+.login-btn-secondary:disabled { opacity: 0.6; cursor: default; }
 
-  .login-error {
-    font-size: 0.72rem;
-    color: var(--red);
-    text-align: center;
-    max-width: 300px;
-    min-height: 1rem;
-  }
+.login-btn-google {
+  width: 100%; max-width: 320px;
+  padding: 12px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  font-family: 'Nunito', sans-serif;
+  font-weight: 600;
+  font-size: 0.8rem;
+  letter-spacing: 0.04em;
+  color: var(--text);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.login-btn-google:hover { border-color: var(--text-sec); background: var(--surface2); }
+.login-btn-google:disabled { opacity: 0.6; cursor: default; }
 
-  .login-divider {
-    width: 100%;
-    max-width: 300px;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin: 4px 0;
-  }
+.login-error {
+  font-size: 0.74rem;
+  color: var(--red);
+  text-align: center;
+  max-width: 320px;
+  min-height: 1rem;
+}
 
-  .login-divider::before,
-  .login-divider::after {
-    content: '';
-    flex: 1;
-    height: 1px;
-    background: var(--border);
-  }
+.login-divider {
+  width: 100%; max-width: 320px;
+  display: flex; align-items: center; gap: 10px;
+  margin: 2px 0;
+}
+.login-divider::before, .login-divider::after {
+  content: ''; flex: 1; height: 1px;
+  background: var(--border);
+}
+.login-divider span {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
 
-  .login-divider span {
+/* ── FLASH ── */
+.flash {
+  position: fixed;
+  top: 20px; left: 50%;
+  transform: translateX(-50%) translateY(-70px);
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 22px;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  transition: transform 0.38s cubic-bezier(0.34,1.4,0.64,1);
+  z-index: 9999;
+  white-space: nowrap;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+}
+.flash.show { transform: translateX(-50%) translateY(0); }
+.flash.green  { border-color: var(--green); color: var(--green); }
+.flash.red    { border-color: var(--red); color: var(--red); }
+.flash.yellow { border-color: var(--yellow); color: var(--yellow); }
+.flash.cyan   { border-color: var(--cyan); color: var(--cyan); }
+
+/* ── MODAL MONEDA ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 8000;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+  backdrop-filter: blur(4px);
+}
+.modal-overlay.show { opacity: 1; pointer-events: all; }
+
+.modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 32px 28px;
+  text-align: center;
+  max-width: 300px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+
+.modal-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 6px;
+}
+
+.modal-sub {
+  font-size: 0.76rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  margin-bottom: 24px;
+  line-height: 1.5;
+}
+
+.moneda {
+  font-size: 3rem;
+  display: block;
+  margin: 0 auto 20px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.15s;
+}
+.moneda:active { transform: scale(0.88); }
+
+@keyframes girar {
+  0%   { transform: rotateY(0deg) scale(1); }
+  40%  { transform: rotateY(720deg) scale(1.1); }
+  100% { transform: rotateY(1440deg) scale(1); }
+}
+.moneda.girando { animation: girar 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
+
+.modal-resultado {
+  font-size: 0.85rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  min-height: 1.3rem;
+  margin-bottom: 18px;
+}
+.modal-resultado.win  { color: var(--green); }
+.modal-resultado.loss { color: var(--red); }
+
+.modal-elegir { display: flex; gap: 10px; }
+
+.modal-btn {
+  flex: 1; padding: 11px;
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  color: var(--text-sec);
+}
+.modal-btn:hover { border-color: var(--text-sec); color: var(--text); }
+
+.modal-btn-confirmar {
+  width: 100%; padding: 12px;
+  background: var(--yellow);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1A1000;
+  cursor: pointer;
+  margin-top: 12px;
+  display: none;
+  transition: filter 0.2s;
+}
+.modal-btn-confirmar:hover { filter: brightness(1.08); }
+
+/* ── PANEL OVERLAY ── */
+.panel-overlay {
+  position: fixed; inset: 0;
+  background: transparent;
+  z-index: 6000;
+  pointer-events: none;
+  transition: background 0.3s;
+}
+.panel-overlay.show {
+  background: rgba(0,0,0,0.6);
+  pointer-events: all;
+}
+
+/* ── PANEL LATERAL ── */
+.panel-lateral {
+  position: fixed;
+  top: 0; left: 0;
+  height: 100%;
+  width: 230px;
+  background: #242424;
+  border-right: 1px solid var(--border);
+  z-index: 6001;
+  transform: translateX(-100%);
+  transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+.panel-lateral.show { transform: translateX(0); }
+
+.panel-header {
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid var(--border-soft);
+}
+.panel-logo {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.panel-logo .w { color: var(--text); }
+.panel-logo .h { color: var(--yellow); }
+.panel-sub {
+  font-size: 0.58rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.panel-nav { flex: 1; padding: 12px 10px; }
+
+.panel-nav-item {
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  margin-bottom: 2px;
+}
+.panel-nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-sec); }
+.panel-nav-item.active { color: var(--yellow); background: var(--yellow-dim); }
+.panel-nav-item svg { flex-shrink: 0; opacity: 0.6; }
+.panel-nav-item.active svg { opacity: 1; }
+
+.panel-separator { height: 1px; background: var(--border-soft); margin: 8px 10px; }
+
+.panel-footer { padding: 8px 10px 20px; }
+
+/* ── MODAL ARCHIVAR ── */
+.archivar-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.8);
+  display: flex; align-items: center; justify-content: center;
+  z-index: 9000;
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.25s;
+  backdrop-filter: blur(4px);
+}
+.archivar-overlay.show { opacity: 1; pointer-events: all; }
+
+.archivar-modal {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 28px 24px;
+  max-width: 290px;
+  width: 90%;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+}
+.archivar-title {
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  margin-bottom: 6px;
+}
+.archivar-desc {
+  font-size: 0.74rem;
+  color: var(--text-sec);
+  margin-bottom: 18px;
+  line-height: 1.55;
+}
+.archivar-input {
+  width: 100%;
+  padding: 11px 14px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  color: var(--text);
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.88rem;
+  font-weight: 600;
+  outline: none;
+  transition: border-color 0.2s;
+  margin-bottom: 12px;
+}
+.archivar-input:focus { border-color: var(--yellow); }
+.archivar-input::placeholder { color: var(--text-dim); font-weight: 400; }
+
+.archivar-btn-guardar {
+  width: 100%; padding: 12px;
+  background: var(--yellow);
+  border: none;
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: #1A1000;
+  cursor: pointer;
+  transition: filter 0.2s;
+  margin-bottom: 8px;
+}
+.archivar-btn-guardar:hover { filter: brightness(1.08); }
+.archivar-btn-guardar:disabled { opacity: 0.6; cursor: default; }
+
+.archivar-btn-cancel {
+  width: 100%; padding: 10px;
+  background: transparent;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.archivar-btn-cancel:hover { border-color: var(--text-sec); color: var(--text-sec); }
+
+/* ══════════════════════════════════════════════════════
+   APP LAYOUT — MOBILE FIRST, DESKTOP OVERRIDE
+══════════════════════════════════════════════════════ */
+
+#appScreen {
+  display: none;
+  min-height: 100vh;
+}
+
+/* ── MOBILE LAYOUT ── */
+.app-mobile {
+  padding: 20px 16px 48px;
+}
+
+/* ── DESKTOP LAYOUT ── */
+@media (min-width: 900px) {
+  .app-mobile { display: none !important; }
+  .app-desktop { display: flex !important; }
+}
+
+@media (max-width: 899px) {
+  .app-desktop { display: none !important; }
+  .app-mobile { display: block; }
+}
+
+.app-desktop {
+  display: none;
+  min-height: 100vh;
+}
+
+/* Desktop sidebar */
+.dt-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: #242424;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.dt-sidebar-header {
+  padding: 28px 20px 22px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.dt-brand-btn {
+  background: none;
+  border: none;
+  cursor: default;
+  padding: 0;
+  display: block;
+}
+
+.dt-logo {
+  font-size: 1.05rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.dt-logo .w { color: var(--text); }
+.dt-logo .h { color: var(--yellow); }
+
+.dt-logo-sub {
+  font-size: 0.58rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 4px;
+}
+
+.dt-nav { flex: 1; padding: 14px 10px; }
+
+.dt-nav-item {
+  width: 100%;
+  padding: 10px 12px;
+  background: transparent;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.76rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-align: left;
+  margin-bottom: 2px;
+}
+.dt-nav-item:hover { background: rgba(255,255,255,0.05); color: var(--text-sec); }
+.dt-nav-item.active { color: var(--yellow); background: var(--yellow-dim); }
+.dt-nav-item svg { flex-shrink: 0; opacity: 0.6; }
+.dt-nav-item.active svg { opacity: 1; }
+
+.dt-nav-sep { height: 1px; background: var(--border-soft); margin: 8px 10px; }
+.dt-nav-footer { padding: 8px 10px 20px; }
+
+/* Desktop main area */
+.dt-main {
+  flex: 1;
+  display: flex;
+  gap: 0;
+  overflow: hidden;
+}
+
+.dt-center {
+  flex: 1;
+  padding: 32px 28px;
+  max-width: 560px;
+  overflow-y: auto;
+}
+
+.dt-right {
+  width: 300px;
+  flex-shrink: 0;
+  border-left: 1px solid var(--border);
+  padding: 32px 22px;
+  overflow-y: auto;
+  background: var(--bg2);
+}
+
+/* ── COPA TRIGGER (mobile) ── */
+.brand-icon-btn {
+  background: none;
+  border: none;
+  padding: 8px;
+  margin: -8px;
+  cursor: pointer;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.brand-icon-btn:hover { background: rgba(255,215,0,0.08); }
+
+.brand-icon {
+  width: 42px; height: 42px;
+  background: var(--surface);
+  border-radius: 11px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+.brand-icon svg { width: 24px; height: 24px; }
+
+/* ── HEADER (mobile) ── */
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.brand { display: flex; align-items: center; gap: 12px; }
+
+.brand-name {
+  font-size: 1.1rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  line-height: 1;
+}
+.brand-name .w { color: var(--text); }
+.brand-name .h { color: var(--yellow); }
+
+.brand-sub {
+  font-size: 0.58rem;
+  font-weight: 500;
+  color: var(--text-dim);
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.copas-wrap { text-align: right; }
+.copas-num {
+  font-size: 1.9rem;
+  font-weight: 800;
+  color: var(--yellow);
+  line-height: 1;
+  font-family: 'DM Mono', monospace;
+}
+.copas-label {
+  font-size: 0.56rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 2px;
+}
+.copas-trophies {
+  display: flex;
+  justify-content: flex-end;
+  gap: 3px;
+  margin-top: 4px;
+  flex-wrap: wrap;
+  min-height: 13px;
+}
+.trophy-icon svg { width: 11px; height: 11px; display: block; }
+
+/* ── STATS ROW ── */
+.stats-row {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.stat-card {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 14px 6px 12px;
+  text-align: center;
+}
+
+.stat-num {
+  font-size: 1.65rem;
+  font-weight: 700;
+  color: var(--text-sec);
+  line-height: 1;
+  font-family: 'DM Mono', monospace;
+}
+.stat-card.g .stat-num { color: var(--green); }
+.stat-card.p .stat-num { color: var(--red); }
+.stat-card.e .stat-num { color: var(--yellow); }
+
+.stat-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-sec);
+  margin-top: 5px;
+}
+
+/* ── FASE CARD ── */
+.fase-card {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 11px;
+  padding: 15px 17px;
+  margin-bottom: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.fase-nombre {
+  font-size: 0.95rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--yellow);
+  line-height: 1;
+}
+
+.fase-desc {
+  font-size: 0.68rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  margin-top: 5px;
+  line-height: 1.45;
+}
+
+.fg-dots { display: flex; gap: 7px; flex-shrink: 0; }
+
+.fg-dot {
+  width: 30px; height: 30px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.6rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  transition: all 0.25s;
+}
+.fg-dot.win  { background: var(--green-dim);  border-color: var(--green);  color: var(--green); }
+.fg-dot.loss { background: var(--red-dim);    border-color: var(--red);    color: var(--red); }
+.fg-dot.draw { background: var(--yellow-dim); border-color: var(--yellow); color: var(--yellow); }
+
+/* ── BRACKET ── */
+.bracket-row { display: flex; gap: 7px; margin-bottom: 16px; }
+
+.br-step {
+  flex: 1;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 9px;
+  padding: 10px 5px;
+  text-align: center;
+  transition: all 0.25s;
+  position: relative;
+  overflow: hidden;
+}
+.br-step.locked { opacity: 0.22; }
+.br-step.active { border-color: var(--yellow); background: var(--yellow-dim); }
+.br-step.done   { border-color: var(--green);  background: var(--green-dim); }
+
+.br-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-sec);
+}
+.br-step.active .br-label { color: var(--yellow); }
+.br-step.done   .br-label { color: var(--green); }
+
+.br-sub {
+  font-size: 0.53rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 3px;
+}
+
+@keyframes pulse-b { 0%,100%{opacity:1} 50%{opacity:0.3} }
+.br-step.active::after {
+  content: '';
+  position: absolute; inset: 0;
+  border-radius: 9px;
+  box-shadow: inset 0 0 0 1px var(--yellow);
+  animation: pulse-b 2.4s ease-in-out infinite;
+}
+
+/* ── RESULT SECTION ── */
+.result-section {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 12px;
+  padding: 18px 16px 16px;
+}
+
+.section-label {
+  font-size: 0.6rem;
+  font-weight: 700;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 13px;
+}
+
+.btn-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 9px;
+}
+
+.btn {
+  padding: 14px 6px 12px;
+  border-radius: 10px;
+  border: 1px solid transparent;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.74rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 7px;
+}
+.btn svg { width: 20px; height: 20px; transition: transform 0.18s; }
+.btn:hover svg { transform: scale(1.1); }
+
+.btn-win  { background: var(--green-dim); border-color: rgba(91,191,138,0.35); color: var(--green); }
+.btn-win:hover  { background: var(--green-hov); border-color: var(--green); }
+.btn-draw { background: var(--yellow-dim); border-color: rgba(255,215,0,0.35); color: var(--yellow-text); }
+.btn-draw:hover { background: var(--yellow-hov); border-color: var(--yellow); }
+.btn-loss { background: var(--red-dim); border-color: rgba(224,107,107,0.35); color: var(--red); }
+.btn-loss:hover { background: var(--red-hov); border-color: var(--red); }
+
+/* ── UNDO ── */
+.btn-undo {
+  width: 100%; padding: 9px;
+  background: transparent;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.62rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.18s;
+  margin-top: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+.btn-undo:hover { border-color: var(--text-sec); color: var(--text-sec); }
+
+/* ── PLAN 10 ── */
+.plan-card {
+  border: 1px solid var(--border-soft);
+  border-radius: 10px;
+  padding: 13px 14px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-top: 14px;
+}
+
+.plan-num {
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--cyan);
+  line-height: 1;
+  opacity: 0.7;
+  font-family: 'DM Mono', monospace;
+  flex-shrink: 0;
+}
+.plan-num-label {
+  font-size: 0.55rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 2px;
+  text-align: center;
+}
+
+.plan-right { flex: 1; min-width: 0; }
+.plan-dots-label {
+  font-size: 0.58rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-bottom: 7px;
+}
+.plan-dots { display: flex; gap: 5px; flex-wrap: wrap; }
+.plan-dot {
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  border: 1.5px solid var(--border);
+  transition: all 0.3s;
+}
+.plan-dot.used {
+  background: var(--cyan-dim);
+  border-color: var(--cyan);
+  opacity: 0.65;
+}
+
+.btn-plan-reset {
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  background: transparent;
+  border: 1px solid var(--border-soft);
+  border-radius: 7px;
+  padding: 6px 9px;
+  cursor: pointer;
+  transition: all 0.18s;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.btn-plan-reset:hover { border-color: var(--cyan); color: var(--cyan); }
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border-soft); margin: 14px 0; }
+
+/* ── HISTORIAL RECIENTE ── */
+.historial {
+  max-height: 160px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+/* Desktop: sin límite de altura en panel derecho */
+.dt-right .historial { max-height: none; }
+
+.hist-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 6px 0;
+  border-bottom: 1px solid var(--border-soft);
+  font-size: 0.72rem;
+  font-weight: 400;
+  color: var(--text-sec);
+  line-height: 1.3;
+}
+.hist-item:last-child { border-bottom: none; }
+
+.hist-pip { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
+.hist-pip.win  { background: var(--green); }
+.hist-pip.loss { background: var(--red); }
+.hist-pip.draw { background: var(--yellow); }
+
+/* ── FOOTER ACTIONS ── */
+.footer-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  margin-top: 20px;
+  padding-top: 16px;
+  border-top: 1px solid var(--border-soft);
+}
+.footer-row-top { display: flex; gap: 7px; }
+
+.btn-footer {
+  flex: 1;
+  padding: 9px 6px;
+  background: transparent;
+  border: 1px solid var(--border-soft);
+  border-radius: 8px;
+  font-family: 'Nunito', sans-serif;
+  font-size: 0.6rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.18s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+}
+.btn-footer:hover { border-color: var(--text-sec); color: var(--text-sec); }
+.btn-footer.danger:hover { border-color: var(--red); color: var(--red); }
+
+/* ── HISTORIAL SCREEN ── */
+#historialScreen { display: none; }
+
+/* Mobile historial */
+.hist-screen-mobile {
+  padding: 20px 16px 48px;
+}
+
+/* Desktop historial */
+.hist-screen-desktop {
+  display: none;
+  min-height: 100vh;
+}
+
+@media (min-width: 900px) {
+  .hist-screen-mobile { display: none !important; }
+  .hist-screen-desktop { display: flex !important; }
+}
+@media (max-width: 899px) {
+  .hist-screen-desktop { display: none !important; }
+  .hist-screen-mobile { display: block; }
+}
+
+.hist-screen-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+  padding-bottom: 18px;
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.hist-screen-title {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--yellow);
+}
+.hist-screen-sub {
+  font-size: 0.6rem;
+  font-weight: 500;
+  color: var(--text-sec);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  margin-top: 3px;
+}
+
+.temporada-card {
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: 11px;
+  padding: 16px 18px;
+  margin-bottom: 10px;
+  transition: border-color 0.2s;
+}
+.temporada-card:hover { border-color: var(--border); }
+
+.temporada-nombre {
+  font-size: 0.88rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text);
+}
+
+.temporada-stats {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.temp-stat { text-align: center; }
+.temp-stat-num {
+  font-size: 1.35rem;
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-sec);
+  font-family: 'DM Mono', monospace;
+}
+.temp-stat-num.g { color: var(--green); }
+.temp-stat-num.p { color: var(--red); }
+.temp-stat-num.e { color: var(--yellow); }
+.temp-stat-num.c { color: var(--yellow); }
+
+.temp-stat-label {
+  font-size: 0.52rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+.temporada-fecha {
+  font-size: 0.6rem;
+  font-weight: 400;
+  color: var(--text-dim);
+  margin-top: 10px;
+  letter-spacing: 0.05em;
+}
+
+.hist-empty {
+  text-align: center;
+  padding: 48px 20px;
+  color: var(--text-dim);
+  font-size: 0.78rem;
+  line-height: 1.6;
+}
+
+/* Desktop historial layout */
+.hist-dt-sidebar {
+  width: 220px;
+  flex-shrink: 0;
+  background: #242424;
+  border-right: 1px solid var(--border);
+  display: flex;
+  flex-direction: column;
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  overflow-y: auto;
+}
+
+.hist-dt-main {
+  flex: 1;
+  padding: 32px 28px;
+  overflow-y: auto;
+  max-width: 700px;
+}
+
+/* ── DESKTOP SPECIFIC TWEAKS ── */
+@media (min-width: 900px) {
+  .stats-row { gap: 10px; margin-bottom: 18px; }
+  .stat-card { padding: 16px 8px 14px; }
+  .stat-num { font-size: 1.9rem; }
+  .stat-label { font-size: 0.62rem; }
+  .fase-card { padding: 18px 20px; }
+  .fase-nombre { font-size: 1rem; }
+  .result-section { padding: 20px 18px 18px; }
+  .btn { padding: 16px 8px 14px; font-size: 0.78rem; }
+  .historial { max-height: none; }
+  .footer-actions { margin-top: 0; padding-top: 0; border-top: none; }
+
+  /* Right panel section label */
+  .dt-right-label {
     font-size: 0.6rem;
-    color: var(--text-dim);
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-  }
-
-  /* ── APP SCREEN ── */
-  #appScreen {
-    display: none;
-    padding: 28px 18px 48px;
-  }
-
-  /* ── HEADER ── */
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .brand { display: flex; align-items: center; gap: 13px; }
-
-  .brand-icon {
-    width: 44px;
-    height: 44px;
-    background: #101A17;
-    border-radius: 12px;
-    border: 1px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-  }
-
-  .brand-icon svg { width: 26px; height: 26px; }
-
-  .brand-name {
-    font-size: 1.25rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    line-height: 1;
-  }
-  .brand-name .w { color: var(--text); }
-  .brand-name .h { color: var(--yellow-id); }
-
-  .brand-sub {
-    font-size: 0.6rem;
-    font-weight: 400;
-    color: var(--text-sec);
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    margin-top: 3px;
-  }
-
-  .header-right { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
-
-  .copas-wrap { text-align: right; }
-
-  .copas-num {
-    font-size: 2rem;
-    font-weight: 800;
-    color: var(--yellow);
-    line-height: 1;
-  }
-
-  .copas-label {
-    font-size: 0.58rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-top: 2px;
-  }
-
-  .copas-trophies {
-    display: flex;
-    justify-content: flex-end;
-    gap: 3px;
-    margin-top: 5px;
-    flex-wrap: wrap;
-    min-height: 14px;
-  }
-
-  .trophy-icon svg { width: 12px; height: 12px; display: block; }
-
-  .btn-logout {
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.55rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 6px;
-    padding: 4px 8px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .btn-logout:hover { border-color: var(--red); color: var(--red); }
-
-  /* ── STATS ── */
-  .stats-row {
-    display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 8px;
-    margin-bottom: 14px;
-  }
-
-  .stat-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 14px 8px 12px;
-    text-align: center;
-  }
-
-  .stat-num {
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: var(--text-sec);
-    line-height: 1;
-  }
-
-  .stat-card.g .stat-num { color: var(--green); }
-  .stat-card.p .stat-num { color: var(--red); }
-  .stat-card.e .stat-num { color: var(--yellow); }
-
-  .stat-label {
-    font-size: 0.56rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-top: 5px;
-  }
-
-  /* ── FASE ── */
-  .fase-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 18px;
-    margin-bottom: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 12px;
-  }
-
-  .fase-nombre {
-    font-size: 1rem;
-    font-weight: 700;
-    letter-spacing: 0.06em;
-    text-transform: uppercase;
-    color: var(--yellow);
-    line-height: 1;
-  }
-
-  .fase-desc {
-    font-size: 0.66rem;
-    font-weight: 400;
-    color: var(--text-sec);
-    margin-top: 5px;
-    line-height: 1.45;
-  }
-
-  .fg-dots { display: flex; gap: 7px; flex-shrink: 0; }
-
-  .fg-dot {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    border: 1.5px solid var(--border);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.58rem;
-    font-weight: 700;
-    color: var(--text-dim);
-    transition: all 0.3s;
-  }
-
-  .fg-dot.win  { background: var(--green-bg);  border-color: var(--green);  color: var(--green); }
-  .fg-dot.loss { background: var(--red-bg);    border-color: var(--red);    color: var(--red); }
-  .fg-dot.draw { background: var(--yellow-bg); border-color: var(--yellow); color: var(--yellow); }
-
-  /* ── BRACKET ── */
-  .bracket-row { display: flex; gap: 7px; margin-bottom: 14px; }
-
-  .br-step {
-    flex: 1;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 10px 6px;
-    text-align: center;
-    transition: all 0.3s;
-    position: relative;
-    overflow: hidden;
-  }
-
-  .br-step.locked { opacity: 0.25; }
-  .br-step.active { border-color: var(--yellow); background: var(--yellow-bg); }
-  .br-step.done   { border-color: var(--green);  background: var(--green-bg); }
-
-  .br-label {
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--text-sec);
-  }
-
-  .br-step.active .br-label { color: var(--yellow); }
-  .br-step.done   .br-label { color: var(--green); }
-
-  .br-sub {
-    font-size: 0.52rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-top: 3px;
-  }
-
-  @keyframes pulse-b { 0%,100%{opacity:1} 50%{opacity:0.35} }
-  .br-step.active::after {
-    content: '';
-    position: absolute;
-    inset: 0;
-    border-radius: 10px;
-    box-shadow: inset 0 0 0 1px var(--yellow);
-    animation: pulse-b 2.4s ease-in-out infinite;
-  }
-
-  /* ── RESULTADO ── */
-  .result-section {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 18px 18px 16px;
-  }
-
-  .section-label {
-    font-size: 0.58rem;
     font-weight: 700;
     letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--text-dim);
-    margin-bottom: 13px;
-  }
-
-  .btn-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 9px;
-  }
-
-  .btn {
-    padding: 14px 6px 12px;
-    border-radius: 10px;
-    border: 1px solid transparent;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 7px;
-  }
-
-  .btn svg { width: 20px; height: 20px; transition: transform 0.2s; }
-  .btn:hover svg { transform: scale(1.12); }
-
-  .btn-win  { background: var(--green-bg);  border-color: rgba(108,189,158,0.38); color: var(--green); }
-  .btn-win:hover  { background: var(--green-hov);  border-color: var(--green); }
-  .btn-draw { background: var(--yellow-bg); border-color: rgba(214,184,106,0.38); color: var(--yellow); }
-  .btn-draw:hover { background: var(--yellow-hov); border-color: var(--yellow); }
-  .btn-loss { background: var(--red-bg);    border-color: rgba(207,122,122,0.38); color: var(--red); }
-  .btn-loss:hover { background: var(--red-hov);    border-color: var(--red); }
-
-  /* ── UNDO BUTTON ── */
-  .btn-undo {
-    width: 100%;
-    padding: 9px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.6rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-    margin-top: 6px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-  .btn-undo:hover { border-color: var(--text-sec); color: var(--text-sec); }
-
-  /* ── FOOTER ACTIONS ── */
-  .footer-actions {
-    display: flex;
-    flex-direction: column;
-    gap: 8px;
-    margin-top: 20px;
-    padding-top: 16px;
-    border-top: 1px solid var(--border);
-  }
-
-  .footer-row-top {
-    display: flex;
-    gap: 8px;
-  }
-
-  .btn-footer {
-    flex: 1;
-    padding: 9px 6px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.58rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 5px;
-  }
-  .btn-footer.full-width { flex: none; width: 100%; }
-  .btn-footer:hover { border-color: var(--text-sec); color: var(--text-sec); }
-  .btn-footer.danger:hover { border-color: var(--red); color: var(--red); }
-  .btn-footer.logout:hover { border-color: var(--yellow); color: var(--yellow); }
-
-  /* ── PLAN 10 ── */
-  .plan-card {
-    border: 1px solid var(--border);
-    border-radius: 10px;
-    padding: 13px 14px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-top: 14px;
-  }
-
-  .plan-num-wrap { flex-shrink: 0; text-align: center; }
-
-  .plan-num {
-    font-size: 2.2rem;
-    font-weight: 800;
-    color: var(--cyan);
-    line-height: 1;
-    opacity: 0.75;
-  }
-
-  .plan-num-label {
-    font-size: 0.54rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-top: 2px;
-  }
-
-  .plan-right { flex: 1; min-width: 0; }
-
-  .plan-dots-label {
-    font-size: 0.56rem;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-bottom: 8px;
-  }
-
-  .plan-dots { display: flex; gap: 5px; flex-wrap: wrap; }
-
-  .plan-dot {
-    width: 14px;
-    height: 14px;
-    border-radius: 50%;
-    border: 1.5px solid var(--border);
-    transition: all 0.35s ease;
-  }
-
-  .plan-dot.used { background: var(--cyan-bg); border-color: var(--cyan); opacity: 0.7; }
-
-  .btn-plan-reset {
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.56rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 8px;
-    padding: 6px 9px;
-    cursor: pointer;
-    transition: all 0.2s;
-    flex-shrink: 0;
-    line-height: 1.5;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    gap: 4px;
-  }
-  .btn-plan-reset:hover { border-color: var(--cyan); color: var(--cyan); }
-
-  /* ── DIVIDER ── */
-  .divider { height: 1px; background: var(--border); margin: 16px 0; }
-
-  /* ── HISTORIAL ── */
-  .historial {
-    max-height: 115px;
-    overflow-y: auto;
-    scrollbar-width: thin;
-    scrollbar-color: var(--border) transparent;
-  }
-
-  .hist-item {
-    display: flex;
-    align-items: center;
-    gap: 9px;
-    padding: 5px 0;
-    border-bottom: 1px solid var(--border);
-    font-size: 0.7rem;
-    font-weight: 400;
-    color: var(--text-sec);
-  }
-
-  .hist-pip { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; }
-  .hist-pip.win  { background: var(--green); }
-  .hist-pip.loss { background: var(--red); }
-  .hist-pip.draw { background: var(--yellow); }
-
-  /* ── MODAL ── */
-  .modal-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(8,14,12,0.93);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 200;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    backdrop-filter: blur(6px);
-  }
-  .modal-overlay.show { opacity: 1; pointer-events: all; }
-
-  .modal {
-    background: var(--surface);
-    border: 1px solid rgba(214,184,106,0.28);
-    border-radius: 18px;
-    padding: 30px 26px;
-    text-align: center;
-    max-width: 290px;
-    width: 90%;
-  }
-
-  .modal-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--yellow);
-    margin-bottom: 5px;
-  }
-
-  .modal-sub {
-    font-size: 0.7rem;
-    font-weight: 400;
-    color: var(--text-sec);
-    margin-bottom: 22px;
-    line-height: 1.5;
-  }
-
-  .moneda {
-    font-size: 3.2rem;
+    margin-bottom: 14px;
     display: block;
-    margin: 0 auto 18px;
-    cursor: pointer;
-    user-select: none;
-    transition: transform 0.15s;
-  }
-  .moneda:active { transform: scale(0.88); }
-
-  @keyframes girar {
-    0%   { transform: rotateY(0deg) scale(1); }
-    40%  { transform: rotateY(720deg) scale(1.12); }
-    100% { transform: rotateY(1440deg) scale(1); }
-  }
-  .moneda.girando { animation: girar 0.8s cubic-bezier(0.25,0.46,0.45,0.94) forwards; }
-
-  .modal-resultado {
-    font-size: 0.88rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    min-height: 1.3rem;
-    margin-bottom: 16px;
-  }
-  .modal-resultado.win  { color: var(--green); }
-  .modal-resultado.loss { color: var(--red); }
-
-  .modal-elegir { display: flex; gap: 10px; }
-
-  .modal-btn {
-    flex: 1;
-    padding: 11px;
-    border-radius: 9px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    cursor: pointer;
-    transition: all 0.2s;
   }
 
-  .modal-btn-cara { background: rgba(143,163,154,0.08); border: 1px solid var(--border); color: var(--text-sec); }
-  .modal-btn-cara:hover { background: rgba(143,163,154,0.16); border-color: var(--text-sec); }
-  .modal-btn-ceca { background: rgba(143,163,154,0.08); border: 1px solid var(--border); color: var(--text-sec); }
-  .modal-btn-ceca:hover { background: rgba(143,163,154,0.16); border-color: var(--text-sec); }
+  .dt-right-section { margin-bottom: 28px; }
+}
 
-  .modal-btn-confirmar {
-    width: 100%;
-    padding: 12px;
-    background: var(--yellow);
-    border: none;
-    border-radius: 9px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #1A1200;
-    cursor: pointer;
-    margin-top: 12px;
-    display: none;
-    transition: filter 0.2s;
-  }
-  .modal-btn-confirmar:hover { filter: brightness(1.08); }
-
-  /* ── FLASH ── */
-  .flash {
-    position: fixed;
-    top: 18px;
-    left: 50%;
-    transform: translateX(-50%) translateY(-60px);
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    padding: 10px 20px;
-    font-size: 0.72rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
-    transition: transform 0.38s cubic-bezier(0.34,1.4,0.64,1);
-    z-index: 400;
-    white-space: nowrap;
-  }
-  .flash.show { transform: translateX(-50%) translateY(0); }
-  .flash.green  { border-color: rgba(108,189,158,0.5); color: var(--green); }
-  .flash.red    { border-color: rgba(207,122,122,0.5); color: var(--red); }
-  .flash.yellow { border-color: rgba(214,184,106,0.5); color: var(--yellow); }
-  .flash.cyan   { border-color: rgba(122,171,176,0.5); color: var(--cyan); }
-
-  /* ── LOADING ── */
-  #loadingScreen {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    min-height: 100vh;
-    flex-direction: column;
-    gap: 14px;
-  }
-
-  .loading-dot {
-    width: 8px;
-    height: 8px;
-    border-radius: 50%;
-    background: var(--yellow);
-    display: inline-block;
-    animation: blink 1.2s infinite;
-    opacity: 0.4;
-  }
-
-  .loading-dot:nth-child(2) { animation-delay: 0.2s; }
-  .loading-dot:nth-child(3) { animation-delay: 0.4s; }
-
-  @keyframes blink { 0%,100%{opacity:0.2} 50%{opacity:1} }
-
-  /* ── PANEL LATERAL ── */
-  .panel-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0);
-    z-index: 300;
-    pointer-events: none;
-    transition: background 0.3s;
-  }
-  .panel-overlay.show {
-    background: rgba(0,0,0,0.55);
-    pointer-events: all;
-  }
-
-  .panel-lateral {
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    width: 220px;
-    background: #0D1914;
-    border-right: 1px solid var(--border);
-    z-index: 301;
-    transform: translateX(-100%);
-    transition: transform 0.3s cubic-bezier(0.4,0,0.2,1);
-    padding: 40px 0 32px;
-    display: flex;
-    flex-direction: column;
-  }
-  .panel-lateral.show { transform: translateX(0); }
-
-  .panel-header {
-    padding: 0 20px 24px;
-    border-bottom: 1px solid var(--border);
-    margin-bottom: 16px;
-  }
-
-  .panel-logo {
-    font-size: 0.95rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    line-height: 1;
-  }
-  .panel-logo .w { color: var(--text); }
-  .panel-logo .h { color: var(--yellow-id); }
-
-  .panel-sub {
-    font-size: 0.55rem;
-    font-weight: 400;
-    color: var(--text-dim);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-top: 4px;
-  }
-
-  .panel-nav { flex: 1; padding: 0 12px; }
-
-  .panel-nav-item {
-    width: 100%;
-    padding: 11px 12px;
-    background: transparent;
-    border: none;
-    border-radius: 8px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    text-align: left;
-    margin-bottom: 2px;
-  }
-  .panel-nav-item:hover { background: rgba(242,200,90,0.06); color: var(--text-sec); }
-  .panel-nav-item.active { color: var(--yellow-id); background: rgba(242,200,90,0.08); }
-  .panel-nav-item svg { flex-shrink: 0; opacity: 0.7; }
-  .panel-nav-item.active svg { opacity: 1; }
-
-  .panel-separator {
-    height: 1px;
-    background: var(--border);
-    margin: 10px 12px;
-  }
-
-  .panel-footer {
-    padding: 0 12px 8px;
-  }
-
-  /* ── COPA TRIGGER ── */
-  .brand-icon-btn {
-    background: none;
-    border: none;
-    padding: 6px;
-    margin: -6px;
-    cursor: pointer;
-    border-radius: 10px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s;
-    flex-shrink: 0;
-  }
-  .brand-icon-btn:hover { background: rgba(242,200,90,0.08); }
-  .brand-icon-btn .brand-icon { margin: 0; }
-
-  /* ── SCREEN HISTORIAL ── */
-  #historialScreen {
-    display: none;
-    padding: 28px 18px 48px;
-  }
-
-  .hist-screen-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 28px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border);
-  }
-
-  .hist-screen-title {
-    font-size: 1rem;
-    font-weight: 800;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--yellow-id);
-  }
-
-  .hist-screen-sub {
-    font-size: 0.6rem;
-    font-weight: 400;
-    color: var(--text-sec);
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-top: 3px;
-  }
-
-  .temporada-card {
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 12px;
-    padding: 16px 18px;
-    margin-bottom: 10px;
-  }
-
-  .temporada-nombre {
-    font-size: 0.82rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text);
-    margin-bottom: 12px;
-  }
-
-  .temporada-stats {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 6px;
-  }
-
-  .temp-stat {
-    text-align: center;
-  }
-
-  .temp-stat-num {
-    font-size: 1.3rem;
-    font-weight: 700;
-    line-height: 1;
-    color: var(--text-sec);
-  }
-
-  .temp-stat-num.g { color: var(--green); }
-  .temp-stat-num.p { color: var(--red); }
-  .temp-stat-num.e { color: var(--yellow); }
-  .temp-stat-num.c { color: var(--yellow-id); }
-
-  .temp-stat-label {
-    font-size: 0.5rem;
-    font-weight: 600;
-    letter-spacing: 0.12em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    margin-top: 4px;
-  }
-
-  .temporada-fecha {
-    font-size: 0.58rem;
-    font-weight: 400;
-    color: var(--text-dim);
-    margin-top: 10px;
-    letter-spacing: 0.06em;
-  }
-
-  .hist-empty {
-    text-align: center;
-    padding: 48px 20px;
-    color: var(--text-dim);
-    font-size: 0.75rem;
-    font-weight: 400;
-    line-height: 1.6;
-  }
-
-  /* ── MODAL ARCHIVAR ── */
-  .archivar-overlay {
-    position: fixed;
-    inset: 0;
-    background: rgba(5,10,8,0.9);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    z-index: 500;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 0.3s;
-    backdrop-filter: blur(6px);
-  }
-  .archivar-overlay.show { opacity: 1; pointer-events: all; }
-
-  .archivar-modal {
-    background: var(--surface);
-    border: 1px solid rgba(242,200,90,0.25);
-    border-radius: 16px;
-    padding: 28px 24px;
-    max-width: 280px;
-    width: 90%;
-  }
-
-  .archivar-title {
-    font-size: 0.78rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: var(--yellow-id);
-    margin-bottom: 6px;
-  }
-
-  .archivar-desc {
-    font-size: 0.68rem;
-    font-weight: 400;
-    color: var(--text-sec);
-    margin-bottom: 18px;
-    line-height: 1.5;
-  }
-
-  .archivar-input {
-    width: 100%;
-    padding: 11px 14px;
-    background: var(--bg);
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    color: var(--text);
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.85rem;
-    font-weight: 600;
-    outline: none;
-    transition: border-color 0.2s;
-    margin-bottom: 12px;
-  }
-  .archivar-input:focus { border-color: var(--yellow); }
-  .archivar-input::placeholder { color: var(--text-dim); font-weight: 400; }
-
-  .archivar-btn-guardar {
-    width: 100%;
-    padding: 12px;
-    background: var(--yellow-id);
-    border: none;
-    border-radius: 9px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.78rem;
-    font-weight: 800;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: #1A1200;
-    cursor: pointer;
-    transition: filter 0.2s;
-    margin-bottom: 8px;
-  }
-  .archivar-btn-guardar:hover { filter: brightness(1.08); }
-
-  .archivar-btn-cancel {
-    width: 100%;
-    padding: 10px;
-    background: transparent;
-    border: 1px solid var(--border);
-    border-radius: 9px;
-    font-family: 'Nunito', sans-serif;
-    font-size: 0.68rem;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--text-dim);
-    cursor: pointer;
-    transition: all 0.2s;
-  }
-  .archivar-btn-cancel:hover { border-color: var(--text-sec); color: var(--text-sec); }
+/* ── TROPHY SVG OVERRIDE FOR YELLOW ── */
+.trophy-svg-yellow path, .trophy-svg-yellow line {
+  stroke: var(--yellow) !important;
+}
 </style>
 </head>
 <body>
 
 <div class="flash" id="flash"></div>
 
-<!-- ── LOADING ── -->
+<!-- ══ LOADING ══ -->
 <div id="loadingScreen">
-  <div style="font-size:1.1rem;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;margin-bottom:4px;">
-    <span style="color:#E6F1EC">MUNDIAL</span><span style="color:#f2c85a">HITO</span>
-  </div>
-  <div style="display:flex;gap:6px;">
+  <div class="loading-brand"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
+  <div class="loading-dots">
     <span class="loading-dot"></span>
     <span class="loading-dot"></span>
     <span class="loading-dot"></span>
   </div>
 </div>
 
-<!-- ── LOGIN ── -->
+<!-- ══ LOGIN ══ -->
 <div id="loginScreen">
   <div class="login-logo">
     <div class="login-logo-icon">
       <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8 5H5C5 5 4 10.5 8 12.5" stroke="#4A6258" stroke-width="1.4" stroke-linecap="round"/>
-        <path d="M18 5H21C21 5 22 10.5 18 12.5" stroke="#4A6258" stroke-width="1.4" stroke-linecap="round"/>
-        <path d="M8 3H18V13C18 16.3137 15.7614 19 13 19C10.2386 19 8 16.3137 8 13V3Z" fill="#2A3E36" stroke="#3E5A50" stroke-width="1.2"/>
-        <ellipse cx="13" cy="10" rx="3" ry="3" fill="none" stroke="#f2c85a" stroke-width="1.1" opacity="0.85"/>
-        <path d="M13 7V13M10 10H16" stroke="#f2c85a" stroke-width="0.75" opacity="0.55"/>
-        <rect x="11.5" y="19" width="3" height="2.5" fill="#2A3E36" stroke="#3E5A50" stroke-width="1"/>
-        <rect x="9" y="21.5" width="8" height="1.8" rx="0.9" fill="#2A3E36" stroke="#f2c85a" stroke-width="0.9" opacity="0.7"/>
+        <path d="M8 5H5C5 5 4 10.5 8 12.5" stroke="#FFD700" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M18 5H21C21 5 22 10.5 18 12.5" stroke="#FFD700" stroke-width="1.4" stroke-linecap="round"/>
+        <path d="M8 3H18V13C18 16.3137 15.7614 19 13 19C10.2386 19 8 16.3137 8 13V3Z" fill="rgba(255,215,0,0.1)" stroke="#FFD700" stroke-width="1.2"/>
+        <ellipse cx="13" cy="10" rx="3" ry="3" fill="none" stroke="#FFD700" stroke-width="1.1" opacity="0.85"/>
+        <path d="M13 7V13M10 10H16" stroke="#FFD700" stroke-width="0.75" opacity="0.6"/>
+        <rect x="11.5" y="19" width="3" height="2.5" fill="rgba(255,215,0,0.1)" stroke="#FFD700" stroke-width="1"/>
+        <rect x="9" y="21.5" width="8" height="1.8" rx="0.9" fill="rgba(255,215,0,0.1)" stroke="#FFD700" stroke-width="0.9" opacity="0.8"/>
       </svg>
     </div>
     <div>
@@ -1165,13 +1277,10 @@
       <div class="login-sub">Tracker personal</div>
     </div>
   </div>
-
-  <form id="loginForm" style="display:contents;">
   <input class="login-input" id="loginEmail" type="email" placeholder="Email" autocomplete="email">
   <input class="login-input" id="loginPassword" type="password" placeholder="Contraseña" autocomplete="current-password">
   <div class="login-error" id="loginError"></div>
-  <button type="button" class="login-btn-primary" id="btnLogin">Ingresar</button>
-  </form>
+  <button class="login-btn-primary" id="btnLogin">Ingresar</button>
   <div class="login-divider"><span>o</span></div>
   <button class="login-btn-secondary" id="btnRegister">Crear cuenta nueva</button>
   <div class="login-divider"><span>o</span></div>
@@ -1186,7 +1295,7 @@
   </button>
 </div>
 
-<!-- ── APP ── -->
+<!-- ══ APP ══ -->
 <div id="appScreen">
 
   <!-- Modal moneda -->
@@ -1204,165 +1313,392 @@
     </div>
   </div>
 
-  <!-- ── HEADER ── -->
-  <div class="header">
-    <div class="brand">
-      <button class="brand-icon-btn" id="btnAbrirPanel" aria-label="Menú de temporadas">
-        <div class="brand-icon">
-          <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 5H5C5 5 4 10.5 8 12.5" stroke="#f2c85a" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M18 5H21C21 5 22 10.5 18 12.5" stroke="#f2c85a" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M8 3H18V13C18 16.3137 15.7614 19 13 19C10.2386 19 8 16.3137 8 13V3Z" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="1.2"/>
-            <ellipse cx="13" cy="10" rx="3" ry="3" fill="none" stroke="#f2c85a" stroke-width="1.1" opacity="0.85"/>
-            <path d="M13 7V13M10 10H16" stroke="#f2c85a" stroke-width="0.75" opacity="0.65"/>
-            <rect x="11.5" y="19" width="3" height="2.5" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="1"/>
-            <rect x="9" y="21.5" width="8" height="1.8" rx="0.9" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="0.9" opacity="0.85"/>
-          </svg>
+  <!-- ══ MOBILE LAYOUT ══ -->
+  <div class="app-mobile">
+    <div class="header">
+      <div class="brand">
+        <button class="brand-icon-btn" id="btnAbrirPanel" aria-label="Menú">
+          <div class="brand-icon">
+            <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5H5C5 5 4 10.5 8 12.5" stroke="#FFD700" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M18 5H21C21 5 22 10.5 18 12.5" stroke="#FFD700" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M8 3H18V13C18 16.3137 15.7614 19 13 19C10.2386 19 8 16.3137 8 13V3Z" fill="rgba(255,215,0,0.1)" stroke="#FFD700" stroke-width="1.2"/>
+              <ellipse cx="13" cy="10" rx="3" ry="3" fill="none" stroke="#FFD700" stroke-width="1.1" opacity="0.85"/>
+              <path d="M13 7V13M10 10H16" stroke="#FFD700" stroke-width="0.75" opacity="0.6"/>
+              <rect x="11.5" y="19" width="3" height="2.5" fill="rgba(255,215,0,0.1)" stroke="#FFD700" stroke-width="1"/>
+              <rect x="9" y="21.5" width="8" height="1.8" rx="0.9" fill="rgba(255,215,0,0.1)" stroke="#FFD700" stroke-width="0.9" opacity="0.8"/>
+            </svg>
+          </div>
+        </button>
+        <div>
+          <div class="brand-name"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
+          <div class="brand-sub">Tracker personal</div>
         </div>
-      </button>
-      <div>
-        <div class="brand-name"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
-        <div class="brand-sub">Tracker personal</div>
       </div>
-    </div>
-    <div class="header-right">
       <div class="copas-wrap">
-        <div class="copas-num" id="copasNum">0</div>
+        <div class="copas-num" id="copasNumMob">0</div>
         <div class="copas-label">Copas</div>
-        <div class="copas-trophies" id="copasIcons"></div>
+        <div class="copas-trophies" id="copasIconsMob"></div>
       </div>
     </div>
-  </div>
 
-  <!-- ── STATS ── -->
-  <div class="stats-row">
-    <div class="stat-card">
-      <div class="stat-num" id="totalJugados">0</div>
-      <div class="stat-label">Jugados</div>
-    </div>
-    <div class="stat-card g">
-      <div class="stat-num" id="totalGanados">0</div>
-      <div class="stat-label">Ganados</div>
-    </div>
-    <div class="stat-card p">
-      <div class="stat-num" id="totalPerdidos">0</div>
-      <div class="stat-label">Perdidos</div>
-    </div>
-    <div class="stat-card e">
-      <div class="stat-num" id="totalEmpatados">0</div>
-      <div class="stat-label">Empates</div>
-    </div>
-  </div>
-
-  <!-- ── FASE ── -->
-  <div class="fase-card">
-    <div>
-      <div class="fase-nombre" id="faseNombre">Fase de Grupos</div>
-      <div class="fase-desc" id="faseDesc">Jugás los 3 partidos. Pasás si ganás 2 o más.</div>
-    </div>
-    <div class="fg-dots" id="fgDots">
-      <div class="fg-dot" id="fg1">P1</div>
-      <div class="fg-dot" id="fg2">P2</div>
-      <div class="fg-dot" id="fg3">P3</div>
-    </div>
-  </div>
-
-  <!-- ── BRACKET ── -->
-  <div class="bracket-row">
-    <div class="br-step locked" id="br-E8"><div class="br-label">E8</div><div class="br-sub">Octavos</div></div>
-    <div class="br-step locked" id="br-E4"><div class="br-label">E4</div><div class="br-sub">Cuartos</div></div>
-    <div class="br-step locked" id="br-SF"><div class="br-label">SF</div><div class="br-sub">Semi</div></div>
-    <div class="br-step locked" id="br-FINAL"><div class="br-label">Final</div><div class="br-sub" style="color:var(--yellow);opacity:0.45">★</div></div>
-  </div>
-
-  <!-- ── RESULTADO ── -->
-  <div class="result-section">
-    <div class="section-label">Registrar resultado</div>
-    <div class="btn-row">
-      <button class="btn btn-win" onclick="registrar('win')">
-        <svg viewBox="0 0 20 20" fill="none">
-          <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/>
-          <polyline points="6,10.5 9,13.5 14,7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Gané
-      </button>
-      <button class="btn btn-draw" onclick="registrar('draw')">
-        <svg viewBox="0 0 20 20" fill="none">
-          <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/>
-          <line x1="6.5" y1="8" x2="13.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-          <line x1="6.5" y1="12" x2="13.5" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-        </svg>
-        Empate
-      </button>
-      <button class="btn btn-loss" onclick="registrar('loss')">
-        <svg viewBox="0 0 20 20" fill="none">
-          <circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/>
-          <line x1="7" y1="7" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-          <line x1="13" y1="7" x2="7" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/>
-        </svg>
-        Perdí
-      </button>
+    <!-- Stats -->
+    <div class="stats-row">
+      <div class="stat-card"><div class="stat-num" id="totalJugadosMob">0</div><div class="stat-label">Jugados</div></div>
+      <div class="stat-card g"><div class="stat-num" id="totalGanadosMob">0</div><div class="stat-label">Ganados</div></div>
+      <div class="stat-card p"><div class="stat-num" id="totalPerdidosMob">0</div><div class="stat-label">Perdidos</div></div>
+      <div class="stat-card e"><div class="stat-num" id="totalEmpatadosMob">0</div><div class="stat-label">Empates</div></div>
     </div>
 
-    <button class="btn-undo" id="btnUndo">
-      <svg width="13" height="13" viewBox="0 0 13 13" fill="none">
-        <path d="M2 5H8.5C10.433 5 12 6.567 12 8.5C12 10.433 10.433 12 8.5 12H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        <polyline points="4.5,2 2,5 4.5,8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-      </svg>
-      Deshacer último partido
-    </button>
-
-    <div class="divider" style="margin-top:14px"></div>
-
-    <!-- ── PLAN 10 ── -->
-    <div class="plan-card">
-      <div class="plan-num-wrap">
-        <div class="plan-num" id="numPartido">1</div>
-        <div class="plan-num-label">Partido #</div>
+    <!-- Fase -->
+    <div class="fase-card">
+      <div>
+        <div class="fase-nombre" id="faseNombreMob">Fase de Grupos</div>
+        <div class="fase-desc" id="faseDescMob">Jugás los 3 partidos. Pasás si ganás 2 o más.</div>
       </div>
-      <div class="plan-right">
-        <div class="plan-dots-label">Plan de 10 partidos</div>
-        <div class="plan-dots" id="planDots"></div>
+      <div class="fg-dots" id="fgDotsMob">
+        <div class="fg-dot" id="fg1m">P1</div>
+        <div class="fg-dot" id="fg2m">P2</div>
+        <div class="fg-dot" id="fg3m">P3</div>
       </div>
-      <button class="btn-plan-reset" id="btnRenovar">
-        <svg width="10" height="10" viewBox="0 0 10 10" fill="none">
-          <path d="M9 5A4 4 0 1 1 7.1 1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-          <polyline points="6.8,1 7.1,1.8 6.1,2.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Renovar
-      </button>
     </div>
 
-    <div class="divider"></div>
-
-    <div class="section-label">Historial reciente</div>
-    <div class="historial" id="historial"></div>
-  </div>
-
-  <!-- ── FOOTER ACTIONS ── -->
-  <div class="footer-actions">
-    <div class="footer-row-top">
-      <button class="btn-footer" id="btnReiniciar">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-          <path d="M9.5 5.5A4 4 0 1 1 7.7 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-          <polyline points="7.4,1 7.7,2 6.6,2.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-        Reiniciar torneo
-      </button>
-      <button class="btn-footer danger" id="btnResetStats">
-        <svg width="11" height="11" viewBox="0 0 11 11" fill="none">
-          <polyline points="2,3 9,3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-          <path d="M4 3V2h3v1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-          <path d="M3 3l.5 6h4l.5-6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
-          <line x1="5.5" y1="5" x2="5.5" y2="7.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
-        </svg>
-        Reiniciar todo
-      </button>
+    <!-- Bracket -->
+    <div class="bracket-row">
+      <div class="br-step locked" id="brm-E8"><div class="br-label">E8</div><div class="br-sub">Octavos</div></div>
+      <div class="br-step locked" id="brm-E4"><div class="br-label">E4</div><div class="br-sub">Cuartos</div></div>
+      <div class="br-step locked" id="brm-SF"><div class="br-label">SF</div><div class="br-sub">Semi</div></div>
+      <div class="br-step locked" id="brm-FINAL"><div class="br-label">Final</div><div class="br-sub" style="color:var(--yellow);opacity:0.5">★</div></div>
     </div>
 
-  </div>
+    <!-- Resultado -->
+    <div class="result-section">
+      <div class="section-label">Registrar resultado</div>
+      <div class="btn-row">
+        <button class="btn btn-win" onclick="registrar('win')">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/><polyline points="6,10.5 9,13.5 14,7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Gané
+        </button>
+        <button class="btn btn-draw" onclick="registrar('draw')">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/><line x1="6.5" y1="8" x2="13.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="6.5" y1="12" x2="13.5" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+          Empate
+        </button>
+        <button class="btn btn-loss" onclick="registrar('loss')">
+          <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/><line x1="7" y1="7" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+          Perdí
+        </button>
+      </div>
+      <button class="btn-undo" id="btnUndoMob">
+        <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 5H8.5C10.433 5 12 6.567 12 8.5C12 10.433 10.433 12 8.5 12H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="4.5,2 2,5 4.5,8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+        Deshacer último partido
+      </button>
+      <div class="divider" style="margin-top:14px"></div>
+      <!-- Plan 10 -->
+      <div class="plan-card">
+        <div style="text-align:center;flex-shrink:0;">
+          <div class="plan-num" id="numPartidoMob">1</div>
+          <div class="plan-num-label">Partido #</div>
+        </div>
+        <div class="plan-right">
+          <div class="plan-dots-label">Plan de 10 partidos</div>
+          <div class="plan-dots" id="planDotsMob"></div>
+        </div>
+        <button class="btn-plan-reset" id="btnRenovarMob">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M9 5A4 4 0 1 1 7.1 1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="6.8,1 7.1,1.8 6.1,2.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Renovar
+        </button>
+      </div>
+      <div class="divider"></div>
+      <div class="section-label">Historial reciente</div>
+      <div class="historial" id="historialMob"></div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer-actions">
+      <div class="footer-row-top">
+        <button class="btn-footer" id="btnReiniciarMob">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M9.5 5.5A4 4 0 1 1 7.7 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="7.4,1 7.7,2 6.6,2.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Reiniciar torneo
+        </button>
+        <button class="btn-footer danger" id="btnResetStatsMob">
+          <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="2,3 9,3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4 3V2h3v1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M3 3l.5 6h4l.5-6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><line x1="5.5" y1="5" x2="5.5" y2="7.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          Reiniciar todo
+        </button>
+      </div>
+    </div>
+  </div><!-- fin app-mobile -->
+
+  <!-- ══ DESKTOP LAYOUT ══ -->
+  <div class="app-desktop">
+
+    <!-- Sidebar fijo -->
+    <aside class="dt-sidebar">
+      <div class="dt-sidebar-header">
+        <div class="dt-logo"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
+        <div class="dt-logo-sub">Tracker personal</div>
+      </div>
+
+      <!-- Copas en sidebar -->
+      <div style="padding:16px 20px 0;border-bottom:1px solid var(--border-soft);padding-bottom:16px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;">
+          <span style="font-size:0.58rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-dim);">Copas ganadas</span>
+          <span style="font-size:1.5rem;font-weight:800;color:var(--yellow);font-family:'DM Mono',monospace;" id="copasNumDt">0</span>
+        </div>
+        <div class="copas-trophies" style="justify-content:flex-start;margin-top:6px;" id="copasIconsDt"></div>
+      </div>
+
+      <nav class="dt-nav">
+        <button class="dt-nav-item active" id="dtBtnApp">
+          <svg viewBox="0 0 14 16" fill="none" width="14" height="14">
+            <path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/>
+            <path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+            <path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+            <line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/>
+            <line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+          </svg>
+          Mundialhito
+        </button>
+        <button class="dt-nav-item" id="dtBtnArchivar">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Archivar
+        </button>
+        <div class="dt-nav-sep"></div>
+        <button class="dt-nav-item" id="dtBtnHistorial">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+          Historial
+        </button>
+      </nav>
+
+      <div class="dt-nav-footer">
+        <div class="dt-nav-sep" style="margin-bottom:10px;"></div>
+        <button class="dt-nav-item" id="dtBtnLogout">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Salir
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main content -->
+    <div class="dt-main">
+
+      <!-- Centro -->
+      <div class="dt-center">
+        <!-- Stats -->
+        <div class="stats-row" style="margin-bottom:18px;">
+          <div class="stat-card"><div class="stat-num" id="totalJugadosDt">0</div><div class="stat-label">Jugados</div></div>
+          <div class="stat-card g"><div class="stat-num" id="totalGanadosDt">0</div><div class="stat-label">Ganados</div></div>
+          <div class="stat-card p"><div class="stat-num" id="totalPerdidosDt">0</div><div class="stat-label">Perdidos</div></div>
+          <div class="stat-card e"><div class="stat-num" id="totalEmpatadosDt">0</div><div class="stat-label">Empates</div></div>
+        </div>
+
+        <!-- Fase -->
+        <div class="fase-card">
+          <div>
+            <div class="fase-nombre" id="faseNombreDt">Fase de Grupos</div>
+            <div class="fase-desc" id="faseDescDt">Jugás los 3 partidos. Pasás si ganás 2 o más.</div>
+          </div>
+          <div class="fg-dots" id="fgDotsDt">
+            <div class="fg-dot" id="fg1d">P1</div>
+            <div class="fg-dot" id="fg2d">P2</div>
+            <div class="fg-dot" id="fg3d">P3</div>
+          </div>
+        </div>
+
+        <!-- Bracket -->
+        <div class="bracket-row">
+          <div class="br-step locked" id="brd-E8"><div class="br-label">E8</div><div class="br-sub">Octavos</div></div>
+          <div class="br-step locked" id="brd-E4"><div class="br-label">E4</div><div class="br-sub">Cuartos</div></div>
+          <div class="br-step locked" id="brd-SF"><div class="br-label">SF</div><div class="br-sub">Semi</div></div>
+          <div class="br-step locked" id="brd-FINAL"><div class="br-label">Final</div><div class="br-sub" style="color:var(--yellow);opacity:0.5">★</div></div>
+        </div>
+
+        <!-- Registrar resultado -->
+        <div class="result-section">
+          <div class="section-label">Registrar resultado</div>
+          <div class="btn-row">
+            <button class="btn btn-win" onclick="registrar('win')">
+              <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/><polyline points="6,10.5 9,13.5 14,7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Gané
+            </button>
+            <button class="btn btn-draw" onclick="registrar('draw')">
+              <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/><line x1="6.5" y1="8" x2="13.5" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="6.5" y1="12" x2="13.5" y2="12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+              Empate
+            </button>
+            <button class="btn btn-loss" onclick="registrar('loss')">
+              <svg viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="8" stroke="currentColor" stroke-width="1.4"/><line x1="7" y1="7" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="7" x2="7" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+              Perdí
+            </button>
+          </div>
+          <button class="btn-undo" id="btnUndoDt">
+            <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 5H8.5C10.433 5 12 6.567 12 8.5C12 10.433 10.433 12 8.5 12H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="4.5,2 2,5 4.5,8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
+            Deshacer último partido
+          </button>
+        </div>
+
+        <!-- Footer acciones desktop -->
+        <div style="display:flex;gap:8px;margin-top:16px;">
+          <button class="btn-footer" id="btnReiniciarDt" style="flex:1;">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M9.5 5.5A4 4 0 1 1 7.7 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="7.4,1 7.7,2 6.6,2.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+            Reiniciar torneo
+          </button>
+          <button class="btn-footer danger" id="btnResetStatsDt" style="flex:1;">
+            <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><polyline points="2,3 9,3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M4 3V2h3v1" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M3 3l.5 6h4l.5-6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><line x1="5.5" y1="5" x2="5.5" y2="7.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+            Reiniciar todo
+          </button>
+        </div>
+      </div><!-- fin dt-center -->
+
+      <!-- Panel derecho -->
+      <div class="dt-right">
+        <div class="dt-right-section">
+          <span class="dt-right-label">Plan de 10 partidos</span>
+          <div style="display:flex;align-items:center;gap:14px;">
+            <div style="text-align:center;flex-shrink:0;">
+              <div class="plan-num" id="numPartidoDt">1</div>
+              <div class="plan-num-label">Partido #</div>
+            </div>
+            <div class="plan-right">
+              <div class="plan-dots" id="planDotsDt"></div>
+            </div>
+            <button class="btn-plan-reset" id="btnRenovarDt">
+              <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M9 5A4 4 0 1 1 7.1 1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="6.8,1 7.1,1.8 6.1,2.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              Renovar
+            </button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="dt-right-section">
+          <span class="dt-right-label">Historial reciente</span>
+          <div class="historial" id="historialDt"></div>
+        </div>
+      </div><!-- fin dt-right -->
+
+    </div><!-- fin dt-main -->
+  </div><!-- fin app-desktop -->
 
 </div><!-- fin #appScreen -->
+
+<!-- ══ PANEL OVERLAY ══ -->
+<div class="panel-overlay" id="panelOverlay"></div>
+
+<!-- ══ PANEL LATERAL (mobile) ══ -->
+<div class="panel-lateral" id="panelLateral">
+  <div class="panel-header">
+    <div class="panel-logo"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
+    <div class="panel-sub">Tracker personal</div>
+  </div>
+  <nav class="panel-nav">
+    <button class="panel-nav-item active" id="panelBtnApp">
+      <svg viewBox="0 0 14 16" fill="none" width="14" height="14">
+        <path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/>
+        <path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+        <path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
+        <line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/>
+        <line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
+      </svg>
+      Mundialhito
+    </button>
+    <button class="panel-nav-item" id="panelBtnArchivar">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Archivar
+    </button>
+    <div class="panel-separator"></div>
+    <button class="panel-nav-item" id="panelBtnHistorial">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+      Historial
+    </button>
+  </nav>
+  <div class="panel-footer">
+    <div class="panel-separator" style="margin:0 0 10px 0;"></div>
+    <button class="panel-nav-item" id="panelBtnLogout">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Salir
+    </button>
+  </div>
+</div>
+
+<!-- ══ MODAL ARCHIVAR ══ -->
+<div class="archivar-overlay" id="archivarOverlay">
+  <div class="archivar-modal">
+    <div class="archivar-title">Archivar temporada</div>
+    <div class="archivar-desc">Guardá las estadísticas actuales con un nombre. Podés seguir jugando normalmente después.</div>
+    <input class="archivar-input" id="archivarNombre" type="text" placeholder="Ej: Temporada 2026" maxlength="40">
+    <button class="archivar-btn-guardar" id="btnArchivarGuardar">Guardar</button>
+    <button class="archivar-btn-cancel" id="btnArchivarCancelar">Cancelar</button>
+  </div>
+</div>
+
+<!-- ══ PANTALLA HISTORIAL ══ -->
+<div id="historialScreen">
+  <!-- Mobile -->
+  <div class="hist-screen-mobile">
+    <div class="hist-screen-header">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="brand-icon-btn" id="btnAbrirPanelHistorial" aria-label="Menú">
+          <div class="brand-icon">
+            <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M8 5H5C5 5 4 10.5 8 12.5" stroke="#FFD700" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M18 5H21C21 5 22 10.5 18 12.5" stroke="#FFD700" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M8 3H18V13C18 16.3137 15.7614 19 13 19C10.2386 19 8 16.3137 8 13V3Z" fill="rgba(255,215,0,0.1)" stroke="#FFD700" stroke-width="1.2"/>
+              <ellipse cx="13" cy="10" rx="3" ry="3" fill="none" stroke="#FFD700" stroke-width="1.1" opacity="0.85"/>
+              <path d="M13 7V13M10 10H16" stroke="#FFD700" stroke-width="0.75" opacity="0.6"/>
+              <rect x="11.5" y="19" width="3" height="2.5" fill="rgba(255,215,0,0.1)" stroke="#FFD700" stroke-width="1"/>
+              <rect x="9" y="21.5" width="8" height="1.8" rx="0.9" fill="rgba(255,215,0,0.1)" stroke="#FFD700" stroke-width="0.9" opacity="0.8"/>
+            </svg>
+          </div>
+        </button>
+        <div>
+          <div class="hist-screen-title">Historial</div>
+          <div class="hist-screen-sub">Temporadas archivadas</div>
+        </div>
+      </div>
+    </div>
+    <div id="historialListaMob"></div>
+  </div>
+
+  <!-- Desktop historial -->
+  <div class="hist-screen-desktop">
+    <aside class="hist-dt-sidebar dt-sidebar">
+      <div class="dt-sidebar-header">
+        <div class="dt-logo"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
+        <div class="dt-logo-sub">Tracker personal</div>
+      </div>
+      <nav class="dt-nav">
+        <button class="dt-nav-item" id="dtBtnAppFromHist">
+          <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/><line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
+          Mundialhito
+        </button>
+        <button class="dt-nav-item" id="dtBtnArchivarFromHist">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          Archivar
+        </button>
+        <div class="dt-nav-sep"></div>
+        <button class="dt-nav-item active" id="dtBtnHistorialFromHist">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
+          Historial
+        </button>
+      </nav>
+      <div class="dt-nav-footer">
+        <div class="dt-nav-sep" style="margin-bottom:10px;"></div>
+        <button class="dt-nav-item" id="dtBtnLogoutFromHist">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          Salir
+        </button>
+      </div>
+    </aside>
+    <div class="hist-dt-main">
+      <div class="hist-screen-header" style="margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border-soft);">
+        <div>
+          <div class="hist-screen-title">Historial</div>
+          <div class="hist-screen-sub">Temporadas archivadas</div>
+        </div>
+      </div>
+      <div id="historialListaDt"></div>
+    </div>
+  </div>
+</div>
 
 <script>
 // ── SUPABASE ──────────────────────────────────────────
@@ -1382,11 +1718,11 @@ const FASE_DESC = {
 };
 
 const TROPHY_SVG = `<svg viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-  <path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="#D6B86A" stroke-width="1.1" fill="none" opacity="0.75"/>
-  <path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="#D6B86A" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-  <path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="#D6B86A" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
-  <line x1="7" y1="12" x2="7" y2="13.5" stroke="#D6B86A" stroke-width="1" opacity="0.6"/>
-  <line x1="5" y1="13.5" x2="9" y2="13.5" stroke="#D6B86A" stroke-width="1.1" stroke-linecap="round" opacity="0.75"/>
+  <path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="#FFD700" stroke-width="1.1" fill="none" opacity="0.8"/>
+  <path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="#FFD700" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+  <path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="#FFD700" stroke-width="1" stroke-linecap="round" opacity="0.5"/>
+  <line x1="7" y1="12" x2="7" y2="13.5" stroke="#FFD700" stroke-width="1" opacity="0.6"/>
+  <line x1="5" y1="13.5" x2="9" y2="13.5" stroke="#FFD700" stroke-width="1.1" stroke-linecap="round" opacity="0.8"/>
 </svg>`;
 
 // ── ESTADO ────────────────────────────────────────────
@@ -1408,12 +1744,14 @@ function mostrarLoading() {
   document.getElementById('loadingScreen').style.display = 'flex';
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('historialScreen').style.display = 'none';
 }
 
 function mostrarLogin() {
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'flex';
   document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('historialScreen').style.display = 'none';
   document.getElementById('loginError').textContent = '';
 }
 
@@ -1421,6 +1759,7 @@ function mostrarApp() {
   document.getElementById('loadingScreen').style.display = 'none';
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'block';
+  document.getElementById('historialScreen').style.display = 'none';
   renderizar();
 }
 
@@ -1429,19 +1768,15 @@ document.getElementById('btnLogin').addEventListener('click', async function() {
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginError');
-  errEl.textContent = '';
+  errEl.textContent = ''; errEl.style.color = 'var(--red)';
   if (!email || !password) { errEl.textContent = 'Completá email y contraseña.'; return; }
-  this.textContent = 'Ingresando...';
-  this.disabled = true;
+  this.textContent = 'Ingresando...'; this.disabled = true;
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
-  this.textContent = 'Ingresar';
-  this.disabled = false;
+  this.textContent = 'Ingresar'; this.disabled = false;
   if (error) {
-    if (error.message && error.message.toLowerCase().includes('email not confirmed')) {
-      errEl.textContent = 'Confirmá tu email antes de ingresar. Revisá tu casilla.';
-    } else {
-      errEl.textContent = 'Email o contraseña incorrectos.';
-    }
+    errEl.textContent = error.message && error.message.toLowerCase().includes('email not confirmed')
+      ? 'Confirmá tu email antes de ingresar.'
+      : 'Email o contraseña incorrectos.';
     return;
   }
   currentUser = data.user;
@@ -1453,19 +1788,16 @@ document.getElementById('btnRegister').addEventListener('click', async function(
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginError');
-  errEl.textContent = '';
+  errEl.textContent = ''; errEl.style.color = 'var(--red)';
   if (!email || !password) { errEl.textContent = 'Completá email y contraseña.'; return; }
   if (password.length < 6) { errEl.textContent = 'La contraseña debe tener al menos 6 caracteres.'; return; }
-  this.textContent = 'Creando cuenta...';
-  this.disabled = true;
+  this.textContent = 'Creando cuenta...'; this.disabled = true;
   const { data, error } = await sb.auth.signUp({ email, password });
-  this.textContent = 'Crear cuenta nueva';
-  this.disabled = false;
+  this.textContent = 'Crear cuenta nueva'; this.disabled = false;
   if (error) { errEl.textContent = 'Error: ' + error.message; return; }
-  // Supabase puede requerir confirmación de email antes de dar sesión activa
   if (!data.session) {
     errEl.style.color = 'var(--green)';
-    errEl.textContent = '¡Cuenta creada! Revisá tu email para confirmarla y luego ingresá.';
+    errEl.textContent = '¡Cuenta creada! Revisá tu email para confirmarla.';
     return;
   }
   currentUser = data.user;
@@ -1477,64 +1809,43 @@ document.getElementById('btnRegister').addEventListener('click', async function(
 document.getElementById('btnGoogle').addEventListener('click', async function() {
   const errEl = document.getElementById('loginError');
   errEl.textContent = '';
-  this.textContent = 'Conectando...';
-  this.disabled = true;
+  this.textContent = 'Conectando...'; this.disabled = true;
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: {
-      redirectTo: 'https://yamilvozzi.github.io/mundialhito/'
-    }
+    options: { redirectTo: 'https://yamilvozzi.github.io/mundialhito/' }
   });
-  this.textContent = 'Continuar con Google';
-  this.disabled = false;
+  this.textContent = 'Continuar con Google'; this.disabled = false;
   if (error) { errEl.textContent = 'Error al conectar con Google.'; }
 });
 
-// btnLogout moved to panel lateral
-
-// ── PERSISTENCIA (Supabase) ───────────────────────────
+// ── PERSISTENCIA ──────────────────────────────────────
 let guardarTimeout = null;
 
 function guardarConDebounce() {
-  // Espera 800ms desde el último cambio antes de escribir en la DB.
-  // Evita múltiples escrituras seguidas si el usuario toca botones rápido.
   clearTimeout(guardarTimeout);
   guardarTimeout = setTimeout(guardar, 800);
 }
 
 async function guardar() {
   if (!currentUser) return;
-  // El snapshot es solo para uso en memoria (undo). No lo persistimos en la DB
-  // porque puede ser un objeto enorme y duplica el peso de cada escritura.
   const { snapshot, ...stateToSave } = state;
-  const { error } = await sb
-    .from('game_state')
-    .upsert(
-      { user_id: currentUser.id, state: stateToSave, updated_at: new Date().toISOString() },
-      { onConflict: 'user_id' }
-    );
+  const { error } = await sb.from('game_state').upsert(
+    { user_id: currentUser.id, state: stateToSave, updated_at: new Date().toISOString() },
+    { onConflict: 'user_id' }
+  );
   if (error) console.error('Error guardando:', error.message);
 }
 
 async function cargarEstado() {
   if (!currentUser) return;
-  const { data, error } = await sb
-    .from('game_state')
-    .select('state')
-    .eq('user_id', currentUser.id)
-    .single();
-  if (error && error.code !== 'PGRST116') {
-    console.error('Error cargando:', error.message);
-    return;
-  }
+  const { data, error } = await sb.from('game_state').select('state').eq('user_id', currentUser.id).single();
+  if (error && error.code !== 'PGRST116') { console.error('Error cargando:', error.message); return; }
   state = (data && data.state) ? data.state : defaultState();
 }
 
 // ── ARRANQUE ──────────────────────────────────────────
 async function inicializar() {
   mostrarLoading();
-
-  // Primero verificamos si ya hay sesión activa (carga normal o retorno de OAuth)
   const { data: { session } } = await sb.auth.getSession();
   if (session) {
     currentUser = session.user;
@@ -1543,23 +1854,13 @@ async function inicializar() {
   } else {
     mostrarLogin();
   }
-
-  // onAuthStateChange SOLO para manejar TOKEN_REFRESHED y SIGNED_OUT
-  // NO manejamos SIGNED_IN aquí para evitar la race condition con getSession()
   sb.auth.onAuthStateChange(function(event, session) {
-    if (event === 'SIGNED_OUT') {
-      currentUser = null;
-      state = defaultState();
-      mostrarLogin();
-    }
-    // TOKEN_REFRESHED: actualizar referencia del usuario pero sin recargar datos
-    if (event === 'TOKEN_REFRESHED' && session) {
-      currentUser = session.user;
-    }
+    if (event === 'SIGNED_OUT') { currentUser = null; state = defaultState(); mostrarLogin(); }
+    if (event === 'TOKEN_REFRESHED' && session) { currentUser = session.user; }
   });
 }
 
-// ── LÓGICA DEL JUEGO ──────────────────────────────────
+// ── FLASH ──────────────────────────────────────────
 function flash(msg, tipo) {
   const el = document.getElementById('flash');
   el.textContent = msg;
@@ -1567,41 +1868,7 @@ function flash(msg, tipo) {
   setTimeout(() => el.className = 'flash ' + tipo, 2800);
 }
 
-document.getElementById('btnReiniciar').addEventListener('click', async function() {
-  if (!confirm('¿Reiniciar torneo?\nEl progreso actual se borra.\nEstadísticas y copas se conservan.')) return;
-  state.snapshot = null;
-  state.fase = 'FG';
-  state.fgResultados = [];
-  state.eliminatoriasDone = [];
-  await guardar();
-  renderizar();
-  flash('Torneo reiniciado.', 'yellow');
-});
-
-document.getElementById('btnResetStats').addEventListener('click', async function() {
-  if (!confirm('¿Reiniciar TODO?\nSe borran estadísticas, historial, copas y progreso del torneo.\nEsta acción no se puede deshacer.')) return;
-  state = defaultState();
-  await guardar();
-  renderizar();
-  flash('Todo reiniciado.', 'red');
-});
-
-document.getElementById('btnUndo').addEventListener('click', async function() {
-  if (!state.snapshot) { flash('No hay movimiento para deshacer.', 'cyan'); return; }
-  state = JSON.parse(state.snapshot);
-  state.snapshot = null;
-  await guardar();
-  renderizar();
-  flash('Último partido deshecho.', 'cyan');
-});
-
-document.getElementById('btnRenovar').addEventListener('click', async function() {
-  state.contadorRenov = 1;
-  guardarConDebounce();
-  renderizar();
-  flash('Plan renovado desde 1', 'cyan');
-});
-
+// ── LÓGICA DEL JUEGO ──────────────────────────────────
 function registrar(r) {
   if (r === 'draw') { abrirModal(); return; }
   procesarResultado(r, false);
@@ -1635,8 +1902,8 @@ document.getElementById('moneda').addEventListener('click', function() {
   setTimeout(function() {
     mon.className = 'moneda';
     mon.innerHTML = resultado === 'cara'
-      ? '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px"><circle cx="24" cy="24" r="22" stroke="#8FA39A" stroke-width="1.5"/><circle cx="24" cy="19" r="6" stroke="#8FA39A" stroke-width="1.4"/><path d="M12 38c0-6.627 5.373-10 12-10s12 3.373 12 10" stroke="#8FA39A" stroke-width="1.4" stroke-linecap="round"/></svg>'
-      : '<svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:52px;height:52px"><circle cx="24" cy="24" r="22" stroke="#8FA39A" stroke-width="1.5"/><text x="24" y="30" text-anchor="middle" font-size="20" font-family="Nunito,sans-serif" fill="#8FA39A" font-weight="600">$</text></svg>';
+      ? '<svg viewBox="0 0 48 48" fill="none" style="width:52px;height:52px"><circle cx="24" cy="24" r="22" stroke="#8FA39A" stroke-width="1.5"/><circle cx="24" cy="19" r="6" stroke="#8FA39A" stroke-width="1.4"/><path d="M12 38c0-6.627 5.373-10 12-10s12 3.373 12 10" stroke="#8FA39A" stroke-width="1.4" stroke-linecap="round"/></svg>'
+      : '<svg viewBox="0 0 48 48" fill="none" style="width:52px;height:52px"><circle cx="24" cy="24" r="22" stroke="#8FA39A" stroke-width="1.5"/><text x="24" y="30" text-anchor="middle" font-size="20" font-family="Nunito,sans-serif" fill="#8FA39A" font-weight="600">$</text></svg>';
     const gano = resultado === eleccionUsuario;
     pendingResult = gano ? 'win' : 'loss';
     const resEl = document.getElementById('modalResultado');
@@ -1652,14 +1919,6 @@ function confirmarEmpate() {
 }
 
 async function procesarResultado(resultadoCompetitivo, fueEmpate) {
-  // resultadoCompetitivo: 'win' o 'loss' — define el avance en el torneo
-  // fueEmpate: true si el partido terminó empatado y se definió por penales
-  //
-  // ESTADÍSTICAS: si fue empate, solo suma al contador de empates.
-  // El resultado de los penales NO impacta en ganados/perdidos.
-  // LÓGICA DE JUEGO: usa resultadoCompetitivo para determinar si avanza o retrocede.
-
-  // Guardar snapshot del estado anterior para poder deshacer
   const snapCopy = JSON.parse(JSON.stringify(state));
   snapCopy.snapshot = state.snapshot;
   state.snapshot = JSON.stringify(snapCopy);
@@ -1669,18 +1928,13 @@ async function procesarResultado(resultadoCompetitivo, fueEmpate) {
   if (state.contadorRenov > 10) state.contadorRenov = 1;
 
   if (fueEmpate) {
-    // Partido empatado: solo suma empate, sin tocar ganados/perdidos
     state.totalEmpatados++;
   } else {
-    // Partido sin empate: suma al resultado directo
     if (resultadoCompetitivo === 'win') state.totalGanados++;
     if (resultadoCompetitivo === 'loss') state.totalPerdidos++;
   }
 
-  // Color del pip en el historial: empate siempre amarillo,
-  // aunque el resultado competitivo sea win/loss por penales
   const pipColor = fueEmpate ? 'draw' : resultadoCompetitivo;
-
   const fecha = new Date();
   const fechaStr = String(fecha.getDate()).padStart(2,'0') + '/' +
                    String(fecha.getMonth()+1).padStart(2,'0') + '/' +
@@ -1732,63 +1986,100 @@ async function procesarResultado(resultadoCompetitivo, fueEmpate) {
   renderizar();
 }
 
+// ── RENDERIZAR ────────────────────────────────────────
 function renderizar() {
-  document.getElementById('numPartido').textContent = state.contadorRenov;
-  document.getElementById('totalJugados').textContent = state.totalJugados;
-  document.getElementById('totalGanados').textContent = state.totalGanados;
-  document.getElementById('totalPerdidos').textContent = state.totalPerdidos;
-  document.getElementById('totalEmpatados').textContent = state.totalEmpatados;
-  document.getElementById('copasNum').textContent = state.copas;
+  const isMob = window.innerWidth < 900;
 
-  const ci = document.getElementById('copasIcons');
-  ci.innerHTML = '';
-  for (let i = 0; i < Math.min(state.copas, 8); i++) {
-    const span = document.createElement('span');
-    span.className = 'trophy-icon';
-    span.innerHTML = TROPHY_SVG;
-    ci.appendChild(span);
+  // Stats
+  function setEl(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
+  setEl('totalJugadosMob', state.totalJugados); setEl('totalJugadosDt', state.totalJugados);
+  setEl('totalGanadosMob', state.totalGanados); setEl('totalGanadosDt', state.totalGanados);
+  setEl('totalPerdidosMob', state.totalPerdidos); setEl('totalPerdidosDt', state.totalPerdidos);
+  setEl('totalEmpatadosMob', state.totalEmpatados); setEl('totalEmpatadosDt', state.totalEmpatados);
+  setEl('numPartidoMob', state.contadorRenov); setEl('numPartidoDt', state.contadorRenov);
+  setEl('copasNumMob', state.copas); setEl('copasNumDt', state.copas);
+
+  // Trofeos
+  function renderTrofeos(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    for (let i = 0; i < Math.min(state.copas, 8); i++) {
+      const span = document.createElement('span');
+      span.className = 'trophy-icon';
+      span.innerHTML = TROPHY_SVG;
+      el.appendChild(span);
+    }
   }
+  renderTrofeos('copasIconsMob'); renderTrofeos('copasIconsDt');
 
-  const dots = document.getElementById('planDots');
-  dots.innerHTML = '';
-  for (let i = 1; i <= 10; i++) {
-    const d = document.createElement('div');
-    d.className = 'plan-dot' + (i < state.contadorRenov ? ' used' : '');
-    dots.appendChild(d);
+  // Plan dots
+  function renderDots(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = '';
+    for (let i = 1; i <= 10; i++) {
+      const d = document.createElement('div');
+      d.className = 'plan-dot' + (i < state.contadorRenov ? ' used' : '');
+      el.appendChild(d);
+    }
   }
+  renderDots('planDotsMob'); renderDots('planDotsDt');
 
-  document.getElementById('faseNombre').textContent = FASE_NOMBRES[state.fase];
-  document.getElementById('faseDesc').textContent = FASE_DESC[state.fase];
-  document.getElementById('fgDots').style.display = state.fase === 'FG' ? 'flex' : 'none';
-
-  ['fg1','fg2','fg3'].forEach(function(id, i) {
-    const dot = document.getElementById(id);
-    const res = state.fgResultados[i];
-    dot.className = 'fg-dot' + (res === 'win' ? ' win' : res === 'loss' ? ' loss' : '');
-    dot.textContent = 'P' + (i+1);
-  });
-
-  ['E8','E4','SF','FINAL'].forEach(function(fase) {
-    const el = document.getElementById('br-' + fase);
-    if (state.eliminatoriasDone.includes(fase)) el.className = 'br-step done';
-    else if (state.fase === fase) el.className = 'br-step active';
-    else el.className = 'br-step ' + (FASES.indexOf(fase) < FASES.indexOf(state.fase) ? 'done' : 'locked');
-  });
-
-  const hist = document.getElementById('historial');
-  if (!state.historial.length) {
-    hist.innerHTML = '<div style="color:var(--text-dim);font-size:0.7rem;padding:7px 0;">Sin partidos registrados todavía.</div>';
-  } else {
-    hist.innerHTML = state.historial.slice().reverse().slice(0, 15).map(function(h) {
-      return '<div class="hist-item"><div class="hist-pip ' + h.res + '"></div><span>' + h.texto + '</span></div>';
-    }).join('');
+  // Fase
+  function renderFase(sufijo) {
+    const fn = document.getElementById('faseNombre' + sufijo);
+    const fd = document.getElementById('faseDesc' + sufijo);
+    const fg = document.getElementById('fgDots' + sufijo);
+    if (!fn) return;
+    fn.textContent = FASE_NOMBRES[state.fase];
+    fd.textContent = FASE_DESC[state.fase];
+    fg.style.display = state.fase === 'FG' ? 'flex' : 'none';
+    [['fg1','m'],['fg2','m'],['fg3','m']].forEach(function(pair, i) {
+      // handled per-suffix below
+    });
+    const prefix = sufijo === 'Mob' ? 'fg' : 'fg';
+    const suffix2 = sufijo === 'Mob' ? 'm' : 'd';
+    [1,2,3].forEach(function(n) {
+      const dot = document.getElementById(prefix + n + suffix2);
+      if (!dot) return;
+      const res = state.fgResultados[n-1];
+      dot.className = 'fg-dot' + (res === 'win' ? ' win' : res === 'loss' ? ' loss' : res === 'draw' ? ' draw' : '');
+      dot.textContent = 'P' + n;
+    });
   }
+  renderFase('Mob'); renderFase('Dt');
+
+  // Bracket
+  function renderBracket(prefix) {
+    ['E8','E4','SF','FINAL'].forEach(function(fase) {
+      const el = document.getElementById(prefix + fase);
+      if (!el) return;
+      if (state.eliminatoriasDone.includes(fase)) el.className = 'br-step done';
+      else if (state.fase === fase) el.className = 'br-step active';
+      else el.className = 'br-step ' + (FASES.indexOf(fase) < FASES.indexOf(state.fase) ? 'done' : 'locked');
+    });
+  }
+  renderBracket('brm-'); renderBracket('brd-');
+
+  // Historial
+  function renderHistorial(id) {
+    const hist = document.getElementById(id);
+    if (!hist) return;
+    if (!state.historial.length) {
+      hist.innerHTML = '<div style="color:var(--text-dim);font-size:0.72rem;padding:8px 0;">Sin partidos registrados todavía.</div>';
+    } else {
+      hist.innerHTML = state.historial.slice().reverse().slice(0, 20).map(function(h) {
+        return '<div class="hist-item"><div class="hist-pip ' + h.res + '"></div><span>' + h.texto + '</span></div>';
+      }).join('');
+    }
+  }
+  renderHistorial('historialMob'); renderHistorial('historialDt');
 }
 
-
-// ── PANEL LATERAL ─────────────────────────────────────
+// ── PANEL (mobile) ────────────────────────────────────
 let panelAbierto = false;
-let pantallaActiva = 'app'; // 'app' | 'historial'
+let pantallaActiva = 'app';
 
 function abrirPanel() {
   panelAbierto = true;
@@ -1809,46 +2100,16 @@ function actualizarPanelActivo() {
   document.getElementById('panelBtnArchivar').classList.remove('active');
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('btnAbrirPanel').addEventListener('click', function() {
-    panelAbierto ? cerrarPanel() : abrirPanel();
-  });
-
-  document.getElementById('panelOverlay').addEventListener('click', cerrarPanel);
-
-  document.getElementById('panelBtnApp').addEventListener('click', function() {
-    cerrarPanel();
-    irAApp();
-  });
-
-  document.getElementById('panelBtnHistorial').addEventListener('click', async function() {
-    cerrarPanel();
-    await irAHistorial();
-  });
-
-  document.getElementById('panelBtnArchivar').addEventListener('click', function() {
-    cerrarPanel();
-    abrirModalArchivar();
-  });
-
-  document.getElementById('panelBtnLogout').addEventListener('click', async function() {
-    cerrarPanel();
-    await sb.auth.signOut();
-    currentUser = null;
-    state = defaultState();
-    mostrarLogin();
-  });
-
-  document.getElementById('btnAbrirPanelHistorial').addEventListener('click', function() {
-    panelAbierto ? cerrarPanel() : abrirPanel();
-  });
-});
-
-// ── NAVEGACIÓN ENTRE PANTALLAS ─────────────────────────
+// ── NAVEGACIÓN ────────────────────────────────────────
 function irAApp() {
   pantallaActiva = 'app';
   document.getElementById('appScreen').style.display = 'block';
   document.getElementById('historialScreen').style.display = 'none';
+  // Update desktop sidebar active states
+  const dtApp = document.getElementById('dtBtnApp');
+  const dtHist = document.getElementById('dtBtnHistorial');
+  if (dtApp) { dtApp.classList.add('active'); }
+  if (dtHist) { dtHist.classList.remove('active'); }
   renderizar();
 }
 
@@ -1856,10 +2117,13 @@ async function irAHistorial() {
   pantallaActiva = 'historial';
   document.getElementById('appScreen').style.display = 'none';
   document.getElementById('historialScreen').style.display = 'block';
+  const dtApp = document.getElementById('dtBtnApp');
+  const dtHist = document.getElementById('dtBtnHistorial');
+  if (dtApp) { dtApp.classList.remove('active'); }
+  if (dtHist) { dtHist.classList.add('active'); }
   await renderizarHistorial();
 }
 
-// ── ARCHIVAR ──────────────────────────────────────────
 function abrirModalArchivar() {
   document.getElementById('archivarNombre').value = '';
   document.getElementById('archivarOverlay').classList.add('show');
@@ -1870,203 +2134,161 @@ function cerrarModalArchivar() {
   document.getElementById('archivarOverlay').classList.remove('show');
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('btnArchivarCancelar').addEventListener('click', cerrarModalArchivar);
+async function logout() {
+  await sb.auth.signOut();
+  currentUser = null;
+  state = defaultState();
+  mostrarLogin();
+}
 
-  document.getElementById('archivarOverlay').addEventListener('click', function(e) {
-    if (e.target === this) cerrarModalArchivar();
-  });
+// ── HISTORIAL RENDERIZAR ──────────────────────────────
+function buildTemporadaCard(s) {
+  const fecha = new Date(s.created_at);
+  const fechaStr = String(fecha.getDate()).padStart(2,'0') + '/' +
+                   String(fecha.getMonth()+1).padStart(2,'0') + '/' +
+                   String(fecha.getFullYear()).slice(2);
+  return '<div class="temporada-card" data-id="' + s.id + '">' +
+    '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">' +
+      '<div class="temporada-nombre">' + s.name + '</div>' +
+      '<button onclick="eliminarTemporada(\'' + s.id + '\')" style="background:transparent;border:none;cursor:pointer;color:var(--text-dim);padding:2px 4px;border-radius:4px;font-size:0.78rem;line-height:1;flex-shrink:0;transition:color 0.2s;" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text-dim)\'" title="Eliminar">✕</button>' +
+    '</div>' +
+    '<div class="temporada-stats">' +
+      '<div class="temp-stat"><div class="temp-stat-num">' + s.jugados + '</div><div class="temp-stat-label">Jugados</div></div>' +
+      '<div class="temp-stat"><div class="temp-stat-num g">' + s.ganados + '</div><div class="temp-stat-label">Ganados</div></div>' +
+      '<div class="temp-stat"><div class="temp-stat-num e">' + s.empatados + '</div><div class="temp-stat-label">Empates</div></div>' +
+      '<div class="temp-stat"><div class="temp-stat-num p">' + s.perdidos + '</div><div class="temp-stat-label">Perdidos</div></div>' +
+      '<div class="temp-stat"><div class="temp-stat-num c">' + s.copas + '</div><div class="temp-stat-label">Copas</div></div>' +
+    '</div>' +
+    '<div class="temporada-fecha">Archivado el ' + fechaStr + '</div>' +
+  '</div>';
+}
 
-  document.getElementById('btnArchivarGuardar').addEventListener('click', async function() {
-    const nombre = document.getElementById('archivarNombre').value.trim();
-    if (!nombre) {
-      document.getElementById('archivarNombre').focus();
-      return;
-    }
-    if (!currentUser) return;
-
-    this.textContent = 'Guardando...';
-    this.disabled = true;
-
-    const { error } = await sb.from('seasons').insert({
-      user_id:   currentUser.id,
-      name:      nombre,
-      jugados:   state.totalJugados,
-      ganados:   state.totalGanados,
-      perdidos:  state.totalPerdidos,
-      empatados: state.totalEmpatados,
-      copas:     state.copas
-    });
-
-    this.textContent = 'Guardar';
-    this.disabled = false;
-
-    if (error) {
-      flash('Error al guardar. Intentá de nuevo.', 'red');
-      return;
-    }
-
-    cerrarModalArchivar();
-    flash('Temporada "' + nombre + '" archivada.', 'yellow');
-  });
-});
-
-// ── HISTORIAL ─────────────────────────────────────────
 async function renderizarHistorial() {
-  const lista = document.getElementById('historialLista');
-  lista.innerHTML = '<div class="hist-empty">Cargando...</div>';
+  const empty = '<div class="hist-empty">No hay temporadas archivadas todavía.<br>Usá la opción Archivar para guardar el progreso actual.</div>';
+  const loading = '<div class="hist-empty">Cargando...</div>';
+
+  ['historialListaMob','historialListaDt'].forEach(function(id) {
+    const el = document.getElementById(id); if (el) el.innerHTML = loading;
+  });
 
   if (!currentUser) return;
 
-  const { data, error } = await sb
-    .from('seasons')
-    .select('*')
+  const { data, error } = await sb.from('seasons').select('*')
     .eq('user_id', currentUser.id)
     .order('created_at', { ascending: false });
 
-  if (error) {
-    lista.innerHTML = '<div class="hist-empty">Error al cargar el historial.</div>';
-    return;
-  }
+  const html = error ? '<div class="hist-empty">Error al cargar el historial.</div>'
+    : (!data || !data.length) ? empty
+    : data.map(buildTemporadaCard).join('');
 
-  if (!data || data.length === 0) {
-    lista.innerHTML = '<div class="hist-empty">No hay temporadas archivadas todavía.<br>Cuando quieras guardar el progreso actual, usá la opción Archivar.</div>';
-    return;
-  }
-
-  lista.innerHTML = data.map(function(s) {
-    const fecha = new Date(s.created_at);
-    const fechaStr = String(fecha.getDate()).padStart(2,'0') + '/' +
-                     String(fecha.getMonth()+1).padStart(2,'0') + '/' +
-                     String(fecha.getFullYear()).slice(2);
-    return '<div class="temporada-card" data-id="' + s.id + '">' +
-      '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;margin-bottom:12px;">' +
-        '<div class="temporada-nombre" style="margin-bottom:0;">' + s.name + '</div>' +
-        '<button onclick="eliminarTemporada(\'' + s.id + '\')" style="background:transparent;border:none;cursor:pointer;color:var(--text-dim);padding:2px 4px;border-radius:4px;font-size:0.75rem;line-height:1;flex-shrink:0;transition:color 0.2s;" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text-dim)\'" title="Eliminar temporada">✕</button>' +
-      '</div>' +
-      '<div class="temporada-stats">' +
-        '<div class="temp-stat"><div class="temp-stat-num">' + s.jugados + '</div><div class="temp-stat-label">Jugados</div></div>' +
-        '<div class="temp-stat"><div class="temp-stat-num g">' + s.ganados + '</div><div class="temp-stat-label">Ganados</div></div>' +
-        '<div class="temp-stat"><div class="temp-stat-num e">' + s.empatados + '</div><div class="temp-stat-label">Empates</div></div>' +
-        '<div class="temp-stat"><div class="temp-stat-num p">' + s.perdidos + '</div><div class="temp-stat-label">Perdidos</div></div>' +
-        '<div class="temp-stat"><div class="temp-stat-num c">' + s.copas + '</div><div class="temp-stat-label">Copas</div></div>' +
-      '</div>' +
-      '<div class="temporada-fecha">Archivado el ' + fechaStr + '</div>' +
-    '</div>';
-  }).join('');
+  ['historialListaMob','historialListaDt'].forEach(function(id) {
+    const el = document.getElementById(id); if (el) el.innerHTML = html;
+  });
 }
 
-// ── ELIMINAR TEMPORADA ────────────────────────────────
 async function eliminarTemporada(id) {
   if (!confirm('¿Eliminar esta temporada? No se puede deshacer.')) return;
-  const { error } = await sb
-    .from('seasons')
-    .delete()
-    .eq('id', id)
-    .eq('user_id', currentUser.id);
+  const { error } = await sb.from('seasons').delete().eq('id', id).eq('user_id', currentUser.id);
   if (error) { flash('Error al eliminar.', 'red'); return; }
-  const card = document.querySelector('.temporada-card[data-id="' + id + '"]');
-  if (card) card.remove();
+  document.querySelectorAll('.temporada-card[data-id="' + id + '"]').forEach(function(c){ c.remove(); });
   flash('Temporada eliminada.', 'yellow');
-  const lista = document.getElementById('historialLista');
-  if (!lista.querySelector('.temporada-card')) {
-    lista.innerHTML = '<div class="hist-empty">No hay temporadas archivadas todavía.<br>Cuando quieras guardar el progreso actual, usá la opción Archivar.</div>';
-  }
+  ['historialListaMob','historialListaDt'].forEach(function(id2) {
+    const lista = document.getElementById(id2);
+    if (lista && !lista.querySelector('.temporada-card')) {
+      lista.innerHTML = '<div class="hist-empty">No hay temporadas archivadas todavía.<br>Usá la opción Archivar para guardar el progreso actual.</div>';
+    }
+  });
 }
+
+// ── LISTENERS ─────────────────────────────────────────
+document.addEventListener('DOMContentLoaded', function() {
+
+  // Mobile panel
+  document.getElementById('btnAbrirPanel').addEventListener('click', function() {
+    panelAbierto ? cerrarPanel() : abrirPanel();
+  });
+  document.getElementById('panelOverlay').addEventListener('click', cerrarPanel);
+  document.getElementById('panelBtnApp').addEventListener('click', function() { cerrarPanel(); irAApp(); });
+  document.getElementById('panelBtnHistorial').addEventListener('click', async function() { cerrarPanel(); await irAHistorial(); });
+  document.getElementById('panelBtnArchivar').addEventListener('click', function() { cerrarPanel(); abrirModalArchivar(); });
+  document.getElementById('panelBtnLogout').addEventListener('click', async function() { cerrarPanel(); await logout(); });
+  document.getElementById('btnAbrirPanelHistorial').addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
+
+  // Desktop sidebar
+  document.getElementById('dtBtnApp').addEventListener('click', irAApp);
+  document.getElementById('dtBtnHistorial').addEventListener('click', async function() { await irAHistorial(); });
+  document.getElementById('dtBtnArchivar').addEventListener('click', abrirModalArchivar);
+  document.getElementById('dtBtnLogout').addEventListener('click', logout);
+
+  // Desktop historial sidebar
+  document.getElementById('dtBtnAppFromHist').addEventListener('click', irAApp);
+  document.getElementById('dtBtnHistorialFromHist').addEventListener('click', async function() { await irAHistorial(); });
+  document.getElementById('dtBtnArchivarFromHist').addEventListener('click', abrirModalArchivar);
+  document.getElementById('dtBtnLogoutFromHist').addEventListener('click', logout);
+
+  // Mobile actions
+  document.getElementById('btnUndoMob').addEventListener('click', async function() {
+    if (!state.snapshot) { flash('No hay movimiento para deshacer.', 'cyan'); return; }
+    state = JSON.parse(state.snapshot); state.snapshot = null;
+    await guardar(); renderizar(); flash('Último partido deshecho.', 'cyan');
+  });
+  document.getElementById('btnRenovarMob').addEventListener('click', function() {
+    state.contadorRenov = 1; guardarConDebounce(); renderizar(); flash('Plan renovado desde 1', 'cyan');
+  });
+  document.getElementById('btnReiniciarMob').addEventListener('click', async function() {
+    if (!confirm('¿Reiniciar torneo?\nEstadísticas y copas se conservan.')) return;
+    state.snapshot = null; state.fase = 'FG'; state.fgResultados = []; state.eliminatoriasDone = [];
+    await guardar(); renderizar(); flash('Torneo reiniciado.', 'yellow');
+  });
+  document.getElementById('btnResetStatsMob').addEventListener('click', async function() {
+    if (!confirm('¿Reiniciar TODO?\nSe borran estadísticas, historial, copas y progreso.\nNo se puede deshacer.')) return;
+    state = defaultState(); await guardar(); renderizar(); flash('Todo reiniciado.', 'red');
+  });
+
+  // Desktop actions
+  document.getElementById('btnUndoDt').addEventListener('click', async function() {
+    if (!state.snapshot) { flash('No hay movimiento para deshacer.', 'cyan'); return; }
+    state = JSON.parse(state.snapshot); state.snapshot = null;
+    await guardar(); renderizar(); flash('Último partido deshecho.', 'cyan');
+  });
+  document.getElementById('btnRenovarDt').addEventListener('click', function() {
+    state.contadorRenov = 1; guardarConDebounce(); renderizar(); flash('Plan renovado desde 1', 'cyan');
+  });
+  document.getElementById('btnReiniciarDt').addEventListener('click', async function() {
+    if (!confirm('¿Reiniciar torneo?\nEstadísticas y copas se conservan.')) return;
+    state.snapshot = null; state.fase = 'FG'; state.fgResultados = []; state.eliminatoriasDone = [];
+    await guardar(); renderizar(); flash('Torneo reiniciado.', 'yellow');
+  });
+  document.getElementById('btnResetStatsDt').addEventListener('click', async function() {
+    if (!confirm('¿Reiniciar TODO?\nSe borran estadísticas, historial, copas y progreso.\nNo se puede deshacer.')) return;
+    state = defaultState(); await guardar(); renderizar(); flash('Todo reiniciado.', 'red');
+  });
+
+  // Archivar modal
+  document.getElementById('btnArchivarCancelar').addEventListener('click', cerrarModalArchivar);
+  document.getElementById('archivarOverlay').addEventListener('click', function(e) {
+    if (e.target === this) cerrarModalArchivar();
+  });
+  document.getElementById('btnArchivarGuardar').addEventListener('click', async function() {
+    const nombre = document.getElementById('archivarNombre').value.trim();
+    if (!nombre) { document.getElementById('archivarNombre').focus(); return; }
+    if (!currentUser) return;
+    this.textContent = 'Guardando...'; this.disabled = true;
+    const { error } = await sb.from('seasons').insert({
+      user_id: currentUser.id, name: nombre,
+      jugados: state.totalJugados, ganados: state.totalGanados,
+      perdidos: state.totalPerdidos, empatados: state.totalEmpatados, copas: state.copas
+    });
+    this.textContent = 'Guardar'; this.disabled = false;
+    if (error) { flash('Error al guardar. Intentá de nuevo.', 'red'); return; }
+    cerrarModalArchivar();
+    flash('Temporada "' + nombre + '" archivada.', 'yellow');
+  });
+
+});
 
 // ── ARRANCAR ──────────────────────────────────────────
 inicializar();
 </script>
-
-<!-- ── PANEL OVERLAY ── -->
-<div class="panel-overlay" id="panelOverlay"></div>
-
-<!-- ── PANEL LATERAL ── -->
-<div class="panel-lateral" id="panelLateral">
-  <div class="panel-header">
-    <div class="panel-logo"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
-    <div class="panel-sub">Tracker personal</div>
-  </div>
-  <nav class="panel-nav">
-    <button class="panel-nav-item active" id="panelBtnApp">
-        <svg viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg" width="14" height="14">
-          <path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/>
-          <path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
-          <path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
-          <line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/>
-          <line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
-        </svg>
-      Mundialhito
-    </button>
-    <button class="panel-nav-item" id="panelBtnArchivar">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-        <path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/>
-        <path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        <path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>
-      </svg>
-      Archivar
-    </button>
-    <div class="panel-separator"></div>
-    <button class="panel-nav-item" id="panelBtnHistorial">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        <path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        <path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        <circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/>
-        <path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/>
-      </svg>
-      Historial
-    </button>
-  </nav>
-  <div class="panel-footer">
-    <div class="panel-separator" style="margin: 0 0 10px 0;"></div>
-    <button class="panel-nav-item" id="panelBtnLogout">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
-        <path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-        <path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
-        <line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
-      Salir
-    </button>
-  </div>
-</div>
-
-<!-- ── MODAL ARCHIVAR ── -->
-<div class="archivar-overlay" id="archivarOverlay">
-  <div class="archivar-modal">
-    <div class="archivar-title">Archivar temporada</div>
-    <div class="archivar-desc">Guardá las estadísticas actuales con un nombre. Podés seguir jugando normalmente después.</div>
-    <input class="archivar-input" id="archivarNombre" type="text" placeholder="Ej: Temporada 2026" maxlength="40">
-    <button class="archivar-btn-guardar" id="btnArchivarGuardar">Guardar</button>
-    <button class="archivar-btn-cancel" id="btnArchivarCancelar">Cancelar</button>
-  </div>
-</div>
-
-<!-- ── PANTALLA HISTORIAL ── -->
-<div id="historialScreen">
-  <div class="hist-screen-header">
-    <div style="display:flex;align-items:center;gap:12px;">
-      <button class="brand-icon-btn" id="btnAbrirPanelHistorial" aria-label="Menú de temporadas">
-        <div class="brand-icon">
-          <svg viewBox="0 0 26 26" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 5H5C5 5 4 10.5 8 12.5" stroke="#f2c85a" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M18 5H21C21 5 22 10.5 18 12.5" stroke="#f2c85a" stroke-width="1.4" stroke-linecap="round"/>
-            <path d="M8 3H18V13C18 16.3137 15.7614 19 13 19C10.2386 19 8 16.3137 8 13V3Z" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="1.2"/>
-            <ellipse cx="13" cy="10" rx="3" ry="3" fill="none" stroke="#f2c85a" stroke-width="1.1" opacity="0.85"/>
-            <path d="M13 7V13M10 10H16" stroke="#f2c85a" stroke-width="0.75" opacity="0.65"/>
-            <rect x="11.5" y="19" width="3" height="2.5" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="1"/>
-            <rect x="9" y="21.5" width="8" height="1.8" rx="0.9" fill="rgba(242,200,90,0.1)" stroke="#f2c85a" stroke-width="0.9" opacity="0.85"/>
-          </svg>
-        </div>
-      </button>
-      <div>
-        <div class="hist-screen-title">Historial</div>
-        <div class="hist-screen-sub">Temporadas archivadas</div>
-      </div>
-    </div>
-  </div>
-  <div id="historialLista"></div>
-</div>
 </body>
 </html>
