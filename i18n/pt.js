@@ -1,0 +1,220 @@
+// ── DICCIONARIO: PORTUGUÊS (BRASIL) ────────────────────
+// Generado a partir de i18n/template.js — misma estructura y mismas claves
+// que el diccionario base (Español). Cualquier clave sin traducir cae
+// automáticamente a Español (ver i18n.js → FALLBACK_LOCALE).
+I18N.registrarIdioma('pt', {
+  common: {
+    save: 'Salvar',
+    cancel: 'Cancelar',
+    delete: 'Excluir',
+    confirm: 'Confirmar',
+    menu: 'Menu'
+  },
+  login: {
+    subtitle: 'Rastreador pessoal',
+    emailPlaceholder: 'Email',
+    passwordPlaceholder: 'Senha',
+    signIn: 'Entrar',
+    separator: 'ou',
+    createAccount: 'Criar nova conta',
+    continueWithGoogle: 'Continuar com o Google',
+    fillCredentials: 'Preencha email e senha.',
+    signingIn: 'Entrando...',
+    emailNotConfirmed: 'Confirme seu email antes de entrar.',
+    invalidCredentials: 'Email ou senha incorretos.',
+    passwordMinLength: 'A senha deve ter pelo menos 6 caracteres.',
+    creatingAccount: 'Criando conta...',
+    signUpError: 'Não foi possível criar a conta: {{message}}',
+    accountCreated: 'Conta criada! Verifique seu email para confirmá-la.',
+    connectingGoogle: 'Conectando...',
+    googleError: 'Erro ao conectar com o Google.'
+  },
+  country: {
+    AR: 'Argentina',
+    BR: 'Brasil',
+    CL: 'Chile',
+    UY: 'Uruguai',
+    US: 'Estados Unidos',
+    MX: 'México',
+    ES: 'Espanha',
+    FR: 'França',
+    IT: 'Itália',
+    DE: 'Alemanha',
+    GB: 'Reino Unido',
+    JP: 'Japão',
+    KR: 'Coreia do Sul',
+    CN: 'China'
+  },
+  config: {
+    title: 'Configurações',
+    subtitle: 'Preferências da sua conta',
+    profile: 'Perfil',
+    name: 'Nome',
+    nameNotSet: 'Não definido',
+    nationality: 'Nacionalidade',
+    language: 'Idioma',
+    celebrations: 'Comemorações',
+    celebrationsActive: 'Comemorações ativas',
+    sounds: 'Sons',
+    sound: 'Som',
+    volume: 'Volume',
+    nameModalTitle: 'Seu nome',
+    nameModalDesc: 'É só um detalhe visual — aparece abaixo de Mundialhito em todo o app. Não afeta sua conta nem seu login.',
+    namePlaceholder: 'Ex: Yamil',
+    nationalityUpdated: 'Nacionalidade atualizada.',
+    languageUpdated: 'Idioma atualizado.',
+    personalTracker: 'Rastreador pessoal',
+    nameSaving: 'Salvando...',
+    nameUpdated: 'Nome atualizado.',
+    nameRemoved: 'Nome removido.'
+  },
+  nav: {
+    mundialhito: 'Mundialhito',
+    streaks: 'Sequências',
+    archive: 'Arquivar',
+    history: 'Histórico',
+    streakHistory: 'Hist. Sequências',
+    logout: 'Sair'
+  },
+  copas: {
+    trophiesWon: 'Taças conquistadas',
+    trophiesShort: 'Taças'
+  },
+  stats: {
+    played: 'Jogados',
+    won: 'Vencidos',
+    lost: 'Perdidos',
+    drawn: 'Empates'
+  },
+  phase: {
+    name: {
+      FG: 'Fase de Grupos',
+      E8: 'Oitavas de Final',
+      E4: 'Quartas de Final',
+      SF: 'Semifinal',
+      FINAL: 'Grande Final'
+    },
+    desc: {
+      FG: 'Jogue os 3 partidas. Você avança se vencer 2 ou mais.',
+      E8: 'Jogo único — se perder, volta ao início.',
+      E4: 'Jogo único — se perder, volta ao início.',
+      SF: 'Jogo único — se perder, volta ao início.',
+      FINAL: 'A última batalha!'
+    }
+  },
+  bracket: {
+    r16: 'Oitavas',
+    qf: 'Quartas',
+    sf: 'Semi'
+  },
+  result: {
+    sectionLabel: 'Registrar resultado',
+    win: 'Venci',
+    draw: 'Empate',
+    loss: 'Perdi',
+    undo: 'Desfazer último jogo',
+    resetTournament: 'Reiniciar torneio',
+    resetAll: 'Reiniciar tudo',
+    qualified: 'Classificado para as Oitavas ({{wins}}/3)',
+    groupStageFailed: 'Fase de Grupos: {{wins}}/3. Recomeçando.',
+    advancedTo: 'Você avançou para {{phase}}',
+    eliminated: 'Eliminado em {{phase}}. Volta ao início.',
+    champion: 'CAMPEÃO! Taça #{{n}} conquistada.',
+    noUndo: 'Não há ação para desfazer.',
+    undoSuccess: 'Último jogo desfeito.',
+    groupDrawPenalty: '≈ Empate (pênaltis) · J{{match}}/3',
+    groupMatchWin: '✓ Vitória · J{{match}}/3',
+    groupMatchLoss: '✗ Derrota · J{{match}}/3',
+    resetTournamentConfirmTitle: 'Reiniciar torneio',
+    resetTournamentConfirmBody: 'O progresso do torneio atual será apagado. As estatísticas e taças são mantidas.',
+    resetTournamentSuccess: 'Torneio reiniciado.',
+    resetAllConfirmTitle: 'Reiniciar tudo',
+    resetAllConfirmBody: 'Estatísticas, histórico, taças e o progresso do torneio serão apagados. Essa ação não pode ser desfeita.',
+    resetAllSuccess: 'Tudo foi reiniciado.'
+  },
+  plan: {
+    title: 'Plano de 10 jogos',
+    matchNumber: 'Jogo #',
+    renew: 'Renovar',
+    recentHistory: 'Histórico recente',
+    emptyHistory: 'Nenhum jogo registrado ainda.',
+    renewed: 'Plano renovado a partir de 1'
+  },
+  coinModal: {
+    title: 'Decisão nos pênaltis',
+    subtitleInitial: 'Empate. Escolha cara ou coroa antes de jogar.',
+    subtitleChosen: 'Você escolheu {{choice}}. Toque na moeda.',
+    heads: 'Cara',
+    tails: 'Coroa',
+    confirm: 'Confirmar resultado',
+    resultOut: 'Saiu {{result}} — ',
+    resultWin: 'Você vence!',
+    resultLoss: 'Você perde'
+  },
+  rachas: {
+    title: 'Sequências',
+    subtitle: 'Recordes pessoais',
+    empty: 'Ainda não há jogos registrados.<br>Jogue sua primeira partida para começar a ver suas sequências.',
+    winStreak: 'Vitórias consecutivas',
+    lossStreak: 'Derrotas consecutivas',
+    historicRecord: 'Recorde histórico',
+    current: 'Atual',
+    fastestCup: 'Taça mais rápida',
+    longestCup: 'Taça mais longa',
+    currentCampaign: 'Campanha atual',
+    finals: 'Finais',
+    played: 'Jogadas',
+    won: 'Vencidas',
+    lost: 'Perdidas',
+    resetButton: 'Reiniciar sequências',
+    resetConfirmTitle: 'Reiniciar sequências',
+    resetConfirmBody: 'As sequências voltam a zero. Os novos cálculos começam a partir do próximo jogo. O histórico e as estatísticas globais não são alterados.',
+    resetSuccess: 'Sequências reiniciadas. Novo ciclo a partir de agora.',
+    archiveType: 'Sequências',
+    archiveDescription: 'Salve o estado atual das suas sequências. As sequências ativas NÃO são alteradas.',
+    archivePlaceholder: 'Ex: Etapa 2025',
+    archiveSaving: 'Salvando...',
+    archiveError: 'Erro ao salvar. Tente novamente.',
+    archiveSuccess: 'Etapa "{{name}}" arquivada.'
+  },
+  history: {
+    title: 'Histórico',
+    subtitle: 'Temporadas arquivadas',
+    archivedOn: 'Arquivado em {{date}}',
+    loading: 'Carregando...',
+    loadError: 'Erro ao carregar o histórico.',
+    empty: 'Ainda não há temporadas arquivadas.<br>Use a opção Arquivar para salvar o progresso atual.',
+    deleteTitle: 'Excluir temporada',
+    deleteConfirm: 'Tem certeza de que deseja excluí-la? Essa ação não pode ser desfeita.',
+    deleteError: 'Erro ao excluir.',
+    deleteSuccess: 'Temporada excluída.'
+  },
+  streakHistory: {
+    title: 'Histórico de Sequências',
+    subtitle: 'Etapas arquivadas',
+    wins: 'Vitórias',
+    losses: 'Derrotas',
+    fastestCup: 'Taça rápida',
+    longestCup: 'Taça longa',
+    finals: 'Finais',
+    won: 'Vencidas',
+    lost: 'Perdidas',
+    archivedOn: 'Arquivado em {{date}}',
+    loading: 'Carregando...',
+    loadError: 'Erro ao carregar.',
+    empty: 'Ainda não há etapas arquivadas.<br>Use "Arquivar sequências" para salvar o estado atual.',
+    deleteTitle: 'Excluir etapa',
+    deleteConfirm: 'Tem certeza de que deseja excluí-la? Essa ação não pode ser desfeita.',
+    deleteError: 'Erro ao excluir.',
+    deleteSuccess: 'Etapa excluída.'
+  },
+  archive: {
+    title: 'Arquivar',
+    seasonType: 'Temporada',
+    seasonDescription: 'Salve as estatísticas atuais com um nome. Você pode continuar jogando normalmente depois.',
+    seasonPlaceholder: 'Ex: Temporada 2026',
+    saving: 'Salvando...',
+    saveError: 'Erro ao salvar. Tente novamente.',
+    seasonArchived: 'Temporada "{{name}}" arquivada.'
+  }
+});
