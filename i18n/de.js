@@ -60,11 +60,16 @@ I18N.registrarIdioma('de', {
   },
   nav: {
     mundialhito: 'Mundialhito',
+    activity: 'Aktivität',
     streaks: 'Serien',
     archive: 'Archivieren',
     history: 'Verlauf',
     streakHistory: 'Serienverlauf',
     logout: 'Abmelden'
+  },
+  activity: {
+    title: 'Aktivität',
+    subtitle: 'Plan und letzter Verlauf'
   },
   copas: {
     trophiesWon: 'Gewonnene Pokale',
