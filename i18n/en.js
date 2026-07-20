@@ -60,11 +60,16 @@ I18N.registrarIdioma('en', {
   },
   nav: {
       mundialhito: 'Mundialhito',
+      activity: 'Activity',
       streaks: 'Streaks',
       archive: 'Archive',
       history: 'History',
       streakHistory: 'Streak history',
       logout: 'Sign out'
+  },
+  activity: {
+    title: 'Activity',
+    subtitle: 'Plan and recent history'
   },
   copas: {
       trophiesWon: 'Trophies won',

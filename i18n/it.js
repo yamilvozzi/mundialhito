@@ -60,11 +60,16 @@ I18N.registrarIdioma('it', {
   },
   nav: {
     mundialhito: 'Mundialhito',
+    activity: 'Attività',
     streaks: 'Serie',
     archive: 'Archivia',
     history: 'Cronologia',
     streakHistory: 'Storico serie',
     logout: 'Esci'
+  },
+  activity: {
+    title: 'Attività',
+    subtitle: 'Piano e cronologia recenti'
   },
   copas: {
     trophiesWon: 'Coppe vinte',

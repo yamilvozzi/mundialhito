@@ -86,11 +86,16 @@ I18N.registrarIdioma('xx', {
   },
   nav: {
     mundialhito: '',  // ES: Mundialhito
+    activity: 'Actividad',
     streaks: '',  // ES: Rachas
     archive: '',  // ES: Archivar
     history: '',  // ES: Historial
     streakHistory: '',  // ES: Hist. Rachas
     logout: ''  // ES: Salir
+  },
+  activity: {
+    title: '',
+    subtitle: ''
   },
   copas: {
     trophiesWon: '',  // ES: Copas ganadas

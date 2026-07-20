@@ -70,11 +70,16 @@ I18N.registrarIdioma('pt', {
   },
   nav: {
     mundialhito: 'Mundialhito',
+    activity: 'Atividade',
     streaks: 'Sequências',
     archive: 'Arquivar',
     history: 'Histórico',
     streakHistory: 'Hist. Sequências',
     logout: 'Sair'
+  },
+  activity: {
+    title: 'Atividade',
+    subtitle: 'Plano e histórico recente'
   },
   copas: {
     trophiesWon: 'Taças conquistadas',
