@@ -1521,6 +1521,21 @@ body {
 .confirm-btn-ok.neutral:hover { background: var(--yellow-hov); border-color: var(--yellow); }
 
 
+
+/* ── ACTIVIDAD SCREEN ── */
+#actividadScreen { display: none; }
+.actividad-screen-mobile { padding: 20px 16px 48px; }
+.actividad-screen-desktop { display: none; min-height: 100vh; }
+
+@media (min-width: 900px) {
+  .actividad-screen-mobile { display: none !important; }
+  .actividad-screen-desktop { display: flex !important; }
+}
+@media (max-width: 899px) {
+  .actividad-screen-desktop { display: none !important; }
+  .actividad-screen-mobile { display: block; }
+}
+
 /* ── RACHAS SCREEN ── */
 #rachasScreen { display: none; }
 
@@ -1899,25 +1914,6 @@ body {
         <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><path d="M2 5H8.5C10.433 5 12 6.567 12 8.5C12 10.433 10.433 12 8.5 12H5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="4.5,2 2,5 4.5,8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>
         <span data-i18n="result.undo">Deshacer último partido</span>
       </button>
-      <div class="divider" style="margin-top:14px"></div>
-      <!-- Plan 10 -->
-      <div class="plan-card">
-        <div style="text-align:center;flex-shrink:0;">
-          <div class="plan-num" id="numPartidoMob">1</div>
-          <div class="plan-num-label" data-i18n="plan.matchNumber">Partido #</div>
-        </div>
-        <div class="plan-right">
-          <div class="plan-dots-label" data-i18n="plan.title">Plan de 10 partidos</div>
-          <div class="plan-dots" id="planDotsMob"></div>
-        </div>
-        <button class="btn-plan-reset" id="btnRenovarMob">
-          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M9 5A4 4 0 1 1 7.1 1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="6.8,1 7.1,1.8 6.1,2.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          <span data-i18n="plan.renew">Renovar</span>
-        </button>
-      </div>
-      <div class="divider"></div>
-      <div class="section-label" data-i18n="plan.recentHistory">Historial reciente</div>
-      <div class="historial" id="historialMob"></div>
     </div>
 
     <!-- Footer -->
@@ -1964,6 +1960,10 @@ body {
             <line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
           </svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
+        </button>
+        <button class="dt-nav-item" id="dtBtnActividad" data-screen="actividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.activity">Actividad</span>
         </button>
         <button class="dt-nav-item" id="dtBtnRachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2068,7 +2068,102 @@ body {
         </div>
       </div><!-- fin dt-center -->
 
-      <!-- Panel derecho -->
+    </div><!-- fin dt-main -->
+  </div><!-- fin app-desktop -->
+
+</div><!-- fin #appScreen -->
+
+
+<!-- ══ PANTALLA ACTIVIDAD ══ -->
+<div id="actividadScreen">
+  <!-- Mobile -->
+  <div class="actividad-screen-mobile">
+    <div class="hist-screen-header">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <button class="brand-icon-btn" id="btnAbrirPanelActividad" data-i18n-aria-label="common.menu" aria-label="Menú">
+          <div class="brand-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="#FFE033" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="#FFE033" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+        </button>
+        <div>
+          <div class="hist-screen-title" data-i18n="activity.title">Actividad</div>
+          <div class="hist-screen-sub" data-i18n="activity.subtitle">Plan e historial recientes</div>
+        </div>
+      </div>
+    </div>
+    <div class="result-section">
+      <div class="plan-card">
+        <div style="text-align:center;flex-shrink:0;">
+          <div class="plan-num" id="numPartidoMob">1</div>
+          <div class="plan-num-label" data-i18n="plan.matchNumber">Partido #</div>
+        </div>
+        <div class="plan-right">
+          <div class="plan-dots-label" data-i18n="plan.title">Plan de 10 partidos</div>
+          <div class="plan-dots" id="planDotsMob"></div>
+        </div>
+        <button class="btn-plan-reset" id="btnRenovarMob">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M9 5A4 4 0 1 1 7.1 1.8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="6.8,1 7.1,1.8 6.1,2.4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="plan.renew">Renovar</span>
+        </button>
+      </div>
+      <div class="divider"></div>
+      <div class="section-label" data-i18n="plan.recentHistory">Historial reciente</div>
+      <div class="historial" id="historialMob"></div>
+    </div>
+  </div>
+
+  <!-- Desktop -->
+  <div class="actividad-screen-desktop">
+    <aside class="hist-dt-sidebar dt-sidebar">
+      <div class="dt-sidebar-header">
+        <div class="dt-logo"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
+        <div class="dt-logo-sub js-user-subtitle">Tracker personal</div>
+      </div>
+      <nav class="dt-nav">
+        <button class="dt-nav-item" id="dtBtnAppFromActividad">
+          <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/></svg>
+          <span data-i18n="nav.mundialhito">Mundialhito</span>
+        </button>
+        <button class="dt-nav-item active" id="dtBtnActividadFromActividad" data-screen="actividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.activity">Actividad</span>
+        </button>
+        <button class="dt-nav-item" id="dtBtnRachasFromActividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="nav.streaks">Rachas</span>
+        </button>
+        <div class="dt-nav-sep"></div>
+        <button class="dt-nav-item" id="dtBtnArchivarFromActividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+          <span data-i18n="nav.archive">Archivar</span>
+        </button>
+        <div class="dt-nav-sep"></div>
+        <button class="dt-nav-item" id="dtBtnHistorialFromActividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12M2 7H9M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.history">Historial</span>
+        </button>
+        <button class="dt-nav-item" id="dtBtnHistRachasFromActividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="nav.streakHistory">Hist. Rachas</span>
+        </button>
+      </nav>
+      <div class="dt-nav-footer">
+        <button class="dt-nav-item" id="dtBtnConfigFromActividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="4" stroke="currentColor" stroke-width="1.1"/><circle cx="7" cy="7" r="1.5" stroke="currentColor" stroke-width="1.1"/></svg>
+          <span data-i18n="config.title">Configuración</span>
+        </button>
+        <div class="dt-nav-sep" style="margin-bottom:10px;margin-top:6px;"></div>
+        <button class="dt-nav-item" id="dtBtnLogoutFromActividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5M9.5 4.5L12 7L9.5 9.5M12 7H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          <span data-i18n="nav.logout">Salir</span>
+        </button>
+      </div>
+    </aside>
+    <div class="hist-dt-main actividad-dt-main">
+      <div class="hist-screen-header" style="margin-bottom:24px;padding-bottom:18px;border-bottom:1px solid var(--border-soft);">
+        <div>
+          <div class="hist-screen-title" data-i18n="activity.title">Actividad</div>
+          <div class="hist-screen-sub" data-i18n="activity.subtitle">Plan e historial recientes</div>
+        </div>
+      </div>
       <div class="dt-right">
         <div class="dt-right-section">
           <span class="dt-right-label" data-i18n="plan.title">Plan de 10 partidos</span>
@@ -2095,10 +2190,9 @@ body {
         </div>
       </div><!-- fin dt-right -->
 
-    </div><!-- fin dt-main -->
-  </div><!-- fin app-desktop -->
-
-</div><!-- fin #appScreen -->
+    </div>
+  </div>
+</div>
 
 <!-- ══ PANEL OVERLAY ══ -->
 <div class="panel-overlay" id="panelOverlay"></div>
@@ -2119,6 +2213,10 @@ body {
         <line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/>
       </svg>
       <span data-i18n="nav.mundialhito">Mundialhito</span>
+    </button>
+    <button class="panel-nav-item" id="panelBtnActividad" data-screen="actividad">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      <span data-i18n="nav.activity">Actividad</span>
     </button>
     <button class="panel-nav-item" id="panelBtnRachas">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2186,6 +2284,10 @@ body {
         <button class="dt-nav-item" id="dtBtnAppFromHistRachas">
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/><line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
+        </button>
+        <button class="dt-nav-item" id="dtBtnActividadFromHistRachas" data-screen="actividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.activity">Actividad</span>
         </button>
         <button class="dt-nav-item" id="dtBtnRachasFromHistRachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2331,6 +2433,10 @@ body {
         <button class="dt-nav-item" id="dtBtnAppFromConfig">
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/><line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
+        </button>
+        <button class="dt-nav-item" id="dtBtnActividadFromConfig" data-screen="actividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.activity">Actividad</span>
         </button>
         <button class="dt-nav-item" id="dtBtnRachasFromConfig">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2483,6 +2589,10 @@ body {
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/><line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
         </button>
+        <button class="dt-nav-item" id="dtBtnActividadFromRachas" data-screen="actividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.activity">Actividad</span>
+        </button>
         <button class="dt-nav-item active" id="dtBtnRachasFromRachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="rachas.title">Rachas</span>
@@ -2589,6 +2699,10 @@ body {
         <button class="dt-nav-item" id="dtBtnAppFromHist">
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/><line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
+        </button>
+        <button class="dt-nav-item" id="dtBtnActividadFromHist" data-screen="actividad">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          <span data-i18n="nav.activity">Actividad</span>
         </button>
         <button class="dt-nav-item" id="dtBtnRachasFromHist">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -2737,6 +2851,7 @@ function mostrarLoading() {
   document.getElementById('loginScreen').style.display = 'none';
   document.getElementById('appScreen').style.display = 'none';
   document.getElementById('historialScreen').style.display = 'none';
+  document.getElementById('actividadScreen').style.display = 'none';
 }
 
 function mostrarLogin() {
@@ -2745,6 +2860,7 @@ function mostrarLogin() {
   document.getElementById('appScreen').style.display = 'none';
   document.getElementById('historialScreen').style.display = 'none';
   document.getElementById('rachasScreen').style.display = 'none';
+  document.getElementById('actividadScreen').style.display = 'none';
   document.getElementById('loginError').textContent = '';
 }
 
@@ -2755,6 +2871,7 @@ function mostrarApp() {
   document.getElementById('appScreen').style.display = 'block';
   document.getElementById('historialScreen').style.display = 'none';
   document.getElementById('rachasScreen').style.display = 'none';
+  document.getElementById('actividadScreen').style.display = 'none';
   poblarSelectsConfig();
   actualizarSubtitulosPerfil();
   renderizar();
@@ -3545,15 +3662,35 @@ function cerrarPanel() {
 
 function actualizarPanelActivo() {
   document.getElementById('panelBtnApp').classList.toggle('active', pantallaActiva === 'app');
+  document.getElementById('panelBtnActividad').classList.toggle('active', pantallaActiva === 'actividad');
   document.getElementById('panelBtnHistorial').classList.toggle('active', pantallaActiva === 'historial');
   document.getElementById('panelBtnRachas').classList.toggle('active', pantallaActiva === 'rachas');
   document.getElementById('panelBtnArchivar').classList.remove('active');
+}
+
+const botonesDesktopPorPantalla = {
+  app: ['dtBtnApp','dtBtnAppFromHist','dtBtnAppFromRachas','dtBtnAppFromHistRachas','dtBtnAppFromConfig','dtBtnAppFromActividad'],
+  actividad: ['dtBtnActividad','dtBtnActividadFromHist','dtBtnActividadFromRachas','dtBtnActividadFromHistRachas','dtBtnActividadFromConfig','dtBtnActividadFromActividad'],
+  historial: ['dtBtnHistorial','dtBtnHistorialFromHist','dtBtnHistorialFromRachas','dtBtnHistorialFromHistRachas','dtBtnHistorialFromConfig','dtBtnHistorialFromActividad'],
+  rachas: ['dtBtnRachas','dtBtnRachasFromHist','dtBtnRachasFromRachas','dtBtnRachasFromHistRachas','dtBtnRachasFromConfig','dtBtnRachasFromActividad'],
+  histRachas: ['dtBtnHistRachas','dtBtnHistRachasFromHist','dtBtnHistRachasFromRachas','dtBtnHistRachasFromHistRachas','dtBtnHistRachasFromConfig','dtBtnHistRachasFromActividad'],
+  config: ['dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig','dtBtnConfigFromActividad']
+};
+
+function actualizarNavegacionDesktop() {
+  Object.keys(botonesDesktopPorPantalla).forEach(function(pantalla) {
+    botonesDesktopPorPantalla[pantalla].forEach(function(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('active', pantalla === pantallaActiva);
+    });
+  });
 }
 
 // ── NAVEGACIÓN ────────────────────────────────────────
 function irAApp() {
   pantallaActiva = 'app';
   document.getElementById('appScreen').style.display = 'block';
+  document.getElementById('actividadScreen').style.display = 'none';
   document.getElementById('historialScreen').style.display = 'none';
   document.getElementById('rachasScreen').style.display = 'none';
   document.getElementById('histRachasScreen').style.display = 'none';
@@ -3567,12 +3704,27 @@ function irAApp() {
    'dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig'].forEach(function(id) {
     const el = document.getElementById(id); if (el) el.classList.remove('active');
   });
+  actualizarNavegacionDesktop();
+  renderizar();
+}
+
+
+function irAActividad() {
+  pantallaActiva = 'actividad';
+  document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('actividadScreen').style.display = 'block';
+  document.getElementById('historialScreen').style.display = 'none';
+  document.getElementById('rachasScreen').style.display = 'none';
+  document.getElementById('histRachasScreen').style.display = 'none';
+  document.getElementById('configScreen').style.display = 'none';
+  actualizarNavegacionDesktop();
   renderizar();
 }
 
 async function irAHistorial() {
   pantallaActiva = 'historial';
   document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('actividadScreen').style.display = 'none';
   document.getElementById('historialScreen').style.display = 'block';
   document.getElementById('rachasScreen').style.display = 'none';
   document.getElementById('histRachasScreen').style.display = 'none';
@@ -3586,12 +3738,14 @@ async function irAHistorial() {
    'dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig'].forEach(function(id) {
     const el = document.getElementById(id); if (el) el.classList.remove('active');
   });
+  actualizarNavegacionDesktop();
   await renderizarHistorial();
 }
 
 function irARachas() {
   pantallaActiva = 'rachas';
   document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('actividadScreen').style.display = 'none';
   document.getElementById('historialScreen').style.display = 'none';
   document.getElementById('rachasScreen').style.display = 'block';
   document.getElementById('histRachasScreen').style.display = 'none';
@@ -3605,6 +3759,7 @@ function irARachas() {
    'dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig'].forEach(function(id) {
     const el = document.getElementById(id); if (el) el.classList.remove('active');
   });
+  actualizarNavegacionDesktop();
   renderizarRachas();
 }
 
@@ -3721,6 +3876,7 @@ async function reiniciarRachas() {
 async function irAHistRachas() {
   pantallaActiva = 'histRachas';
   document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('actividadScreen').style.display = 'none';
   document.getElementById('historialScreen').style.display = 'none';
   document.getElementById('rachasScreen').style.display = 'none';
   document.getElementById('histRachasScreen').style.display = 'block';
@@ -3735,12 +3891,14 @@ async function irAHistRachas() {
    'dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig'].forEach(function(id) {
     const el = document.getElementById(id); if (el) el.classList.remove('active');
   });
+  actualizarNavegacionDesktop();
   await renderizarHistRachas();
 }
 
 async function irAConfig() {
   pantallaActiva = 'config';
   document.getElementById('appScreen').style.display = 'none';
+  document.getElementById('actividadScreen').style.display = 'none';
   document.getElementById('historialScreen').style.display = 'none';
   document.getElementById('rachasScreen').style.display = 'none';
   document.getElementById('histRachasScreen').style.display = 'none';
@@ -3754,6 +3912,7 @@ async function irAConfig() {
    'dtBtnHistRachas','dtBtnHistRachasFromHist','dtBtnHistRachasFromRachas','dtBtnHistRachasFromHistRachas','dtBtnHistRachasFromConfig'].forEach(function(id) {
     const el = document.getElementById(id); if (el) el.classList.remove('active');
   });
+  actualizarNavegacionDesktop();
   renderizarConfig();
 }
 
@@ -3839,17 +3998,20 @@ document.addEventListener('DOMContentLoaded', function() {
   });
   document.getElementById('panelOverlay').addEventListener('click', cerrarPanel);
   document.getElementById('panelBtnApp').addEventListener('click', function() { cerrarPanel(); irAApp(); });
+  document.getElementById('panelBtnActividad').addEventListener('click', function() { cerrarPanel(); irAActividad(); });
   document.getElementById('panelBtnHistorial').addEventListener('click', async function() { cerrarPanel(); await irAHistorial(); });
   document.getElementById('panelBtnArchivar').addEventListener('click', function() { cerrarPanel(); abrirModalArchivar(); });
   document.getElementById('panelBtnLogout').addEventListener('click', async function() { cerrarPanel(); await logout(); });
   document.getElementById('btnAbrirPanelHistorial').addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
   document.getElementById('btnAbrirPanelRachas').addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
+  document.getElementById('btnAbrirPanelActividad').addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
 
   // Panel mobile — Rachas
   document.getElementById('panelBtnRachas').addEventListener('click', function() { cerrarPanel(); irARachas(); });
 
   // Desktop sidebar
   document.getElementById('dtBtnApp').addEventListener('click', irAApp);
+  document.querySelectorAll('[data-screen="actividad"]').forEach(function(btn) { btn.addEventListener('click', irAActividad); });
   document.getElementById('dtBtnRachas').addEventListener('click', irARachas);
   document.getElementById('dtBtnHistorial').addEventListener('click', async function() { await irAHistorial(); });
   document.getElementById('dtBtnArchivar').addEventListener('click', abrirModalArchivar);
@@ -3870,6 +4032,15 @@ document.addEventListener('DOMContentLoaded', function() {
   document.getElementById('dtBtnHistRachasFromRachas').addEventListener('click', async function() { await irAHistRachas(); });
   document.getElementById('dtBtnArchivarFromRachas').addEventListener('click', abrirModalArchivar);
   document.getElementById('dtBtnLogoutFromRachas').addEventListener('click', logout);
+
+  // Desktop sidebar de ACTIVIDAD
+  document.getElementById('dtBtnAppFromActividad').addEventListener('click', irAApp);
+  document.getElementById('dtBtnRachasFromActividad').addEventListener('click', irARachas);
+  document.getElementById('dtBtnArchivarFromActividad').addEventListener('click', abrirModalArchivar);
+  document.getElementById('dtBtnHistorialFromActividad').addEventListener('click', async function() { await irAHistorial(); });
+  document.getElementById('dtBtnHistRachasFromActividad').addEventListener('click', async function() { await irAHistRachas(); });
+  document.getElementById('dtBtnConfigFromActividad').addEventListener('click', async function() { await irAConfig(); });
+  document.getElementById('dtBtnLogoutFromActividad').addEventListener('click', logout);
 
   // Mobile actions
   document.getElementById('btnUndoMob').addEventListener('click', async function() {
