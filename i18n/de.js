@@ -59,27 +59,27 @@ I18N.registrarIdioma('de', {
     nameRemoved: 'Name entfernt.'
   },
   nav: {
-    mundialhito: 'Mundialhito',
-    activity: 'Aktivität',
-    streaks: 'Serien',
-    archive: 'Archivieren',
-    history: 'Verlauf',
-    streakHistory: 'Serienverlauf',
-    logout: 'Abmelden'
+      mundialhito: 'Mundialhito',
+      activity: 'Aktivität',
+      streaks: 'Serien',
+      archive: 'Archivieren',
+      history: 'Verlauf',
+      streakHistory: 'Serienverlauf',
+      logout: 'Abmelden'
   },
   activity: {
     title: 'Aktivität',
     subtitle: 'Plan und letzter Verlauf'
   },
   copas: {
-    trophiesWon: 'Gewonnene Pokale',
-    trophiesShort: 'Pokale'
+      trophiesWon: 'Gewonnene Pokale',
+      trophiesShort: 'Pokale'
   },
   stats: {
-    played: 'Gespielt',
-    won: 'Gewonnen',
-    lost: 'Verloren',
-    drawn: 'Unentschieden'
+      played: 'Gespielt',
+      won: 'Gewonnen',
+      lost: 'Verloren',
+      drawn: 'Unentschieden'
   },
   phase: {
     name: {
@@ -98,53 +98,57 @@ I18N.registrarIdioma('de', {
     }
   },
   bracket: {
-    r16: 'Achtelfinale',
-    qf: 'Viertelfinale',
-    sf: 'Halbfinale'
+      r16: 'Achtelfinale',
+      qf: 'Viertelfinale',
+      sf: 'Halbfinale'
   },
   result: {
-    sectionLabel: 'Ergebnis eintragen',
-    win: 'Gewonnen',
-    draw: 'Unentschieden',
-    loss: 'Verloren',
-    undo: 'Letztes Spiel rückgängig machen',
-    resetTournament: 'Turnier zurücksetzen',
-    resetAll: 'Alles zurücksetzen',
-    qualified: 'Du hast dich für das Achtelfinale qualifiziert ({{wins}}/3)',
-    groupStageFailed: 'Gruppenphase: {{wins}}/3. Von vorne beginnen.',
-    advancedTo: 'Du bist weitergekommen zu {{phase}}',
-    eliminated: 'In {{phase}} ausgeschieden. Zurück zum Anfang.',
-    champion: 'MEISTER! Pokal #{{n}} gewonnen.',
-    noUndo: 'Es gibt keine Aktion, die rückgängig gemacht werden kann.',
-    undoSuccess: 'Letztes Spiel rückgängig gemacht.',
-    groupDrawPenalty: '≈ Unentschieden (Elfmeterschießen) · S{{match}}/3',
-    groupMatchWin: '✓ Gewonnen · S{{match}}/3',
-    groupMatchLoss: '✗ Verloren · S{{match}}/3',
-    resetTournamentConfirmTitle: 'Turnier zurücksetzen',
-    resetTournamentConfirmBody: 'Der Fortschritt des aktuellen Turniers wird gelöscht. Statistiken und Pokale bleiben erhalten.',
-    resetTournamentSuccess: 'Turnier zurückgesetzt.',
-    resetAllConfirmTitle: 'Alles zurücksetzen',
-    resetAllConfirmBody: 'Statistiken, Verlauf, Pokale und Turnierfortschritt werden gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.',
-    resetAllSuccess: 'Alles zurückgesetzt.'
+      sectionLabel: 'Ergebnis eintragen',
+      win: 'Gewonnen',
+      draw: 'Unentschieden',
+      loss: 'Verloren',
+      undo: 'Letztes Spiel rückgängig machen',
+      resetTournament: 'Turnier zurücksetzen',
+      resetAll: 'Alles zurücksetzen',
+      qualified: 'Du hast dich für das Achtelfinale qualifiziert ({{wins}}/3)',
+      groupStageFailed: 'Gruppenphase: {{wins}}/3. Von vorne beginnen.',
+      advancedTo: 'Du bist weitergekommen zu {{phase}}',
+      eliminated: 'In {{phase}} ausgeschieden. Zurück zum Anfang.',
+      champion: 'MEISTER! Pokal #{{n}} gewonnen.',
+      noUndo: 'Es gibt keine Aktion, die rückgängig gemacht werden kann.',
+      undoSuccess: 'Letztes Spiel rückgängig gemacht.',
+      groupDrawPenalty: '≈ Unentschieden (Elfmeterschießen) · S{{match}}/3',
+      groupMatchWin: '✓ Gewonnen · S{{match}}/3',
+      groupMatchLoss: '✗ Verloren · S{{match}}/3',
+      resetTournamentConfirmTitle: 'Turnier zurücksetzen',
+      resetTournamentConfirmBody: 'Der Fortschritt des aktuellen Turniers wird gelöscht. Statistiken und Pokale bleiben erhalten.',
+      resetTournamentSuccess: 'Turnier zurückgesetzt.',
+      resetAllConfirmTitle: 'Alles zurücksetzen',
+      resetAllConfirmBody: 'Statistiken, Verlauf, Pokale und Turnierfortschritt werden gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.',
+      resetAllSuccess: 'Alles zurückgesetzt.'
   },
   plan: {
-    title: '10-Spiele-Plan',
-    matchNumber: 'Spiel Nr.',
-    renew: 'Erneuern',
-    recentHistory: 'Letzter Verlauf',
-    emptyHistory: 'Noch keine Spiele registriert.',
-    renewed: 'Plan ab 1 erneuert'
+      title: '10-Spiele-Plan',
+      matchNumber: 'Spiel Nr.',
+      renew: 'Erneuern',
+      recentHistory: 'Letzter Verlauf',
+      emptyHistory: 'Noch keine Spiele registriert.',
+      renewed: 'Plan ab 1 erneuert'
+  },
+  championModal: {
+      title: 'MundialHito-Champion',
+      continue: 'Weiter'
   },
   coinModal: {
-    title: 'Elfmeterschießen',
-    subtitleInitial: 'Unentschieden. Wähle Kopf oder Zahl, bevor du wirfst.',
-    subtitleChosen: 'Du hast {{choice}} gewählt. Tippe auf die Münze.',
-    heads: 'Kopf',
-    tails: 'Zahl',
-    confirm: 'Ergebnis bestätigen',
-    resultOut: 'Es fiel {{result}} — ',
-    resultWin: 'Du gewinnst!',
-    resultLoss: 'Du verlierst'
+      title: 'Elfmeterschießen',
+      subtitleInitial: 'Unentschieden. Wähle Kopf oder Zahl, bevor du wirfst.',
+      subtitleChosen: 'Du hast {{choice}} gewählt. Tippe auf die Münze.',
+      heads: 'Kopf',
+      tails: 'Zahl',
+      confirm: 'Ergebnis bestätigen',
+      resultOut: 'Es fiel {{result}} — ',
+      resultWin: 'Du gewinnst!',
+      resultLoss: 'Du verlierst'
   },
   rachas: {
     title: 'Serien',

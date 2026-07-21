@@ -137,6 +137,10 @@ I18N.registrarIdioma('es', {
       emptyHistory: 'Sin partidos registrados todavía.',
       renewed: 'Plan renovado desde 1'
   },
+  championModal: {
+      title: 'Campeón del MundialHito',
+      continue: 'Continuar'
+  },
   coinModal: {
       title: 'Definición por penales',
       subtitleInitial: 'Empate. Elegí cara o ceca antes de tirar.',

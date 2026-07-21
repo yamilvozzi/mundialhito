@@ -59,27 +59,27 @@ I18N.registrarIdioma('it', {
     nameRemoved: 'Nome rimosso.'
   },
   nav: {
-    mundialhito: 'Mundialhito',
-    activity: 'Attività',
-    streaks: 'Serie',
-    archive: 'Archivia',
-    history: 'Cronologia',
-    streakHistory: 'Storico serie',
-    logout: 'Esci'
+      mundialhito: 'Mundialhito',
+      activity: 'Attività',
+      streaks: 'Serie',
+      archive: 'Archivia',
+      history: 'Cronologia',
+      streakHistory: 'Storico serie',
+      logout: 'Esci'
   },
   activity: {
     title: 'Attività',
     subtitle: 'Piano e cronologia recenti'
   },
   copas: {
-    trophiesWon: 'Coppe vinte',
-    trophiesShort: 'Coppe'
+      trophiesWon: 'Coppe vinte',
+      trophiesShort: 'Coppe'
   },
   stats: {
-    played: 'Giocate',
-    won: 'Vinte',
-    lost: 'Perse',
-    drawn: 'Pareggi'
+      played: 'Giocate',
+      won: 'Vinte',
+      lost: 'Perse',
+      drawn: 'Pareggi'
   },
   phase: {
     name: {
@@ -98,53 +98,57 @@ I18N.registrarIdioma('it', {
     }
   },
   bracket: {
-    r16: 'Ottavi',
-    qf: 'Quarti',
-    sf: 'Semi'
+      r16: 'Ottavi',
+      qf: 'Quarti',
+      sf: 'Semi'
   },
   result: {
-    sectionLabel: 'Registra risultato',
-    win: 'Vinto',
-    draw: 'Pareggio',
-    loss: 'Perso',
-    undo: 'Annulla ultima partita',
-    resetTournament: 'Reimposta torneo',
-    resetAll: 'Reimposta tutto',
-    qualified: 'Ti sei qualificato per gli Ottavi ({{wins}}/3)',
-    groupStageFailed: 'Fase a Gironi: {{wins}}/3. Si ricomincia.',
-    advancedTo: 'Sei passato a {{phase}}',
-    eliminated: 'Eliminato in {{phase}}. Ritorni all\'inizio.',
-    champion: 'CAMPIONE! Coppa #{{n}} conquistata.',
-    noUndo: 'Non c\'è nessuna mossa da annullare.',
-    undoSuccess: 'Ultima partita annullata.',
-    groupDrawPenalty: '≈ Pareggio (rigori) · P{{match}}/3',
-    groupMatchWin: '✓ Vittoria · P{{match}}/3',
-    groupMatchLoss: '✗ Sconfitta · P{{match}}/3',
-    resetTournamentConfirmTitle: 'Reimposta torneo',
-    resetTournamentConfirmBody: 'Il progresso del torneo attuale verrà cancellato. Statistiche e coppe verranno mantenute.',
-    resetTournamentSuccess: 'Torneo reimpostato.',
-    resetAllConfirmTitle: 'Reimposta tutto',
-    resetAllConfirmBody: 'Statistiche, cronologia, coppe e progresso del torneo verranno cancellati. Questa azione non può essere annullata.',
-    resetAllSuccess: 'Tutto reimpostato.'
+      sectionLabel: 'Registra risultato',
+      win: 'Vinto',
+      draw: 'Pareggio',
+      loss: 'Perso',
+      undo: 'Annulla ultima partita',
+      resetTournament: 'Reimposta torneo',
+      resetAll: 'Reimposta tutto',
+      qualified: 'Ti sei qualificato per gli Ottavi ({{wins}}/3)',
+      groupStageFailed: 'Fase a Gironi: {{wins}}/3. Si ricomincia.',
+      advancedTo: 'Sei passato a {{phase}}',
+      eliminated: 'Eliminato in {{phase}}. Ritorni all\'inizio.',
+      champion: 'CAMPIONE! Coppa #{{n}} conquistata.',
+      noUndo: 'Non c\'è nessuna mossa da annullare.',
+      undoSuccess: 'Ultima partita annullata.',
+      groupDrawPenalty: '≈ Pareggio (rigori) · P{{match}}/3',
+      groupMatchWin: '✓ Vittoria · P{{match}}/3',
+      groupMatchLoss: '✗ Sconfitta · P{{match}}/3',
+      resetTournamentConfirmTitle: 'Reimposta torneo',
+      resetTournamentConfirmBody: 'Il progresso del torneo attuale verrà cancellato. Statistiche e coppe verranno mantenute.',
+      resetTournamentSuccess: 'Torneo reimpostato.',
+      resetAllConfirmTitle: 'Reimposta tutto',
+      resetAllConfirmBody: 'Statistiche, cronologia, coppe e progresso del torneo verranno cancellati. Questa azione non può essere annullata.',
+      resetAllSuccess: 'Tutto reimpostato.'
   },
   plan: {
-    title: 'Piano di 10 partite',
-    matchNumber: 'Partita #',
-    renew: 'Rinnova',
-    recentHistory: 'Cronologia recente',
-    emptyHistory: 'Nessuna partita registrata ancora.',
-    renewed: 'Piano rinnovato da 1'
+      title: 'Piano di 10 partite',
+      matchNumber: 'Partita #',
+      renew: 'Rinnova',
+      recentHistory: 'Cronologia recente',
+      emptyHistory: 'Nessuna partita registrata ancora.',
+      renewed: 'Piano rinnovato da 1'
+  },
+  championModal: {
+      title: 'Campione del MundialHito',
+      continue: 'Continua'
   },
   coinModal: {
-    title: 'Rigori decisivi',
-    subtitleInitial: 'Pareggio. Scegli testa o croce prima di lanciare.',
-    subtitleChosen: 'Hai scelto {{choice}}. Tocca la moneta.',
-    heads: 'Testa',
-    tails: 'Croce',
-    confirm: 'Conferma risultato',
-    resultOut: 'È uscito {{result}} — ',
-    resultWin: 'Vinci!',
-    resultLoss: 'Perdi'
+      title: 'Rigori decisivi',
+      subtitleInitial: 'Pareggio. Scegli testa o croce prima di lanciare.',
+      subtitleChosen: 'Hai scelto {{choice}}. Tocca la moneta.',
+      heads: 'Testa',
+      tails: 'Croce',
+      confirm: 'Conferma risultato',
+      resultOut: 'È uscito {{result}} — ',
+      resultWin: 'Vinci!',
+      resultLoss: 'Perdi'
   },
   rachas: {
     title: 'Serie',

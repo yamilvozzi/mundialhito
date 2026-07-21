@@ -135,6 +135,10 @@ I18N.registrarIdioma('en', {
       emptyHistory: 'No matches recorded yet.',
       renewed: 'Plan renewed from 1'
   },
+  championModal: {
+      title: 'MundialHito Champion',
+      continue: 'Continue'
+  },
   coinModal: {
       title: 'Penalty shootout',
       subtitleInitial: 'Draw. Choose heads or tails before you flip.',

@@ -69,27 +69,27 @@ I18N.registrarIdioma('pt', {
     nameRemoved: 'Nome removido.'
   },
   nav: {
-    mundialhito: 'Mundialhito',
-    activity: 'Atividade',
-    streaks: 'Sequências',
-    archive: 'Arquivar',
-    history: 'Histórico',
-    streakHistory: 'Hist. Sequências',
-    logout: 'Sair'
+      mundialhito: 'Mundialhito',
+      activity: 'Atividade',
+      streaks: 'Sequências',
+      archive: 'Arquivar',
+      history: 'Histórico',
+      streakHistory: 'Hist. Sequências',
+      logout: 'Sair'
   },
   activity: {
     title: 'Atividade',
     subtitle: 'Plano e histórico recente'
   },
   copas: {
-    trophiesWon: 'Taças conquistadas',
-    trophiesShort: 'Taças'
+      trophiesWon: 'Taças conquistadas',
+      trophiesShort: 'Taças'
   },
   stats: {
-    played: 'Jogados',
-    won: 'Vencidos',
-    lost: 'Perdidos',
-    drawn: 'Empates'
+      played: 'Jogados',
+      won: 'Vencidos',
+      lost: 'Perdidos',
+      drawn: 'Empates'
   },
   phase: {
     name: {
@@ -108,53 +108,57 @@ I18N.registrarIdioma('pt', {
     }
   },
   bracket: {
-    r16: 'Oitavas',
-    qf: 'Quartas',
-    sf: 'Semi'
+      r16: 'Oitavas',
+      qf: 'Quartas',
+      sf: 'Semi'
   },
   result: {
-    sectionLabel: 'Registrar resultado',
-    win: 'Venci',
-    draw: 'Empate',
-    loss: 'Perdi',
-    undo: 'Desfazer último jogo',
-    resetTournament: 'Reiniciar torneio',
-    resetAll: 'Reiniciar tudo',
-    qualified: 'Classificado para as Oitavas ({{wins}}/3)',
-    groupStageFailed: 'Fase de Grupos: {{wins}}/3. Recomeçando.',
-    advancedTo: 'Você avançou para {{phase}}',
-    eliminated: 'Eliminado em {{phase}}. Volta ao início.',
-    champion: 'CAMPEÃO! Taça #{{n}} conquistada.',
-    noUndo: 'Não há ação para desfazer.',
-    undoSuccess: 'Último jogo desfeito.',
-    groupDrawPenalty: '≈ Empate (pênaltis) · J{{match}}/3',
-    groupMatchWin: '✓ Vitória · J{{match}}/3',
-    groupMatchLoss: '✗ Derrota · J{{match}}/3',
-    resetTournamentConfirmTitle: 'Reiniciar torneio',
-    resetTournamentConfirmBody: 'O progresso do torneio atual será apagado. As estatísticas e taças são mantidas.',
-    resetTournamentSuccess: 'Torneio reiniciado.',
-    resetAllConfirmTitle: 'Reiniciar tudo',
-    resetAllConfirmBody: 'Estatísticas, histórico, taças e o progresso do torneio serão apagados. Essa ação não pode ser desfeita.',
-    resetAllSuccess: 'Tudo foi reiniciado.'
+      sectionLabel: 'Registrar resultado',
+      win: 'Venci',
+      draw: 'Empate',
+      loss: 'Perdi',
+      undo: 'Desfazer último jogo',
+      resetTournament: 'Reiniciar torneio',
+      resetAll: 'Reiniciar tudo',
+      qualified: 'Classificado para as Oitavas ({{wins}}/3)',
+      groupStageFailed: 'Fase de Grupos: {{wins}}/3. Recomeçando.',
+      advancedTo: 'Você avançou para {{phase}}',
+      eliminated: 'Eliminado em {{phase}}. Volta ao início.',
+      champion: 'CAMPEÃO! Taça #{{n}} conquistada.',
+      noUndo: 'Não há ação para desfazer.',
+      undoSuccess: 'Último jogo desfeito.',
+      groupDrawPenalty: '≈ Empate (pênaltis) · J{{match}}/3',
+      groupMatchWin: '✓ Vitória · J{{match}}/3',
+      groupMatchLoss: '✗ Derrota · J{{match}}/3',
+      resetTournamentConfirmTitle: 'Reiniciar torneio',
+      resetTournamentConfirmBody: 'O progresso do torneio atual será apagado. As estatísticas e taças são mantidas.',
+      resetTournamentSuccess: 'Torneio reiniciado.',
+      resetAllConfirmTitle: 'Reiniciar tudo',
+      resetAllConfirmBody: 'Estatísticas, histórico, taças e o progresso do torneio serão apagados. Essa ação não pode ser desfeita.',
+      resetAllSuccess: 'Tudo foi reiniciado.'
   },
   plan: {
-    title: 'Plano de 10 jogos',
-    matchNumber: 'Jogo #',
-    renew: 'Renovar',
-    recentHistory: 'Histórico recente',
-    emptyHistory: 'Nenhum jogo registrado ainda.',
-    renewed: 'Plano renovado a partir de 1'
+      title: 'Plano de 10 jogos',
+      matchNumber: 'Jogo #',
+      renew: 'Renovar',
+      recentHistory: 'Histórico recente',
+      emptyHistory: 'Nenhum jogo registrado ainda.',
+      renewed: 'Plano renovado a partir de 1'
+  },
+  championModal: {
+      title: 'Campeão do MundialHito',
+      continue: 'Continuar'
   },
   coinModal: {
-    title: 'Decisão nos pênaltis',
-    subtitleInitial: 'Empate. Escolha cara ou coroa antes de jogar.',
-    subtitleChosen: 'Você escolheu {{choice}}. Toque na moeda.',
-    heads: 'Cara',
-    tails: 'Coroa',
-    confirm: 'Confirmar resultado',
-    resultOut: 'Saiu {{result}} — ',
-    resultWin: 'Você vence!',
-    resultLoss: 'Você perde'
+      title: 'Decisão nos pênaltis',
+      subtitleInitial: 'Empate. Escolha cara ou coroa antes de jogar.',
+      subtitleChosen: 'Você escolheu {{choice}}. Toque na moeda.',
+      heads: 'Cara',
+      tails: 'Coroa',
+      confirm: 'Confirmar resultado',
+      resultOut: 'Saiu {{result}} — ',
+      resultWin: 'Você vence!',
+      resultLoss: 'Você perde'
   },
   rachas: {
     title: 'Sequências',

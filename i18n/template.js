@@ -85,27 +85,27 @@ I18N.registrarIdioma('xx', {
     nameRemoved: ''  // ES: Nombre eliminado.
   },
   nav: {
-    mundialhito: '',  // ES: Mundialhito
-    activity: 'Actividad',
-    streaks: '',  // ES: Rachas
-    archive: '',  // ES: Archivar
-    history: '',  // ES: Historial
-    streakHistory: '',  // ES: Hist. Rachas
-    logout: ''  // ES: Salir
+      mundialhito: '',  // ES: Mundialhito
+      activity: 'Actividad',
+      streaks: '',  // ES: Rachas
+      archive: '',  // ES: Archivar
+      history: '',  // ES: Historial
+      streakHistory: '',  // ES: Hist. Rachas
+      logout: ''  // ES: Salir
   },
   activity: {
     title: '',
     subtitle: ''
   },
   copas: {
-    trophiesWon: '',  // ES: Copas ganadas
-    trophiesShort: ''  // ES: Copas
+      trophiesWon: '',  // ES: Copas ganadas
+      trophiesShort: ''  // ES: Copas
   },
   stats: {
-    played: '',  // ES: Jugados
-    won: '',  // ES: Ganados
-    lost: '',  // ES: Perdidos
-    drawn: ''  // ES: Empates
+      played: '',  // ES: Jugados
+      won: '',  // ES: Ganados
+      lost: '',  // ES: Perdidos
+      drawn: ''  // ES: Empates
   },
   phase: {
     name: {
@@ -124,53 +124,57 @@ I18N.registrarIdioma('xx', {
     }
   },
   bracket: {
-    r16: '',  // ES: Octavos
-    qf: '',  // ES: Cuartos
-    sf: ''  // ES: Semi
+      r16: '',  // ES: Octavos
+      qf: '',  // ES: Cuartos
+      sf: ''  // ES: Semi
   },
   result: {
-    sectionLabel: '',  // ES: Registrar resultado
-    win: '',  // ES: GanÃ©
-    draw: '',  // ES: Empate
-    loss: '',  // ES: PerdÃ­
-    undo: '',  // ES: Deshacer Ãºltimo partido
-    resetTournament: '',  // ES: Reiniciar torneo
-    resetAll: '',  // ES: Reiniciar todo
-    qualified: '',  // ES: Clasificaste a Octavos ({{wins}}/3)
-    groupStageFailed: '',  // ES: Fase de Grupos: {{wins}}/3. A empezar de nuevo.
-    advancedTo: '',  // ES: Pasaste a {{phase}}
-    eliminated: '',  // ES: Eliminado en {{phase}}. VolvÃ©s al inicio.
-    champion: '',  // ES: Â¡CAMPEÃ“N! Copa #{{n}} conquistada.
-    noUndo: '',  // ES: No hay movimiento para deshacer.
-    undoSuccess: '',  // ES: Ãšltimo partido deshecho.
-    groupDrawPenalty: '',  // ES: â‰ˆ Empate (penales) Â· P{{match}}/3
-    groupMatchWin: '',  // ES: âœ“ Victoria Â· P{{match}}/3
-    groupMatchLoss: '',  // ES: âœ— Derrota Â· P{{match}}/3
-    resetTournamentConfirmTitle: '',  // ES: Reiniciar torneo
-    resetTournamentConfirmBody: '',  // ES: Se borra el progreso del torneo actual. Las estadÃ­sticas y copas se conservan.
-    resetTournamentSuccess: '',  // ES: Torneo reiniciado.
-    resetAllConfirmTitle: '',  // ES: Reiniciar todo
-    resetAllConfirmBody: '',  // ES: Se borran estadÃ­sticas, historial, copas y el progreso del torneo. Esta acciÃ³n no se pue…
-    resetAllSuccess: ''  // ES: Todo reiniciado.
+      sectionLabel: '',  // ES: Registrar resultado
+      win: '',  // ES: GanÃ©
+      draw: '',  // ES: Empate
+      loss: '',  // ES: PerdÃ­
+      undo: '',  // ES: Deshacer Ãºltimo partido
+      resetTournament: '',  // ES: Reiniciar torneo
+      resetAll: '',  // ES: Reiniciar todo
+      qualified: '',  // ES: Clasificaste a Octavos ({{wins}}/3)
+      groupStageFailed: '',  // ES: Fase de Grupos: {{wins}}/3. A empezar de nuevo.
+      advancedTo: '',  // ES: Pasaste a {{phase}}
+      eliminated: '',  // ES: Eliminado en {{phase}}. VolvÃ©s al inicio.
+      champion: '',  // ES: Â¡CAMPEÃ“N! Copa #{{n}} conquistada.
+      noUndo: '',  // ES: No hay movimiento para deshacer.
+      undoSuccess: '',  // ES: Ãšltimo partido deshecho.
+      groupDrawPenalty: '',  // ES: â‰ˆ Empate (penales) Â· P{{match}}/3
+      groupMatchWin: '',  // ES: âœ“ Victoria Â· P{{match}}/3
+      groupMatchLoss: '',  // ES: âœ— Derrota Â· P{{match}}/3
+      resetTournamentConfirmTitle: '',  // ES: Reiniciar torneo
+      resetTournamentConfirmBody: '',  // ES: Se borra el progreso del torneo actual. Las estadÃ­sticas y copas se conservan.
+      resetTournamentSuccess: '',  // ES: Torneo reiniciado.
+      resetAllConfirmTitle: '',  // ES: Reiniciar todo
+      resetAllConfirmBody: '',  // ES: Se borran estadÃ­sticas, historial, copas y el progreso del torneo. Esta acciÃ³n no se pue…
+      resetAllSuccess: ''  // ES: Todo reiniciado.
   },
   plan: {
-    title: '',  // ES: Plan de 10 partidos
-    matchNumber: '',  // ES: Partido #
-    renew: '',  // ES: Renovar
-    recentHistory: '',  // ES: Historial reciente
-    emptyHistory: '',  // ES: Sin partidos registrados todavÃ­a.
-    renewed: ''  // ES: Plan renovado desde 1
+      title: '',  // ES: Plan de 10 partidos
+      matchNumber: '',  // ES: Partido #
+      renew: '',  // ES: Renovar
+      recentHistory: '',  // ES: Historial reciente
+      emptyHistory: '',  // ES: Sin partidos registrados todavÃ­a.
+      renewed: ''  // ES: Plan renovado desde 1
+  },
+  championModal: {
+      title: '',
+      continue: ''
   },
   coinModal: {
-    title: '',  // ES: DefiniciÃ³n por penales
-    subtitleInitial: '',  // ES: Empate. ElegÃ­ cara o ceca antes de tirar.
-    subtitleChosen: '',  // ES: Elegiste {{choice}}. TocÃ¡ la moneda.
-    heads: '',  // ES: Cara
-    tails: '',  // ES: Ceca
-    confirm: '',  // ES: Confirmar resultado
-    resultOut: '',  // ES: SaliÃ³ {{result}} â€”
-    resultWin: '',  // ES: Â¡GanÃ¡s!
-    resultLoss: ''  // ES: PerdÃ©s
+      title: '',  // ES: DefiniciÃ³n por penales
+      subtitleInitial: '',  // ES: Empate. ElegÃ­ cara o ceca antes de tirar.
+      subtitleChosen: '',  // ES: Elegiste {{choice}}. TocÃ¡ la moneda.
+      heads: '',  // ES: Cara
+      tails: '',  // ES: Ceca
+      confirm: '',  // ES: Confirmar resultado
+      resultOut: '',  // ES: SaliÃ³ {{result}} â€”
+      resultWin: '',  // ES: Â¡GanÃ¡s!
+      resultLoss: ''  // ES: PerdÃ©s
   },
   rachas: {
     title: '',  // ES: Rachas

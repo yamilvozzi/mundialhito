@@ -69,27 +69,27 @@ I18N.registrarIdioma('fr', {
     nameRemoved: 'Nom supprimé.'
   },
   nav: {
-    mundialhito: 'Mundialhito',
-    activity: 'Activité',
-    streaks: 'Séries',
-    archive: 'Archiver',
-    history: 'Historique',
-    streakHistory: 'Hist. Séries',
-    logout: 'Déconnexion'
+      mundialhito: 'Mundialhito',
+      activity: 'Activité',
+      streaks: 'Séries',
+      archive: 'Archiver',
+      history: 'Historique',
+      streakHistory: 'Hist. Séries',
+      logout: 'Déconnexion'
   },
   activity: {
     title: 'Activité',
     subtitle: 'Plan et historique récent'
   },
   copas: {
-    trophiesWon: 'Coupes gagnées',
-    trophiesShort: 'Coupes'
+      trophiesWon: 'Coupes gagnées',
+      trophiesShort: 'Coupes'
   },
   stats: {
-    played: 'Joués',
-    won: 'Gagnés',
-    lost: 'Perdus',
-    drawn: 'Nuls'
+      played: 'Joués',
+      won: 'Gagnés',
+      lost: 'Perdus',
+      drawn: 'Nuls'
   },
   phase: {
     name: {
@@ -108,53 +108,57 @@ I18N.registrarIdioma('fr', {
     }
   },
   bracket: {
-    r16: 'Huitièmes',
-    qf: 'Quarts',
-    sf: 'Demi'
+      r16: 'Huitièmes',
+      qf: 'Quarts',
+      sf: 'Demi'
   },
   result: {
-    sectionLabel: 'Enregistrer le résultat',
-    win: 'Gagné',
-    draw: 'Nul',
-    loss: 'Perdu',
-    undo: 'Annuler le dernier match',
-    resetTournament: 'Réinitialiser le tournoi',
-    resetAll: 'Tout réinitialiser',
-    qualified: 'Qualifié pour les Huitièmes ({{wins}}/3)',
-    groupStageFailed: 'Phase de groupes : {{wins}}/3. On recommence.',
-    advancedTo: 'Vous êtes passé à {{phase}}',
-    eliminated: 'Éliminé en {{phase}}. Retour au début.',
-    champion: 'CHAMPION ! Coupe n° {{n}} conquise.',
-    noUndo: 'Aucune action à annuler.',
-    undoSuccess: 'Dernier match annulé.',
-    groupDrawPenalty: '≈ Nul (penalties) · M{{match}}/3',
-    groupMatchWin: '✓ Victoire · M{{match}}/3',
-    groupMatchLoss: '✗ Défaite · M{{match}}/3',
-    resetTournamentConfirmTitle: 'Réinitialiser le tournoi',
-    resetTournamentConfirmBody: 'La progression du tournoi actuel sera effacée. Les statistiques et les coupes sont conservées.',
-    resetTournamentSuccess: 'Tournoi réinitialisé.',
-    resetAllConfirmTitle: 'Tout réinitialiser',
-    resetAllConfirmBody: 'Les statistiques, l\'historique, les coupes et la progression du tournoi seront effacés. Cette action est irréversible.',
-    resetAllSuccess: 'Tout a été réinitialisé.'
+      sectionLabel: 'Enregistrer le résultat',
+      win: 'Gagné',
+      draw: 'Nul',
+      loss: 'Perdu',
+      undo: 'Annuler le dernier match',
+      resetTournament: 'Réinitialiser le tournoi',
+      resetAll: 'Tout réinitialiser',
+      qualified: 'Qualifié pour les Huitièmes ({{wins}}/3)',
+      groupStageFailed: 'Phase de groupes : {{wins}}/3. On recommence.',
+      advancedTo: 'Vous êtes passé à {{phase}}',
+      eliminated: 'Éliminé en {{phase}}. Retour au début.',
+      champion: 'CHAMPION ! Coupe n° {{n}} conquise.',
+      noUndo: 'Aucune action à annuler.',
+      undoSuccess: 'Dernier match annulé.',
+      groupDrawPenalty: '≈ Nul (penalties) · M{{match}}/3',
+      groupMatchWin: '✓ Victoire · M{{match}}/3',
+      groupMatchLoss: '✗ Défaite · M{{match}}/3',
+      resetTournamentConfirmTitle: 'Réinitialiser le tournoi',
+      resetTournamentConfirmBody: 'La progression du tournoi actuel sera effacée. Les statistiques et les coupes sont conservées.',
+      resetTournamentSuccess: 'Tournoi réinitialisé.',
+      resetAllConfirmTitle: 'Tout réinitialiser',
+      resetAllConfirmBody: 'Les statistiques, l\'historique, les coupes et la progression du tournoi seront effacés. Cette action est irréversible.',
+      resetAllSuccess: 'Tout a été réinitialisé.'
   },
   plan: {
-    title: 'Plan de 10 matchs',
-    matchNumber: 'Match n°',
-    renew: 'Renouveler',
-    recentHistory: 'Historique récent',
-    emptyHistory: 'Aucun match enregistré pour le moment.',
-    renewed: 'Plan renouvelé depuis 1'
+      title: 'Plan de 10 matchs',
+      matchNumber: 'Match n°',
+      renew: 'Renouveler',
+      recentHistory: 'Historique récent',
+      emptyHistory: 'Aucun match enregistré pour le moment.',
+      renewed: 'Plan renouvelé depuis 1'
+  },
+  championModal: {
+      title: 'Champion de MundialHito',
+      continue: 'Continuer'
   },
   coinModal: {
-    title: 'Décision aux penalties',
-    subtitleInitial: 'Match nul. Choisissez pile ou face avant de lancer.',
-    subtitleChosen: 'Vous avez choisi {{choice}}. Touchez la pièce.',
-    heads: 'Pile',
-    tails: 'Face',
-    confirm: 'Confirmer le résultat',
-    resultOut: 'C\'est {{result}} — ',
-    resultWin: 'Vous gagnez !',
-    resultLoss: 'Vous perdez'
+      title: 'Décision aux penalties',
+      subtitleInitial: 'Match nul. Choisissez pile ou face avant de lancer.',
+      subtitleChosen: 'Vous avez choisi {{choice}}. Touchez la pièce.',
+      heads: 'Pile',
+      tails: 'Face',
+      confirm: 'Confirmer le résultat',
+      resultOut: 'C\'est {{result}} — ',
+      resultWin: 'Vous gagnez !',
+      resultLoss: 'Vous perdez'
   },
   rachas: {
     title: 'Séries',
