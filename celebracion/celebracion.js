@@ -22,8 +22,9 @@
   'use strict';
 
   const PAISES_DATA = {};   // se completa vía registrarPais() desde paises-data.js
-  const DURACION_MS = 10000; // duración mínima de la caída del confetti (10s) — acompaña la duración típica de los himnos
-  const RECICLADO_CORTE_MS = 1200; // ms antes del final en que se deja de reciclar partículas, para que la lluvia se apague gradualmente
+  const DURACION_MS = 15000; // duración de EMISIÓN de confetti (15s) — acompaña la duración típica de los himnos.
+  // Al cabo de este tiempo dejan de generarse partículas nuevas; las que ya están cayendo
+  // terminan de salir de pantalla solas — ver tick(), final en cascada natural.
   const CANTIDAD_PARTICULAS = 140;
 
   let canvas = null;
@@ -94,25 +95,34 @@
   function tick(timestamp) {
     if (!inicioAnimacion) inicioAnimacion = timestamp;
     const transcurrido = timestamp - inicioAnimacion;
-    const quedan = DURACION_MS - transcurrido;
+    const emitiendo = transcurrido < DURACION_MS;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let quedanCayendo = false;
+
     particulas.forEach(function (p) {
       p.x += p.velX;
       p.y += p.velY;
       p.rot += p.velRot;
 
-      // Si la partícula ya cruzó el piso del canvas, se recicla arriba con
-      // una nueva posición/velocidad aleatoria — así la lluvia de confetti
-      // se mantiene activa durante toda la duración en vez de una sola
-      // tanda que se vacía a mitad de la celebración. Cerca del final se
-      // deja de reciclar para que la caída se apague de forma natural.
-      if (p.y - p.h / 2 > canvas.height && quedan > RECICLADO_CORTE_MS) {
-        p.x = Math.random() * canvas.width;
-        p.y = -20 - Math.random() * 80;
-        p.velY = 2.2 + Math.random() * 2.6;
-        p.velX = (Math.random() - 0.5) * 1.6;
-        p.rot = Math.random() * 360;
+      const salioDePantalla = p.y - p.h / 2 > canvas.height;
+
+      if (salioDePantalla) {
+        if (emitiendo) {
+          // Mientras dure la emisión, la partícula que sale por abajo se
+          // recicla arriba con una nueva posición/velocidad aleatoria —
+          // así la lluvia de confetti se mantiene continua durante toda
+          // la duración, en vez de agotarse a mitad de camino.
+          p.x = Math.random() * canvas.width;
+          p.y = -20 - Math.random() * 80;
+          p.velY = 2.2 + Math.random() * 2.6;
+          p.velX = (Math.random() - 0.5) * 1.6;
+          p.rot = Math.random() * 360;
+        }
+        // Si ya no se está emitiendo, la partícula que salió queda fuera
+        // de juego — no se recicla ni se vuelve a contar como visible.
+      } else {
+        quedanCayendo = true;
       }
 
       ctx.save();
@@ -123,7 +133,12 @@
       ctx.restore();
     });
 
-    if (transcurrido < DURACION_MS) {
+    // Mientras dure la emisión, siempre se sigue animando (hay reciclado
+    // continuo, nunca se vacía la pantalla). Terminada la emisión, la
+    // animación se sostiene solo hasta que la última partícula ya emitida
+    // termine de salir de pantalla por su cuenta — así la celebración se
+    // apaga como una cascada natural, sin desapariciones bruscas.
+    if (emitiendo || quedanCayendo) {
       animationFrameId = requestAnimationFrame(tick);
     } else {
       limpiarConfetti();

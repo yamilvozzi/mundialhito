@@ -17,7 +17,7 @@
 // Este archivo debe cargarse DESPUÉS de celebracion.js.
 
 CELEBRACION.registrarPais('AR', {
-  colores: ['#74ACDF', '#FFFFFF', '#F6B40E'],
+  colores: ['#74ACDF', '#FFFFFF'],
   himno: 'audio/himnos/AR.mp3'
 });
 CELEBRACION.registrarPais('BR', {
