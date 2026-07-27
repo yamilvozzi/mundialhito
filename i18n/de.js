@@ -124,8 +124,8 @@ I18N.registrarIdioma('de', {
       resetTournamentConfirmBody: 'Der Fortschritt des aktuellen Turniers wird gelöscht. Statistiken und Pokale bleiben erhalten.',
       resetTournamentSuccess: 'Turnier zurückgesetzt.',
       resetAllConfirmTitle: 'Alles zurücksetzen',
-      resetAllConfirmBody: 'Statistiken, Verlauf, Pokale und Turnierfortschritt werden gelöscht. Diese Aktion kann nicht rückgängig gemacht werden.',
-      resetAllSuccess: 'Alles zurückgesetzt.'
+      resetAllConfirmBody: 'Statistiken, Pokale und der aktuelle Turnierfortschritt werden gelöscht. Der letzte Verlauf, der Spielplan und die Serien werden nicht verändert. Diese Aktion kann nicht rückgängig gemacht werden.',
+      resetAllSuccess: 'Turnierstatistiken zurückgesetzt.'
   },
   plan: {
       title: '10-Spiele-Plan',

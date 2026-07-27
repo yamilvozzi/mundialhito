@@ -134,8 +134,8 @@ I18N.registrarIdioma('fr', {
       resetTournamentConfirmBody: 'La progression du tournoi actuel sera effacée. Les statistiques et les coupes sont conservées.',
       resetTournamentSuccess: 'Tournoi réinitialisé.',
       resetAllConfirmTitle: 'Tout réinitialiser',
-      resetAllConfirmBody: 'Les statistiques, l\'historique, les coupes et la progression du tournoi seront effacés. Cette action est irréversible.',
-      resetAllSuccess: 'Tout a été réinitialisé.'
+      resetAllConfirmBody: 'Les statistiques, les coupes et la progression du tournoi actuel seront effacées. L\'historique récent, le plan de matchs et les séries ne sont pas modifiés. Cette action est irréversible.',
+      resetAllSuccess: 'Statistiques du tournoi réinitialisées.'
   },
   plan: {
       title: 'Plan de 10 matchs',

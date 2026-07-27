@@ -124,8 +124,8 @@ I18N.registrarIdioma('it', {
       resetTournamentConfirmBody: 'Il progresso del torneo attuale verrà cancellato. Statistiche e coppe verranno mantenute.',
       resetTournamentSuccess: 'Torneo reimpostato.',
       resetAllConfirmTitle: 'Reimposta tutto',
-      resetAllConfirmBody: 'Statistiche, cronologia, coppe e progresso del torneo verranno cancellati. Questa azione non può essere annullata.',
-      resetAllSuccess: 'Tutto reimpostato.'
+      resetAllConfirmBody: 'Vengono cancellate le statistiche, le coppe e il progresso del torneo attuale. La cronologia recente, il piano delle partite e le serie non vengono modificati. Questa azione non può essere annullata.',
+      resetAllSuccess: 'Statistiche del torneo reimpostate.'
   },
   plan: {
       title: 'Piano di 10 partite',

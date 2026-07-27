@@ -124,8 +124,8 @@ I18N.registrarIdioma('en', {
       resetTournamentConfirmBody: 'Current tournament progress will be cleared. Statistics and trophies will be kept.',
       resetTournamentSuccess: 'Tournament reset.',
       resetAllConfirmTitle: 'Reset everything',
-      resetAllConfirmBody: 'Statistics, history, trophies, and tournament progress will be cleared. This action cannot be undone.',
-      resetAllSuccess: 'Everything reset.'
+      resetAllConfirmBody: 'Statistics, trophies, and current tournament progress will be cleared. Recent history, the match plan, and streaks will not be changed. This action cannot be undone.',
+      resetAllSuccess: 'Tournament statistics reset.'
   },
   plan: {
       title: '10-match plan',

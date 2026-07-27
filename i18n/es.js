@@ -126,8 +126,8 @@ I18N.registrarIdioma('es', {
       resetTournamentConfirmBody: 'Se borra el progreso del torneo actual. Las estadísticas y copas se conservan.',
       resetTournamentSuccess: 'Torneo reiniciado.',
       resetAllConfirmTitle: 'Reiniciar todo',
-      resetAllConfirmBody: 'Se borran estadísticas, historial, copas y el progreso del torneo. Esta acción no se puede deshacer.',
-      resetAllSuccess: 'Todo reiniciado.'
+      resetAllConfirmBody: 'Se borran las estadísticas, las copas y el progreso del torneo actual. El historial reciente, el plan de partidos y las rachas no se modifican. Esta acción no se puede deshacer.',
+      resetAllSuccess: 'Estadísticas del torneo reiniciadas.'
   },
   plan: {
       title: 'Plan de 10 partidos',

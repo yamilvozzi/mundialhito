@@ -134,8 +134,8 @@ I18N.registrarIdioma('pt', {
       resetTournamentConfirmBody: 'O progresso do torneio atual será apagado. As estatísticas e taças são mantidas.',
       resetTournamentSuccess: 'Torneio reiniciado.',
       resetAllConfirmTitle: 'Reiniciar tudo',
-      resetAllConfirmBody: 'Estatísticas, histórico, taças e o progresso do torneio serão apagados. Essa ação não pode ser desfeita.',
-      resetAllSuccess: 'Tudo foi reiniciado.'
+      resetAllConfirmBody: 'As estatísticas, as taças e o progresso do torneio atual serão apagados. O histórico recente, o plano de jogos e as sequências não são alterados. Essa ação não pode ser desfeita.',
+      resetAllSuccess: 'Estatísticas do torneio reiniciadas.'
   },
   plan: {
       title: 'Plano de 10 jogos',
