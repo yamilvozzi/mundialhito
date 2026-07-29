@@ -61,5 +61,15 @@ CELEBRACION.registrarPais('GB', {
   himno: 'audio/himnos/GB.mp3'
 });
 
-// Países pendientes de completar — usan celebración genérica hasta entonces:
-// JP, KR, CN
+CELEBRACION.registrarPais('KR', {
+  colores: ['#FFFFFF', '#CD2E3A', '#0047A0', '#000000'],
+  himno: 'audio/himnos/KR.mp3'
+});
+CELEBRACION.registrarPais('JP', {
+  colores: ['#FFFFFF', '#BC002D'],
+  himno: 'audio/himnos/JP.mp3'
+});
+CELEBRACION.registrarPais('CN', {
+  colores: ['#DE2910', '#FFDE00'],
+  himno: 'audio/himnos/CN.mp3'
+});
