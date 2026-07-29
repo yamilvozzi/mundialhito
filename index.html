@@ -2920,7 +2920,7 @@ const IDIOMAS = [
   { code: 'fr', name: 'Français' },
   { code: 'pt', name: 'Português' },
   { code: 'it', name: 'Italiano' },
-  { code: 'de', name: 'Deutsch' },
+  { code: 'de', name: 'Deutsch' }
   // más idiomas se agregan acá sin tocar el HTML ni la lógica
   { code: 'ko', name: '한국어' },
   { code: 'ja', name: '日本語' },
@@ -3134,6 +3134,25 @@ function poblarSelectsConfig() {
       return '<option value="' + i.code + '">' + i.name + '</option>';
     }).join('');
     el.disabled = IDIOMAS.length <= 1;
+  });
+}
+
+function repoblarNacionalidadPorIdioma() {
+  // Reconstruye ÚNICAMENTE el <select> de Nacionalidad para reflejar los
+  // nombres de país en el idioma recién seleccionado (I18N.t ya usa el
+  // locale activo en el momento en que se llama esta función). Se
+  // preserva la selección actual del usuario.
+  // El <select> de Idioma NO se toca acá a propósito: debe seguir
+  // mostrando cada idioma en su propio nombre nativo, sin importar el
+  // locale activo.
+  ['configNacionalidadMob', 'configNacionalidadDt'].forEach(function(id) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    const valorActual = el.value;
+    el.innerHTML = PAISES.map(function(p) {
+      return '<option value="' + p.code + '">' + I18N.t('country.' + p.code) + '</option>';
+    }).join('');
+    el.value = valorActual;
   });
 }
 
@@ -4100,6 +4119,7 @@ async function eliminarRachaArch(id) {
 
 // ── LISTENERS ─────────────────────────────────────────
 I18N.onLocaleChange(function() {
+  repoblarNacionalidadPorIdioma();
   if (pantallaActiva === 'historial') renderizarHistorial();
   if (pantallaActiva === 'histRachas') renderizarHistRachas();
   if (document.getElementById('archivarOverlay').classList.contains('show')) _actualizarModalArchivar();
