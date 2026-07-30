@@ -57,6 +57,9 @@
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+/* Feedback táctil base: discreto para navegación y acciones secundarias. */
+button:active { transform: translateY(1px); }
+
 body {
   background: var(--bg);
   color: var(--text);
@@ -1105,6 +1108,8 @@ body {
   margin-bottom: 13px;
 }
 
+.section-label[data-i18n="result.sectionLabel"] { color: var(--text); }
+
 .btn-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -1166,7 +1171,7 @@ body {
 }
 .btn:hover svg { transform: scale(1.04); }
 .btn:active {
-  transform: translateY(1px);
+  transform: translateY(2px);
   box-shadow:
     inset 0 1px 0 rgba(var(--btn-light-rgb), 0.14),
     inset 0 -1px 0 rgba(var(--btn-dark-rgb), 0.58),
@@ -1546,7 +1551,7 @@ body {
   font-weight: 800;
   letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text);
+  color: var(--yellow);
   margin-bottom: 8px;
   line-height: 1.2;
 }
