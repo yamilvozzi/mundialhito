@@ -107,7 +107,7 @@ I18N.registrarIdioma('es', {
   result: {
       sectionLabel: 'Registrar resultado',
       win: 'Gané',
-      draw: 'Empate',
+      draw: 'Empaté',
       loss: 'Perdí',
       undo: 'Deshacer último partido',
       resetTournament: 'Reiniciar torneo',
