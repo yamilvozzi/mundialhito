@@ -51,7 +51,7 @@ I18N.registrarIdioma('es', {
     sound: 'Sonido',
     volume: 'Volumen',
     nameModalTitle: 'Tu nombre',
-    nameModalDesc: 'Es solo un detalle visual — aparece debajo de Mundialhito en toda la app. No afecta tu cuenta ni tu login.',
+    nameModalDesc: 'Es el nombre que se mostrará en la aplicación. No afecta tu cuenta ni el inicio de sesión.',
     namePlaceholder: 'Ej: Yamil',
     nationalityUpdated: 'Nacionalidad actualizada.',
     languageUpdated: 'Idioma actualizado.',
@@ -92,10 +92,10 @@ I18N.registrarIdioma('es', {
       FINAL: 'Gran Final'
     },
     desc: {
-      FG: 'Jugás los 3 partidos. Pasás si ganás 2 o más.',
-      E8: 'Partido único — si perdés, volvés al inicio.',
-      E4: 'Partido único — si perdés, volvés al inicio.',
-      SF: 'Partido único — si perdés, volvés al inicio.',
+      FG: 'Ganá 2 de los 3 partidos para clasificar.',
+      E8: 'Partido único. Si perdés volvés a empezar.',
+      E4: 'Partido único. Si perdés volvés a empezar.',
+      SF: 'Partido único. Si perdés volvés a empezar.',
       FINAL: '¡La última batalla!'
     }
   },
@@ -123,10 +123,10 @@ I18N.registrarIdioma('es', {
       groupMatchWin: '✓ Victoria · P{{match}}/3',
       groupMatchLoss: '✗ Derrota · P{{match}}/3',
       resetTournamentConfirmTitle: 'Reiniciar torneo',
-      resetTournamentConfirmBody: 'Se borra el progreso del torneo actual. Las estadísticas y copas se conservan.',
+      resetTournamentConfirmBody: 'Empezás un torneo nuevo. Tus estadísticas y copas se conservan.',
       resetTournamentSuccess: 'Torneo reiniciado.',
       resetAllConfirmTitle: 'Reiniciar todo',
-      resetAllConfirmBody: 'Se borran las estadísticas, las copas y el progreso del torneo actual. El historial reciente, el plan de partidos y las rachas no se modifican. Esta acción no se puede deshacer.',
+      resetAllConfirmBody: 'Reinicia tus estadísticas, copas y el torneo actual. Las rachas, el historial y el plan de partidos se conservan. Esta acción no se puede deshacer.',
       resetAllSuccess: 'Estadísticas del torneo reiniciadas.'
   },
   plan: {
@@ -169,10 +169,10 @@ I18N.registrarIdioma('es', {
     lost: 'Perdidas',
     resetButton: 'Reiniciar rachas',
     resetConfirmTitle: 'Reiniciar rachas',
-    resetConfirmBody: 'Las rachas vuelven a cero. Los nuevos cálculos arrancan desde el próximo partido. El historial y las estadísticas globales no se modifican.',
+    resetConfirmBody: 'Todas las rachas vuelven a cero. El historial y las estadísticas se conservan.',
     resetSuccess: 'Rachas reiniciadas. Nuevo ciclo desde ahora.',
     archiveType: 'Rachas',
-    archiveDescription: 'Guardá el estado actual de tus rachas. Las rachas activas NO se modifican.',
+    archiveDescription: 'Guardá el estado actual de tus rachas.',
     archivePlaceholder: 'Ej: Etapa 2025',
     archiveSaving: 'Guardando...',
     archiveError: 'Error al guardar. Intentá de nuevo.',
@@ -213,7 +213,7 @@ I18N.registrarIdioma('es', {
   archive: {
     title: 'Archivar',
     seasonType: 'Temporada',
-    seasonDescription: 'Guardá las estadísticas actuales con un nombre. Podés seguir jugando normalmente después.',
+    seasonDescription: 'Guardá las estadísticas actuales.',
     seasonPlaceholder: 'Ej: Temporada 2026',
     saving: 'Guardando...',
     saveError: 'Error al guardar. Intentá de nuevo.',
