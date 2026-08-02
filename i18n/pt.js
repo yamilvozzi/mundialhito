@@ -42,7 +42,8 @@ I18N.registrarIdioma('pt', {
     GB: 'Reino Unido',
     JP: 'Japão',
     KR: 'Coréia do Sul',
-    CN: 'China'
+    CN: 'China',
+    CT: 'Catalunha'
   },
   config: {
     title: 'Configuração',

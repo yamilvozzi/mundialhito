@@ -35,7 +35,7 @@ I18N.registrarIdioma('es', {
     AR: 'Argentina', BR: 'Brasil', CL: 'Chile', UY: 'Uruguay',
     US: 'Estados Unidos', MX: 'México', ES: 'España', FR: 'Francia',
     IT: 'Italia', DE: 'Alemania', GB: 'Reino Unido', JP: 'Japón',
-    KR: 'Corea del Sur', CN: 'China'
+    KR: 'Corea del Sur', CN: 'China', CT: 'Cataluña'
   },
   config: {
     title: 'Configuración',

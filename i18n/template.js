@@ -42,7 +42,8 @@ I18N.registrarIdioma('xx', {
     GB: '',
     JP: '',
     KR: '',
-    CN: ''
+    CN: '',
+    CT: ''
   },
   config: {
     title: '',

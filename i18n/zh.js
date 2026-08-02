@@ -42,7 +42,8 @@ I18N.registrarIdioma('zh', {
     GB: '英国',
     JP: '日本',
     KR: '韩国',
-    CN: '中国'
+    CN: '中国',
+    CT: '加泰罗尼亚'
   },
   config: {
     title: '配置',

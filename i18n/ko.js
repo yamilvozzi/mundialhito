@@ -42,7 +42,8 @@ I18N.registrarIdioma('ko', {
     GB: '영국',
     JP: '일본',
     KR: '대한민국',
-    CN: '중국'
+    CN: '중국',
+    CT: '카탈루냐'
   },
   config: {
     title: '구성',

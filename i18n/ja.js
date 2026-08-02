@@ -42,7 +42,8 @@ I18N.registrarIdioma('ja', {
     GB: 'イギリス',
     JP: '日本',
     KR: '韓国',
-    CN: '中国'
+    CN: '中国',
+    CT: 'カタルーニャ'
   },
   config: {
     title: '構成',
