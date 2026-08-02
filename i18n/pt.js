@@ -86,10 +86,10 @@ I18N.registrarIdioma('pt', {
     trophiesShort: 'Copas'
   },
   stats: {
-    played: 'Jogado',
-    won: 'Merecido',
-    lost: 'Perdido',
-    drawn: 'Laços'
+    played: 'Jogos',
+    won: 'Vitórias',
+    lost: 'Derrotas',
+    drawn: 'Empates'
   },
   phase: {
     name: {
@@ -114,9 +114,9 @@ I18N.registrarIdioma('pt', {
   },
   result: {
     sectionLabel: 'Registrar resultado',
-    win: 'eu ganhei',
+    win: 'Vitória',
     draw: 'Empate',
-    loss: 'eu perdi',
+    loss: 'Derrota',
     undo: 'Desfazer última partida',
     resetTournament: 'Reiniciar torneio',
     resetAll: 'Reinicie tudo',
@@ -172,9 +172,9 @@ I18N.registrarIdioma('pt', {
     longestCup: 'Copo mais longo',
     currentCampaign: 'Campanha atual',
     finals: 'Finais',
-    played: 'Peças',
-    won: 'Merecido',
-    lost: 'Perdas',
+    played: 'Jogadas',
+    won: 'Vencidas',
+    lost: 'Perdidas',
     resetButton: 'Reiniciar sequências',
     resetConfirmTitle: 'Reiniciar sequências',
     resetConfirmBody: 'Todas as sequências voltam a zero. A história e as estatísticas são preservadas.',
@@ -206,8 +206,8 @@ I18N.registrarIdioma('pt', {
     fastestCup: 'xícara rápida',
     longestCup: 'xícara longa',
     finals: 'Finais',
-    won: 'Merecido',
-    lost: 'Perdas',
+    won: 'Vencidas',
+    lost: 'Perdidas',
     archivedOn: 'Arquivado em {{date}}',
     loading: 'Carregando...',
     loadError: 'Erro ao carregar.',

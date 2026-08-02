@@ -89,7 +89,7 @@ I18N.registrarIdioma('en', {
     played: 'Played',
     won: 'Won',
     lost: 'Lost',
-    drawn: 'Ties'
+    drawn: 'Drawn'
   },
   phase: {
     name: {
@@ -114,9 +114,9 @@ I18N.registrarIdioma('en', {
   },
   result: {
     sectionLabel: 'Record result',
-    win: 'I won',
+    win: 'Win',
     draw: 'Draw',
-    loss: 'I lost',
+    loss: 'Loss',
     undo: 'Undo last match',
     resetTournament: 'Reset tournament',
     resetAll: 'Reset all',

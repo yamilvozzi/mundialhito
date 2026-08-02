@@ -86,10 +86,10 @@ I18N.registrarIdioma('ko', {
     trophiesShort: '컵'
   },
   stats: {
-    played: '플레이함',
-    won: '획득',
-    lost: '잃어버린',
-    drawn: '의'
+    played: '경기',
+    won: '승',
+    lost: '패',
+    drawn: '무'
   },
   phase: {
     name: {
@@ -114,9 +114,9 @@ I18N.registrarIdioma('ko', {
   },
   result: {
     sectionLabel: '기록 결과',
-    win: '내가 이겼다',
-    draw: '그리다',
-    loss: '나는졌다',
+    win: '승리',
+    draw: '무승부',
+    loss: '패배',
     undo: '마지막 경기 취소',
     resetTournament: '토너먼트 다시 시작',
     resetAll: '모든 것을 다시 시작하세요',
@@ -172,9 +172,9 @@ I18N.registrarIdioma('ko', {
     longestCup: '더 긴 컵',
     currentCampaign: '현재 캠페인',
     finals: '결승',
-    played: '연극',
-    won: '획득',
-    lost: '사상자 수',
+    played: '경기',
+    won: '승리',
+    lost: '패배',
     resetButton: '줄무늬 다시 시작',
     resetConfirmTitle: '줄무늬 다시 시작',
     resetConfirmBody: '모든 줄무늬가 0으로 돌아갑니다. 기록과 통계가 보존됩니다.',
@@ -206,8 +206,8 @@ I18N.registrarIdioma('ko', {
     fastestCup: '빠른 컵',
     longestCup: '긴 컵',
     finals: '결승',
-    won: '획득',
-    lost: '사상자 수',
+    won: '승리',
+    lost: '패배',
     archivedOn: '{{date}}에 제출됨',
     loading: '충전 중...',
     loadError: '로드 중 오류가 발생했습니다.',

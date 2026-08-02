@@ -86,10 +86,10 @@ I18N.registrarIdioma('de', {
     trophiesShort: 'Pokale'
   },
   stats: {
-    played: 'Gespielt',
-    won: 'Verdient',
-    lost: 'Verloren',
-    drawn: 'Krawatten'
+    played: 'Spiele',
+    won: 'Siege',
+    lost: 'Niederlagen',
+    drawn: 'Unentschieden'
   },
   phase: {
     name: {
@@ -114,9 +114,9 @@ I18N.registrarIdioma('de', {
   },
   result: {
     sectionLabel: 'Ergebnis aufzeichnen',
-    win: 'Ich habe gewonnen',
-    draw: 'Ziehen',
-    loss: 'Ich habe verloren',
+    win: 'Sieg',
+    draw: 'Unentschieden',
+    loss: 'Niederlage',
     undo: 'Letztes Spiel rückgängig machen',
     resetTournament: 'Turnier neu starten',
     resetAll: 'Starten Sie alles neu',
@@ -172,9 +172,9 @@ I18N.registrarIdioma('de', {
     longestCup: 'Längere Tasse',
     currentCampaign: 'Aktuelle Kampagne',
     finals: 'Finale',
-    played: 'Spielt',
-    won: 'Verdient',
-    lost: 'Verluste',
+    played: 'Gespielt',
+    won: 'Gewonnen',
+    lost: 'Verloren',
     resetButton: 'Streaks neu starten',
     resetConfirmTitle: 'Streaks neu starten',
     resetConfirmBody: 'Alle Streaks gehen auf Null zurück. Verlauf und Statistiken bleiben erhalten.',
@@ -206,8 +206,8 @@ I18N.registrarIdioma('de', {
     fastestCup: 'schnelle Tasse',
     longestCup: 'lange Tasse',
     finals: 'Finale',
-    won: 'Verdient',
-    lost: 'Verluste',
+    won: 'Gewonnen',
+    lost: 'Verloren',
     archivedOn: 'Abgelegt am {{date}}',
     loading: 'Aufladen...',
     loadError: 'Fehler beim Laden.',

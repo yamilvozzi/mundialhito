@@ -86,10 +86,10 @@ I18N.registrarIdioma('it', {
     trophiesShort: 'Tazze'
   },
   stats: {
-    played: 'Giocato',
-    won: 'Guadagnato',
-    lost: 'Perduto',
-    drawn: 'Cravatte'
+    played: 'Partite',
+    won: 'Vittorie',
+    lost: 'Sconfitte',
+    drawn: 'Pareggi'
   },
   phase: {
     name: {
@@ -114,9 +114,9 @@ I18N.registrarIdioma('it', {
   },
   result: {
     sectionLabel: 'Registra il risultato',
-    win: 'Ho vinto',
-    draw: 'Disegno',
-    loss: 'Ho perso',
+    win: 'Vittoria',
+    draw: 'Pareggio',
+    loss: 'Sconfitta',
     undo: 'Annulla l\'ultima partita',
     resetTournament: 'Ricomincia il torneo',
     resetAll: 'Ricomincia tutto',
@@ -172,9 +172,9 @@ I18N.registrarIdioma('it', {
     longestCup: 'Coppa più lunga',
     currentCampaign: 'Campagna attuale',
     finals: 'Finale',
-    played: 'Gioca',
-    won: 'Guadagnato',
-    lost: 'Perdite',
+    played: 'Giocate',
+    won: 'Vinte',
+    lost: 'Perse',
     resetButton: 'Riavvia le serie',
     resetConfirmTitle: 'Riavvia le serie',
     resetConfirmBody: 'Tutte le serie tornano a zero. La storia e le statistiche vengono preservate.',
@@ -206,8 +206,8 @@ I18N.registrarIdioma('it', {
     fastestCup: 'tazza veloce',
     longestCup: 'tazza lunga',
     finals: 'Finale',
-    won: 'Guadagnato',
-    lost: 'Perdite',
+    won: 'Vinte',
+    lost: 'Perse',
     archivedOn: 'Archiviato il {{date}}',
     loading: 'Ricarica...',
     loadError: 'Errore durante il caricamento.',

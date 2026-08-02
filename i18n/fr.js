@@ -86,10 +86,10 @@ I18N.registrarIdioma('fr', {
     trophiesShort: 'Coupes'
   },
   stats: {
-    played: 'Joué',
-    won: 'Gagné',
-    lost: 'Perdu',
-    drawn: 'Cravates'
+    played: 'Joués',
+    won: 'Gagnés',
+    lost: 'Perdus',
+    drawn: 'Nuls'
   },
   phase: {
     name: {
@@ -114,9 +114,9 @@ I18N.registrarIdioma('fr', {
   },
   result: {
     sectionLabel: 'Enregistrer le résultat',
-    win: 'j\'ai gagné',
-    draw: 'Dessiner',
-    loss: 'J\'ai perdu',
+    win: 'Victoire',
+    draw: 'Match nul',
+    loss: 'Défaite',
     undo: 'Annuler le dernier match',
     resetTournament: 'Recommencer le tournoi',
     resetAll: 'Redémarrez tout',
@@ -172,9 +172,9 @@ I18N.registrarIdioma('fr', {
     longestCup: 'Coupe plus longue',
     currentCampaign: 'Campagne en cours',
     finals: 'Finales',
-    played: 'Pièces',
+    played: 'Jouées',
     won: 'Gagné',
-    lost: 'Pertes',
+    lost: 'Perdues',
     resetButton: 'Redémarrer les séquences',
     resetConfirmTitle: 'Redémarrer les séquences',
     resetConfirmBody: 'Toutes les séquences reviennent à zéro. L\'histoire et les statistiques sont préservées.',
@@ -207,7 +207,7 @@ I18N.registrarIdioma('fr', {
     longestCup: 'longue tasse',
     finals: 'Finales',
     won: 'Gagné',
-    lost: 'Pertes',
+    lost: 'Perdues',
     archivedOn: 'Déposé le {{date}}',
     loading: 'Chargement...',
     loadError: 'Erreur de chargement.',

@@ -86,10 +86,10 @@ I18N.registrarIdioma('ja', {
     trophiesShort: 'カップ'
   },
   stats: {
-    played: '遊んだ',
-    won: '獲得した',
-    lost: '失った',
-    drawn: 'ネクタイ'
+    played: '試合数',
+    won: '勝',
+    lost: '敗',
+    drawn: '引き分け'
   },
   phase: {
     name: {
@@ -114,9 +114,9 @@ I18N.registrarIdioma('ja', {
   },
   result: {
     sectionLabel: '記録結果',
-    win: '勝ちました',
-    draw: '描く',
-    loss: '負けました',
+    win: '勝ち',
+    draw: '引き分け',
+    loss: '負け',
     undo: '最後の一致を元に戻す',
     resetTournament: 'トーナメントを再開する',
     resetAll: 'すべてを再起動します',
@@ -172,9 +172,9 @@ I18N.registrarIdioma('ja', {
     longestCup: '長いカップ',
     currentCampaign: '現在のキャンペーン',
     finals: '決勝戦',
-    played: '演劇',
-    won: '獲得した',
-    lost: '損失',
+    played: '試合数',
+    won: '勝利',
+    lost: '敗戦',
     resetButton: 'リスタートストリーク',
     resetConfirmTitle: 'リスタートストリーク',
     resetConfirmBody: 'すべての縞がゼロに戻ります。履歴と統計は保存されます。',
@@ -206,8 +206,8 @@ I18N.registrarIdioma('ja', {
     fastestCup: 'クイックカップ',
     longestCup: 'ロングカップ',
     finals: '決勝戦',
-    won: '獲得した',
-    lost: '損失',
+    won: '勝利',
+    lost: '敗戦',
     archivedOn: '{{date}} に提出',
     loading: '充電...',
     loadError: '読み込みエラー。',

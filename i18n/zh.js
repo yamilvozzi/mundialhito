@@ -86,10 +86,10 @@ I18N.registrarIdioma('zh', {
     trophiesShort: '杯子'
   },
   stats: {
-    played: '玩过',
-    won: '赢得',
-    lost: '丢失的',
-    drawn: '领带'
+    played: '场次',
+    won: '胜',
+    lost: '负',
+    drawn: '平'
   },
   phase: {
     name: {
@@ -114,9 +114,9 @@ I18N.registrarIdioma('zh', {
   },
   result: {
     sectionLabel: '记录结果',
-    win: '我赢了',
-    draw: '画',
-    loss: '我输了',
+    win: '胜',
+    draw: '平',
+    loss: '负',
     undo: '撤消上一场比赛',
     resetTournament: '重新开始比赛',
     resetAll: '重新启动一切',
@@ -172,9 +172,9 @@ I18N.registrarIdioma('zh', {
     longestCup: '加长罩杯',
     currentCampaign: '当前活动',
     finals: '决赛',
-    played: '戏剧',
-    won: '赢得',
-    lost: '损失',
+    played: '已赛',
+    won: '胜',
+    lost: '负',
     resetButton: '连续重启',
     resetConfirmTitle: '连续重启',
     resetConfirmBody: '所有条纹都归零。历史和统计数据被保留。',
@@ -206,8 +206,8 @@ I18N.registrarIdioma('zh', {
     fastestCup: '快杯',
     longestCup: '长杯',
     finals: '决赛',
-    won: '赢得',
-    lost: '损失',
+    won: '胜',
+    lost: '负',
     archivedOn: '提交于 {{date}}',
     loading: '收费...',
     loadError: '加载时出错。',

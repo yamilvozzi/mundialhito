@@ -86,10 +86,10 @@ I18N.registrarIdioma('ca', {
     trophiesShort: 'Copes'
   },
   stats: {
-    played: 'Jugat',
+    played: 'Jugats',
     won: 'Guanyats',
     lost: 'Perduts',
-    drawn: 'Empats'
+    drawn: 'Empatats'
   },
   phase: {
     name: {
@@ -114,9 +114,9 @@ I18N.registrarIdioma('ca', {
   },
   result: {
     sectionLabel: 'Registrar resultat',
-    win: 'Vaig guanyar',
-    draw: 'Vaig empatar',
-    loss: 'Vaig perdre',
+    win: 'Victòria',
+    draw: 'Empat',
+    loss: 'Derrota',
     undo: 'Desfer últim partit',
     resetTournament: 'Reiniciar torneig',
     resetAll: 'Reiniciar-ho tot',
@@ -172,9 +172,9 @@ I18N.registrarIdioma('ca', {
     longestCup: 'Copa més llarga',
     currentCampaign: 'Campanya actual',
     finals: 'Finals',
-    played: 'Partides',
+    played: 'Jugades',
     won: 'Guanyades',
-    lost: 'Pèrdues',
+    lost: 'Perdudes',
     resetButton: 'Reiniciar ratxes',
     resetConfirmTitle: 'Reiniciar ratxes',
     resetConfirmBody: 'Totes les ratxes tornen a zero. L\'historial i les estadístiques es conserven.',
@@ -207,7 +207,7 @@ I18N.registrarIdioma('ca', {
     longestCup: 'Copa llarga',
     finals: 'Finals',
     won: 'Guanyades',
-    lost: 'Pèrdues',
+    lost: 'Perdudes',
     archivedOn: 'Arxivat el {{date}}',
     loading: 'Carregant...',
     loadError: 'Error en carregar.',
