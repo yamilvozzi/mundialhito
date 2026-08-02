@@ -31,6 +31,7 @@
   let ctx = null;
   let animationFrameId = null;
   let audioActual = null;
+  let solicitudHimno = 0;
   let particulas = [];
   let inicioAnimacion = 0;
 
@@ -193,6 +194,20 @@
     }
   }
 
+  // Para himnos que todavía no fueron subidos, se comprueba su presencia
+  // antes de crear el reproductor. Un 404 así no llega al elemento Audio ni
+  // genera mensajes en consola; cuando el archivo exista se usará solo.
+  function reproducirHimnoSiExiste(ruta, volumen) {
+    const solicitud = ++solicitudHimno;
+    fetch(ruta, { method: 'HEAD' })
+      .then(function (respuesta) {
+        if (respuesta.ok && solicitud === solicitudHimno) {
+          reproducirHimno(ruta, volumen);
+        }
+      })
+      .catch(function () { /* no-op */ });
+  }
+
   // Dispara la celebración para un país. Si el país no está registrado (o
   // le falta algún dato), cae automáticamente a la celebración genérica.
   function celebrar(codigoPais, opciones) {
@@ -211,13 +226,19 @@
     }
 
     if (sonidoActivo && datosPais && datosPais.himno) {
-      reproducirHimno(datosPais.himno, volumenSonido);
+      if (datosPais.himnoOpcional) {
+        reproducirHimnoSiExiste(datosPais.himno, volumenSonido);
+      } else {
+        solicitudHimno++;
+        reproducirHimno(datosPais.himno, volumenSonido);
+      }
     }
   }
 
   // Corta el audio (si está sonando) y limpia el confetti. Pensado para
   // llamarse al cerrar el modal de campeón o al salir de la sesión.
   function detener() {
+    solicitudHimno++;
     limpiarConfetti();
     if (audioActual) {
       try {

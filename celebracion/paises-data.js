@@ -44,6 +44,11 @@ CELEBRACION.registrarPais('ES', {
   colores: ['#AA151B', '#F1BF00'],
   himno: 'audio/himnos/ES.mp3'
 });
+CELEBRACION.registrarPais('CT', {
+  colores: ['#FCDD09', '#DA121A'],
+  himno: 'audio/himnos/CT.mp3',
+  himnoOpcional: true
+});
 CELEBRACION.registrarPais('FR', {
   colores: ['#0055A4', '#FFFFFF', '#EF4135'],
   himno: 'audio/himnos/FR.mp3'
