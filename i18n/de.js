@@ -3,9 +3,9 @@
 
 I18N.registrarIdioma('de', {
   common: {
-    save: 'Halten',
+    save: 'Speichern',
     cancel: 'Stornieren',
-    delete: 'Beseitigen',
+    delete: 'Löschen',
     confirm: 'Bestätigen',
     menu: 'Speisekarte'
   },
@@ -69,13 +69,13 @@ I18N.registrarIdioma('de', {
     nameRemoved: 'Name entfernt.'
   },
   nav: {
-    mundialhito: 'Weltmeilenstein',
+    mundialhito: 'MUNDIALHITO',
     activity: 'Aktivität',
     streaks: 'Streifen',
     archive: 'Datei',
     history: 'Aufzeichnen',
     streakHistory: 'Hist. Streifen',
-    logout: 'Hinausgehen'
+    logout: 'Abmelden'
   },
   activity: {
     title: 'Aktivität',
@@ -83,7 +83,7 @@ I18N.registrarIdioma('de', {
   },
   copas: {
     trophiesWon: 'Pokale gewonnen',
-    trophiesShort: 'Tassen'
+    trophiesShort: 'Pokale'
   },
   stats: {
     played: 'Gespielt',
@@ -109,7 +109,7 @@ I18N.registrarIdioma('de', {
   },
   bracket: {
     r16: 'Achte',
-    qf: 'Zimmer',
+    qf: 'Viertelfinale',
     sf: 'Halb'
   },
   result: {
@@ -146,18 +146,18 @@ I18N.registrarIdioma('de', {
     renewed: 'Plan erneuert ab 1'
   },
   championModal: {
-    title: 'Weltmeister-Meilenstein',
+    title: 'MUNDIALHITO-Champion',
     continue: 'Weitermachen'
   },
   coinModal: {
     title: 'Definition durch Strafen',
     subtitleInitial: 'Ziehen. Ich habe mich vor dem Schießen für Kopf oder Zahl entschieden.',
     subtitleChosen: 'Sie haben {{choice}} gewählt. Berühre die Münze.',
-    heads: 'Gesicht',
-    tails: 'Minze',
+    heads: 'Kopf',
+    tails: 'Zahl',
     confirm: 'Ergebnis bestätigen',
     resultOut: '{{result}} kam heraus – ',
-    resultWin: 'Wunsch!',
+    resultWin: 'Du gewinnst!',
     resultLoss: 'Du verlierst'
   },
   rachas: {

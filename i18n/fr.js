@@ -3,9 +3,9 @@
 
 I18N.registrarIdioma('fr', {
   common: {
-    save: 'Garder',
+    save: 'Enregistrer',
     cancel: 'Annuler',
-    delete: 'Éliminer',
+    delete: 'Supprimer',
     confirm: 'Confirmer',
     menu: 'Menu'
   },
@@ -13,8 +13,8 @@ I18N.registrarIdioma('fr', {
     subtitle: 'tracker personnel',
     emailPlaceholder: 'E-mail',
     passwordPlaceholder: 'Mot de passe',
-    signIn: 'Entrer dans',
-    separator: 'soit',
+    signIn: 'Se connecter',
+    separator: 'ou',
     createAccount: 'Créer un nouveau compte',
     continueWithGoogle: 'Continuer avec Google',
     fillCredentials: 'Adresse e-mail et mot de passe complets.',
@@ -31,7 +31,7 @@ I18N.registrarIdioma('fr', {
   country: {
     AR: 'Argentine',
     BR: 'Brésil',
-    CL: 'Piment',
+    CL: 'Chili',
     UY: 'Uruguay',
     US: 'USA',
     MX: 'Mexique',
@@ -69,13 +69,13 @@ I18N.registrarIdioma('fr', {
     nameRemoved: 'Nom supprimé.'
   },
   nav: {
-    mundialhito: 'Jalon mondial',
+    mundialhito: 'MUNDIALHITO',
     activity: 'Activité',
-    streaks: 'Traces',
-    archive: 'Déposer',
-    history: 'Enregistrer',
+    streaks: 'Séries',
+    archive: 'Archiver',
+    history: 'Historique',
     streakHistory: 'Hist. Traces',
-    logout: 'Sortir'
+    logout: 'Se déconnecter'
   },
   activity: {
     title: 'Activité',
@@ -83,7 +83,7 @@ I18N.registrarIdioma('fr', {
   },
   copas: {
     trophiesWon: 'Coupes gagnées',
-    trophiesShort: 'Tasses'
+    trophiesShort: 'Coupes'
   },
   stats: {
     played: 'Joué',
@@ -109,7 +109,7 @@ I18N.registrarIdioma('fr', {
   },
   bracket: {
     r16: 'Huitième',
-    qf: 'Chambres',
+    qf: 'Quarts',
     sf: 'Semi'
   },
   result: {
@@ -146,22 +146,22 @@ I18N.registrarIdioma('fr', {
     renewed: 'Plan renouvelé du 1'
   },
   championModal: {
-    title: 'Champion du mondeJalon',
+    title: 'Champion de MUNDIALHITO',
     continue: 'Continuer'
   },
   coinModal: {
     title: 'Définition par pénalités',
     subtitleInitial: 'Dessiner. J\'ai choisi pile ou face avant de tourner.',
     subtitleChosen: 'Vous avez choisi {{choice}}. Touchez la pièce.',
-    heads: 'Affronter',
-    tails: 'Menthe',
+    heads: 'Pile',
+    tails: 'Face',
     confirm: 'Confirmer le résultat',
     resultOut: '{{result}} est sorti — ',
-    resultWin: 'Désir!',
+    resultWin: 'Vous gagnez !',
     resultLoss: 'tu perds'
   },
   rachas: {
-    title: 'Traces',
+    title: 'Séries',
     subtitle: 'Dossiers personnels',
     empty: 'Il n\'y a pas encore de matchs enregistrés.<br>Jouez votre premier match pour commencer à voir vos séries.',
     winStreak: 'Victoires consécutives',

@@ -3,9 +3,9 @@
 
 I18N.registrarIdioma('zh', {
   common: {
-    save: '保持',
+    save: '保存',
     cancel: '取消',
-    delete: '排除',
+    delete: '删除',
     confirm: '确认',
     menu: '菜单'
   },
@@ -31,7 +31,7 @@ I18N.registrarIdioma('zh', {
   country: {
     AR: '阿根廷',
     BR: '巴西',
-    CL: '辣椒',
+    CL: '智利',
     UY: '乌拉圭',
     US: '美国',
     MX: '墨西哥',
@@ -69,13 +69,13 @@ I18N.registrarIdioma('zh', {
     nameRemoved: '名字被删除了。'
   },
   nav: {
-    mundialhito: '世界里程碑',
+    mundialhito: 'MUNDIALHITO',
     activity: '活动',
     streaks: '条纹',
     archive: '文件',
     history: '记录',
     streakHistory: '历史。条纹',
-    logout: '出去'
+    logout: '退出登录'
   },
   activity: {
     title: '活动',
@@ -109,7 +109,7 @@ I18N.registrarIdioma('zh', {
   },
   bracket: {
     r16: '第八',
-    qf: '客房',
+    qf: '四分之一决赛',
     sf: '半'
   },
   result: {
@@ -146,18 +146,18 @@ I18N.registrarIdioma('zh', {
     renewed: '计划从 1 更新'
   },
   championModal: {
-    title: '世界冠军里程碑',
+    title: 'MUNDIALHITO 冠军',
     continue: '继续'
   },
   coinModal: {
     title: '处罚定义',
     subtitleInitial: '画。我在拍摄前选择了正面或反面。',
     subtitleChosen: '您选择了{{choice}}。触摸硬币。',
-    heads: '脸',
-    tails: '薄荷',
+    heads: '正面',
+    tails: '反面',
     confirm: '确认结果',
     resultOut: '{{result}}出来了—— ',
-    resultWin: '欲望！',
+    resultWin: '你赢了！',
     resultLoss: '你输了'
   },
   rachas: {

@@ -3,7 +3,7 @@
 
 I18N.registrarIdioma('ko', {
   common: {
-    save: '유지하다',
+    save: '저장',
     cancel: '취소',
     delete: '제거하다',
     confirm: '확인하다',
@@ -69,13 +69,13 @@ I18N.registrarIdioma('ko', {
     nameRemoved: '이름이 삭제되었습니다.'
   },
   nav: {
-    mundialhito: '세계적 이정표',
+    mundialhito: 'MUNDIALHITO',
     activity: '활동',
     streaks: '줄무늬',
     archive: '파일',
     history: '기록',
     streakHistory: '역사. 줄무늬',
-    logout: '나가다'
+    logout: '로그아웃'
   },
   activity: {
     title: '활동',
@@ -109,7 +109,7 @@ I18N.registrarIdioma('ko', {
   },
   bracket: {
     r16: '여덟 번째',
-    qf: '객실',
+    qf: '8강',
     sf: '두 가구 연립 주택'
   },
   result: {
@@ -146,18 +146,18 @@ I18N.registrarIdioma('ko', {
     renewed: '1부터 갱신된 요금제'
   },
   championModal: {
-    title: '세계 챔피언 이정표',
+    title: 'MUNDIALHITO 챔피언',
     continue: '계속하다'
   },
   coinModal: {
     title: '처벌에 의한 정의',
     subtitleInitial: '그리다. 촬영하기 전에 머리 또는 꼬리를 선택했습니다.',
     subtitleChosen: '{{choice}}을 선택하셨습니다. 동전을 터치하세요.',
-    heads: '얼굴',
-    tails: '박하',
+    heads: '앞면',
+    tails: '뒷면',
     confirm: '결과 확인',
     resultOut: '{{result}}이 나왔습니다 — ',
-    resultWin: '욕구!',
+    resultWin: '승리!',
     resultLoss: '당신은 잃습니다'
   },
   rachas: {

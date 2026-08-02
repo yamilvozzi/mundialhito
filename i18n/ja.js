@@ -3,7 +3,7 @@
 
 I18N.registrarIdioma('ja', {
   common: {
-    save: '保つ',
+    save: '保存',
     cancel: 'キャンセル',
     delete: 'なくす',
     confirm: '確認する',
@@ -69,13 +69,13 @@ I18N.registrarIdioma('ja', {
     nameRemoved: '名前は削除されました。'
   },
   nav: {
-    mundialhito: '世界のマイルストーン',
+    mundialhito: 'MUNDIALHITO',
     activity: '活動',
     streaks: '縞模様',
     archive: 'ファイル',
     history: '記録',
     streakHistory: '履歴。縞模様',
-    logout: '外出'
+    logout: 'ログアウト'
   },
   activity: {
     title: '活動',
@@ -109,7 +109,7 @@ I18N.registrarIdioma('ja', {
   },
   bracket: {
     r16: '8番目',
-    qf: '客室',
+    qf: '準々決勝',
     sf: 'セミ'
   },
   result: {
@@ -146,18 +146,18 @@ I18N.registrarIdioma('ja', {
     renewed: 'プランを1からリニューアル'
   },
   championModal: {
-    title: '世界チャンピオンマイルストーン',
+    title: 'MUNDIALHITO チャンピオン',
     continue: '続く'
   },
   coinModal: {
     title: '罰則による定義',
     subtitleInitial: '描く。撮影前に表か裏を選択しました。',
     subtitleChosen: '{{choice}} を選択しました。コインに触れます。',
-    heads: '顔',
-    tails: 'ミント',
+    heads: '表',
+    tails: '裏',
     confirm: '結果の確認',
     resultOut: '{{result}} が出てきました — ',
-    resultWin: '欲望！',
+    resultWin: '勝ち！',
     resultLoss: 'あなたは負けます'
   },
   rachas: {

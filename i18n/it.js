@@ -3,7 +3,7 @@
 
 I18N.registrarIdioma('it', {
   common: {
-    save: 'Mantenere',
+    save: 'Salva',
     cancel: 'Cancellare',
     delete: 'Eliminare',
     confirm: 'Confermare',
@@ -31,7 +31,7 @@ I18N.registrarIdioma('it', {
   country: {
     AR: 'Argentina',
     BR: 'Brasile',
-    CL: 'Peperoncino',
+    CL: 'Cile',
     UY: 'Uruguay',
     US: 'U.S.A.',
     MX: 'Messico',
@@ -69,7 +69,7 @@ I18N.registrarIdioma('it', {
     nameRemoved: 'Nome rimosso.'
   },
   nav: {
-    mundialhito: 'Pietra miliare mondiale',
+    mundialhito: 'MUNDIALHITO',
     activity: 'Attività',
     streaks: 'Strisce',
     archive: 'File',
@@ -109,7 +109,7 @@ I18N.registrarIdioma('it', {
   },
   bracket: {
     r16: 'Ottavo',
-    qf: 'Camere',
+    qf: 'Quarti',
     sf: 'Semi'
   },
   result: {
@@ -146,22 +146,22 @@ I18N.registrarIdioma('it', {
     renewed: 'Piano rinnovato dal 1'
   },
   championModal: {
-    title: 'Campione del mondo, pietra miliare',
+    title: 'Campione di MUNDIALHITO',
     continue: 'Continuare'
   },
   coinModal: {
     title: 'Definizione mediante sanzioni',
     subtitleInitial: 'Disegno. Ho scelto testa o croce prima di scattare.',
     subtitleChosen: 'Hai scelto {{choice}}. Tocca la moneta.',
-    heads: 'Viso',
-    tails: 'Menta',
+    heads: 'Testa',
+    tails: 'Croce',
     confirm: 'Conferma risultato',
     resultOut: '{{result}} è uscito — ',
-    resultWin: 'Desiderio!',
+    resultWin: 'Hai vinto!',
     resultLoss: 'perdi'
   },
   rachas: {
-    title: 'Strisce',
+    title: 'Serie',
     subtitle: 'Documenti personali',
     empty: 'Non ci sono ancora partite registrate.<br>Gioca la tua prima partita per iniziare a vedere le tue serie consecutive.',
     winStreak: 'Vittorie consecutive',

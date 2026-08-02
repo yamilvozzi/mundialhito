@@ -83,7 +83,7 @@ I18N.registrarIdioma('ca', {
   },
   copas: {
     trophiesWon: 'Copes guanyades',
-    trophiesShort: 'Tasses'
+    trophiesShort: 'Copes'
   },
   stats: {
     played: 'Jugat',
@@ -95,7 +95,7 @@ I18N.registrarIdioma('ca', {
     name: {
       FG: 'Fase de Grups',
       E8: 'Vuitens de Final',
-      E4: 'Cambres de Final',
+    E4: 'Quarts de final',
       SF: 'Semifinal',
       FINAL: 'Gran Final'
     },
@@ -109,7 +109,7 @@ I18N.registrarIdioma('ca', {
   },
   bracket: {
     r16: 'Vuitens',
-    qf: 'Cambres',
+    qf: 'Quarts',
     sf: 'Semi'
   },
   result: {
@@ -146,13 +146,13 @@ I18N.registrarIdioma('ca', {
     renewed: 'Pla renovat des de 1'
   },
   championModal: {
-    title: 'Campió del MundialHito',
+    title: 'Campió de MUNDIALHITO',
     continue: 'Continuar'
   },
   coinModal: {
     title: 'Definició per penals',
-    subtitleInitial: 'Empat. Vaig triar cara o seca abans de llençar.',
-    subtitleChosen: 'Vas triar {{choice}}. Vaig tocar la moneda.',
+    subtitleInitial: 'Empat. Tria cara o creu abans de llançar.',
+    subtitleChosen: 'Has triat {{choice}}. Toca la moneda.',
     heads: 'Cara',
     tails: 'Ceca',
     confirm: 'Confirmar resultat',

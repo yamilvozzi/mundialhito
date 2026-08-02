@@ -3,7 +3,7 @@
 
 I18N.registrarIdioma('pt', {
   common: {
-    save: 'Manter',
+    save: 'Salvar',
     cancel: 'Cancelar',
     delete: 'Eliminar',
     confirm: 'Confirmar',
@@ -14,7 +14,7 @@ I18N.registrarIdioma('pt', {
     emailPlaceholder: 'E-mail',
     passwordPlaceholder: 'Senha',
     signIn: 'Entre',
-    separator: 'qualquer',
+    separator: 'ou',
     createAccount: 'Criar nova conta',
     continueWithGoogle: 'Continuar com o Google',
     fillCredentials: 'E-mail e senha completos.',
@@ -31,7 +31,7 @@ I18N.registrarIdioma('pt', {
   country: {
     AR: 'Argentina',
     BR: 'Brasil',
-    CL: 'Pimentão',
+    CL: 'Chile',
     UY: 'Uruguai',
     US: 'EUA',
     MX: 'México',
@@ -69,7 +69,7 @@ I18N.registrarIdioma('pt', {
     nameRemoved: 'Nome removido.'
   },
   nav: {
-    mundialhito: 'Marco mundial',
+    mundialhito: 'MUNDIALHITO',
     activity: 'Atividade',
     streaks: 'Ondas',
     archive: 'Arquivo',
@@ -83,7 +83,7 @@ I18N.registrarIdioma('pt', {
   },
   copas: {
     trophiesWon: 'Taças vencidas',
-    trophiesShort: 'Copos'
+    trophiesShort: 'Copas'
   },
   stats: {
     played: 'Jogado',
@@ -146,7 +146,7 @@ I18N.registrarIdioma('pt', {
     renewed: 'Plano renovado a partir de 1'
   },
   championModal: {
-    title: 'Campeão MundialMarco',
+    title: 'Campeão do MUNDIALHITO',
     continue: 'Continuar'
   },
   coinModal: {
@@ -154,14 +154,14 @@ I18N.registrarIdioma('pt', {
     subtitleInitial: 'Empate. Eu escolhi cara ou coroa antes de atirar.',
     subtitleChosen: 'Você escolheu {{choice}}. Toque na moeda.',
     heads: 'Face',
-    tails: 'Hortelã',
+    tails: 'Coroa',
     confirm: 'Confirmar resultado',
     resultOut: '{{result}} saiu - ',
-    resultWin: 'Desejo!',
+    resultWin: 'Você ganhou!',
     resultLoss: 'você perde'
   },
   rachas: {
-    title: 'Ondas',
+    title: 'Sequências',
     subtitle: 'Registros pessoais',
     empty: 'Ainda não há partidas registradas.<br>Jogue sua primeira partida para começar a ver suas sequências.',
     winStreak: 'Vitórias consecutivas',
