@@ -16,7 +16,7 @@ El objetivo no es solo registrar resultados, sino darle contexto a cada partido 
 * Llevar estadísticas generales de partidos jugados, ganados, empatados y perdidos.
 * Conservar un historial de temporadas y copas obtenidas.
 * Registrar rachas actuales e históricas, con posibilidad de archivarlas.
-* Deshacer el último partido registrado.
+* Deshacer el último partido registrado en caso de haber cargado un resultado por error.
 * Reiniciar un torneo o comenzar desde cero cuando sea necesario.
 * Utilizar un contador renovable de 10 partidos para seguir ciclos personales de juego.
 * Personalizar nombre, nacionalidad, idioma, sonidos y celebraciones.
