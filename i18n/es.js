@@ -81,7 +81,7 @@ I18N.registrarIdioma('es', {
       played: 'Jugados',
       won: 'Ganados',
       lost: 'Perdidos',
-      drawn: 'Empates'
+      drawn: 'Empatados'
   },
   phase: {
     name: {
