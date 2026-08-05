@@ -22,9 +22,12 @@
   'use strict';
 
   const PAISES_DATA = {};   // se completa vía registrarPais() desde paises-data.js
-  const DURACION_MS = 15000; // duración de EMISIÓN de confetti (15s) — acompaña la duración típica de los himnos.
-  // Al cabo de este tiempo dejan de generarse partículas nuevas; las que ya están cayendo
-  // terminan de salir de pantalla solas — ver tick(), final en cascada natural.
+  const FALLBACK_MS = 15000; // salvavidas: si el evento 'ended' del himno nunca se dispara
+  // (audio bloqueado, archivo faltante, error de carga, país sin himno o con sonido
+  // desactivado), este timeout corta la EMISIÓN de confetti a los ~15s. En el caso
+  // normal, la emisión se corta cuando el himno termina — ver reproducirHimno()
+  // → 'ended' → detenerEmision(). Las partículas ya generadas siguen cayendo solas,
+  // sin desaparecer de golpe — ver tick(), final en cascada natural.
   const CANTIDAD_PARTICULAS = 140;
 
   let canvas = null;
@@ -34,6 +37,8 @@
   let solicitudHimno = 0;
   let particulas = [];
   let inicioAnimacion = 0;
+  let emisionActiva = false;     // true mientras deben seguir generándose partículas nuevas
+  let fallbackTimeoutId = null;  // id del setTimeout de salvavidas (ver FALLBACK_MS)
 
   function registrarPais(code, data) {
     PAISES_DATA[code] = data;
@@ -95,8 +100,7 @@
 
   function tick(timestamp) {
     if (!inicioAnimacion) inicioAnimacion = timestamp;
-    const transcurrido = timestamp - inicioAnimacion;
-    const emitiendo = transcurrido < DURACION_MS;
+    const emitiendo = emisionActiva;
 
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     let quedanCayendo = false;
@@ -150,6 +154,8 @@
     if (animationFrameId) cancelAnimationFrame(animationFrameId);
     animationFrameId = null;
     inicioAnimacion = 0;
+    emisionActiva = false;
+    if (fallbackTimeoutId) { clearTimeout(fallbackTimeoutId); fallbackTimeoutId = null; }
     if (canvas) {
       window.removeEventListener('resize', resizeCanvas);
       canvas.remove();
@@ -161,9 +167,19 @@
 
   function lanzarConfetti(colores) {
     limpiarConfetti(); // por si quedó una celebración anterior sin cerrar prolijamente
+    emisionActiva = true;
     crearCanvas();
     crearParticulas(colores);
     animationFrameId = requestAnimationFrame(tick);
+  }
+
+  // Corta la EMISIÓN de partículas nuevas (no borra las que ya están cayendo,
+  // que terminan de salir de pantalla solas — ver tick()). Se invoca cuando
+  // termina el himno ('ended' en reproducirHimno) o, como salvavidas, a los
+  // FALLBACK_MS si ese evento nunca llega. Segura frente a llamadas repetidas.
+  function detenerEmision() {
+    if (fallbackTimeoutId) { clearTimeout(fallbackTimeoutId); fallbackTimeoutId = null; }
+    emisionActiva = false;
   }
 
   function reproducirHimno(ruta, volumen) {
@@ -173,10 +189,12 @@
       audio.volume = Math.max(0, Math.min(1, (volumen != null ? volumen : 70) / 100));
       // Si el archivo no existe o falla la carga, no debe romper nada más.
       audio.addEventListener('error', function () { /* no-op */ });
-      // Si el himno termina de sonar solo (6-12s) antes de que el usuario
-      // cierre el modal, liberamos la referencia y el buffer decodificado
-      // de inmediato, sin esperar al click en "Continuar" (→ detener()).
+      // Cuando el himno termina de sonar solo, se corta la EMISIÓN de
+      // confetti (detenerEmision) y liberamos la referencia y el buffer
+      // decodificado de inmediato, sin esperar al click en "Continuar"
+      // (→ detener()).
       audio.addEventListener('ended', function () {
+        detenerEmision();
         if (audioActual === audio) {
           audio.src = '';
           audioActual = null;
@@ -223,6 +241,10 @@
 
     if (celebracionesActivas) {
       lanzarConfetti(colores);
+      // Salvavidas: si el himno no dispara 'ended' (sonido desactivado, país
+      // sin himno configurado, archivo opcional faltante, audio bloqueado),
+      // esto igual corta la emisión de confetti a los FALLBACK_MS.
+      fallbackTimeoutId = setTimeout(detenerEmision, FALLBACK_MS);
     }
 
     if (sonidoActivo && datosPais && datosPais.himno) {
