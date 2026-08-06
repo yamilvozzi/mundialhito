@@ -22,12 +22,15 @@
   'use strict';
 
   const PAISES_DATA = {};   // se completa vía registrarPais() desde paises-data.js
-  const FALLBACK_MS = 15000; // salvavidas: si el evento 'ended' del himno nunca se dispara
-  // (audio bloqueado, archivo faltante, error de carga, país sin himno o con sonido
-  // desactivado), este timeout corta la EMISIÓN de confetti a los ~15s. En el caso
-  // normal, la emisión se corta cuando el himno termina — ver reproducirHimno()
-  // → 'ended' → detenerEmision(). Las partículas ya generadas siguen cayendo solas,
-  // sin desaparecer de golpe — ver tick(), final en cascada natural.
+  const FALLBACK_MS = 15000; // salvavidas INICIAL: cubre el tramo entre arrancar la
+  // celebración y que el navegador informe la duración real del himno (evento
+  // 'loadedmetadata', ver reproducirHimno). También queda como salvavidas definitivo
+  // cuando no hay duración que conocer: archivo faltante, audio bloqueado por el
+  // navegador, error de carga, país sin himno configurado o sonido desactivado.
+  const MARGEN_HIMNO_MS = 2000; // apenas se conoce la duración real del himno, el
+  // salvavidas se reprograma a duración + este margen (jitter de red/reproducción),
+  // en vez de quedarse en FALLBACK_MS — así el confeti dura lo que dura CADA himno,
+  // sea de 8s o de 90s, sin tocar código si se suben himnos más largos o más cortos.
   const CANTIDAD_PARTICULAS = 140;
 
   let canvas = null;
@@ -189,6 +192,17 @@
       audio.volume = Math.max(0, Math.min(1, (volumen != null ? volumen : 70) / 100));
       // Si el archivo no existe o falla la carga, no debe romper nada más.
       audio.addEventListener('error', function () { /* no-op */ });
+      // En cuanto el navegador conoce la duración real del himno, se reprograma
+      // el salvavidas para que cubra esa duración (+ MARGEN_HIMNO_MS) en vez de
+      // quedarse con el FALLBACK_MS genérico de arranque. Si emisionActiva ya es
+      // false (celebracionesActivas apagado, o el usuario ya cerró el modal), no
+      // hay nada que reprogramar.
+      audio.addEventListener('loadedmetadata', function () {
+        if (emisionActiva && isFinite(audio.duration) && audio.duration > 0) {
+          if (fallbackTimeoutId) clearTimeout(fallbackTimeoutId);
+          fallbackTimeoutId = setTimeout(detenerEmision, (audio.duration * 1000) + MARGEN_HIMNO_MS);
+        }
+      });
       // Cuando el himno termina de sonar solo, se corta la EMISIÓN de
       // confetti (detenerEmision) y liberamos la referencia y el buffer
       // decodificado de inmediato, sin esperar al click en "Continuar"
