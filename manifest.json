@@ -2,7 +2,7 @@
   "name": "Mundialhito",
   "short_name": "Mundialhito",
   "description": "Tracker personal de fútbol",
-  "start_url": "/mundialhito/",
+  "start_url": "/",
   "display": "standalone",
   "background_color": "#0A0F0D",
   "theme_color": "#0A0F0D",

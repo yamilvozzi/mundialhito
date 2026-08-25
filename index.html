@@ -3064,7 +3064,7 @@ document.getElementById('btnGoogle').addEventListener('click', async function() 
   this.textContent = I18N.t('login.connectingGoogle'); this.disabled = true;
   const { error } = await sb.auth.signInWithOAuth({
     provider: 'google',
-    options: { redirectTo: 'https://yamilvozzi.github.io/mundialhito/' }
+    options: { redirectTo: 'https://mundialhito.vercel.app/' }
   });
   this.textContent = I18N.t('login.continueWithGoogle'); this.disabled = false;
   if (error) { errEl.textContent = I18N.t('login.googleError'); }
@@ -4387,7 +4387,7 @@ inicializar();
 // ── SERVICE WORKER ────────────────────────────────────
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', function() {
-    navigator.serviceWorker.register('/mundialhito/sw.js');
+    navigator.serviceWorker.register('/sw.js');
   });
 }
 </script>
