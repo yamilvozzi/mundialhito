@@ -72,13 +72,16 @@ test('guardado exitoso conserva contrato y usa una copia independiente sin snaps
   assert.equal(writes[0].row.user_id,'alice');
   assert.equal(writes[0].options.onConflict,'user_id');
   assert.equal(element('saveStatusText').textContent,'persistence.saved');
+  assert.equal(element('saveStatus').hidden,true);
   assert.equal(c.hayCambiosSinGuardar(),false);
 });
 
 test('varios partidos cercanos: nunca hay escrituras simultáneas y se conserva el último estado',async()=>{
-  const {c,fixture,writes}=app();
+  const {c,fixture,writes,element}=app();
   const first=deferred();fixture.answers.push(first.promise);
   const a=c.procesarResultado('win',false);
+  assert.equal(element('saveStatusText').textContent,'persistence.saving');
+  assert.equal(element('saveStatus').hidden,false);
   const b=c.procesarResultado('loss',false);
   const d=c.procesarResultado('win',true);
   assert.equal(writes.length,1);
@@ -113,12 +116,14 @@ test('error de Supabase conserva cambios, no anuncia éxito y permite reintento'
   assert.equal(c.state.totalJugados,1);
   assert.equal(c.hayCambiosSinGuardar(),true);
   assert.equal(element('saveStatusText').textContent,'persistence.error');
+  assert.equal(element('saveStatus').hidden,false);
   assert.equal(element('btnRetrySave').hidden,false);
   assert.equal(flashes.length,0);
   assert.equal(await c.vaciarGuardado(),true);
   assert.equal(writes.length,2);
   assert.deepEqual(copy(writes[0].row.state),copy(writes[1].row.state));
   assert.equal(element('saveStatusText').textContent,'persistence.saved');
+  assert.equal(element('saveStatus').hidden,true);
 });
 
 test('excepción de red: retiene la versión más nueva llegada durante la petición fallida',async()=>{

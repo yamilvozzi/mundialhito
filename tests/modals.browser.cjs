@@ -64,6 +64,7 @@ const root=path.join(__dirname,'..');
   // Antes de lanzar se puede cancelar incluso después de elegir cara/ceca.
   for(const action of ['cancel','escape']){
    await draw.tap();await page.locator('.modal-btn-cara').click();
+   assert.equal(await page.locator('#btnCancelarEmpate').isVisible(),true);
    if(action==='cancel')await page.locator('#btnCancelarEmpate').tap();else await page.keyboard.press('Escape');
    await closed();assert.equal(await page.evaluate(()=>JSON.stringify(state)),baseline);assert.equal(writes,0);
   }
@@ -73,11 +74,13 @@ const root=path.join(__dirname,'..');
    const coin=page.locator('#moneda');assert.equal(await page.evaluate(()=>document.activeElement.id),'moneda');
    if(action==='click')await coin.click();else if(action==='tap')await coin.tap();else await coin.press(action);
    assert.equal(await page.locator('#btnCancelarEmpate').isDisabled(),true);
+   assert.equal(await page.locator('#btnCancelarEmpate').isVisible(),false);
    await page.keyboard.press('Escape');await page.evaluate(()=>cancelarEmpate());
    assert.equal(await page.locator('#modalOverlay').isVisible(),true);
    await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');
    assert.equal(await page.evaluate(()=>document.getElementById('modalOverlay').contains(document.activeElement)),true);
    await page.locator('#btnConfirmar').waitFor({state:'visible'});
+   assert.equal(await page.locator('#btnCancelarEmpate').isVisible(),false);
    const result=await page.evaluate(()=>pendingResult);
    await page.keyboard.press('Escape');
    await page.locator('#modalOverlay').click({position:{x:5,y:5}});

@@ -351,11 +351,13 @@ body {
   text-transform: uppercase;
   cursor: pointer;
   transition: all 0.2s;
-  background: var(--surface2);
-  border: 1px solid var(--border);
-  color: var(--text-sec);
+  background: var(--yellow-dim);
+  border: 1px solid rgba(255,224,51,0.3);
+  color: var(--yellow-text);
 }
-.modal-btn:hover { border-color: var(--text-sec); color: var(--text); }
+@media (hover: hover) {
+  .modal-btn:hover { background: var(--yellow-hov); border-color: var(--yellow); }
+}
 
 .modal-btn-confirmar {
   width: 100%; padding: 12px;
@@ -1211,11 +1213,13 @@ body {
   border: 1px solid var(--border-soft);
   border-radius: 10px;
   padding: 13px 14px;
-  display: flex;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto minmax(max-content, 1fr);
   align-items: center;
   gap: 14px;
   margin-top: 14px;
 }
+.plan-count { min-width: 0; text-align: center; }
 
 .plan-num {
   font-size: 2.1rem;
@@ -1234,6 +1238,7 @@ body {
   color: var(--text-sec);
   margin-top: 2px;
   text-align: center;
+  overflow-wrap: anywhere;
 }
 
 .plan-right { flex: 1; min-width: 0; }
@@ -1246,7 +1251,7 @@ body {
   margin-bottom: 7px;
   text-align: center;
 }
-.plan-dots { display: flex; gap: 5px; flex-wrap: wrap; justify-content: center; }
+.plan-dots { display: grid; grid-template-columns: repeat(5, 14px); gap: 5px; justify-content: center; }
 .plan-dot {
   width: 14px; height: 14px;
   border-radius: 50%;
@@ -1260,8 +1265,9 @@ body {
 }
 
 .plan-dot.current {
-  background: var(--yellow);
+  background: rgba(255,224,51,0.15);
   border-color: var(--yellow);
+  opacity: 0.65;
 }
 
 .btn-plan-reset {
@@ -1281,8 +1287,18 @@ body {
   display: flex;
   align-items: center;
   gap: 4px;
+  justify-self: end;
+  max-width: 100%;
+  min-width: 0;
 }
+.btn-plan-reset svg { flex-shrink: 0; }
+.btn-plan-reset span { white-space: nowrap; }
 .btn-plan-reset:hover { border-color: var(--cyan); color: var(--cyan); }
+@media (max-width: 360px) {
+  .plan-card { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; }
+  .plan-count { grid-row: 1 / 3; }
+  .btn-plan-reset { grid-column: 2; justify-self: center; }
+}
 
 /* ── DIVIDER ── */
 .divider { height: 1px; background: var(--border-soft); margin: 14px 0; }
@@ -1506,8 +1522,9 @@ body {
   .plan-num-label { font-size: 0.58rem; }
   .plan-dots-label { font-size: 0.62rem; margin-bottom: 9px; }
   .plan-dot { width: 16px; height: 16px; }
-  .plan-dots { gap: 6px; }
+  .plan-dots { grid-template-columns: repeat(5, 16px); gap: 6px; }
   .btn-plan-reset { font-size: 0.62rem; padding: 7px 11px; }
+  .actividad-panels { max-width: 440px; display: grid; gap: 18px; }
   .historial { max-height: none; }
   .hist-item { font-size: 0.78rem; padding: 7px 0; }
   .footer-actions { margin-top: 0; padding-top: 0; border-top: none; }
@@ -1871,8 +1888,9 @@ body {
 button.moneda { border: 0; padding: 0; background: transparent; color: inherit; font-family: inherit; }
 button.moneda:disabled { cursor: default; }
 button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+.login-input:focus-visible, .archivar-input:focus-visible { outline: none; }
 .config-switch:focus-within { outline: 2px solid var(--yellow); outline-offset: 3px; border-radius: 20px; }
-#btnCancelarEmpate:disabled { opacity: 0.4; cursor: default; }
+#btnCancelarEmpate:disabled { display: none; }
 #btnCancelarEmpate { display: block; width: 100%; margin-top: 10px; }
 </style>
 </head>
@@ -2223,7 +2241,7 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
     <div class="result-section">
       <div class="section-label" data-i18n="plan.title">Plan de 10 partidos</div>
       <div class="plan-card">
-        <div style="text-align:center;flex-shrink:0;">
+        <div class="plan-count">
           <div class="plan-num" id="numPartidoMob">0</div>
           <div class="plan-num-label" data-i18n="plan.matchNumber">Completados</div>
         </div>
@@ -2265,12 +2283,12 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
         </button>
         <div class="dt-nav-sep"></div>
         <button class="dt-nav-item" id="dtBtnArchivarFromActividad" data-nav-action="archivar">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.archive">Archivar</span>
         </button>
         <div class="dt-nav-sep"></div>
         <button class="dt-nav-item" id="dtBtnHistorialFromActividad" data-screen="historial">
-          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12M2 7H9M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.history">Historial</span>
         </button>
         <button class="dt-nav-item" id="dtBtnHistRachasFromActividad" data-screen="histRachas">
@@ -2297,11 +2315,11 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
           <div class="hist-screen-sub" data-i18n="activity.subtitle">Plan e historial recientes</div>
         </div>
       </div>
-      <div class="dt-right">
-        <div class="dt-right-section">
-          <span class="dt-right-label" data-i18n="plan.title">Plan de 10 partidos</span>
-          <div style="display:flex;align-items:center;gap:14px;">
-            <div style="text-align:center;flex-shrink:0;">
+      <div class="actividad-panels">
+        <div class="result-section">
+          <div class="section-label" data-i18n="plan.title">Plan de 10 partidos</div>
+          <div class="plan-card">
+            <div class="plan-count">
               <div class="plan-num" id="numPartidoDt">0</div>
               <div class="plan-num-label" data-i18n="plan.matchNumber">Completados</div>
             </div>
@@ -2315,13 +2333,11 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
           </div>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="dt-right-section">
-          <span class="dt-right-label" data-i18n="plan.recentHistory">Historial reciente</span>
+        <div class="result-section">
+          <div class="section-label" data-i18n="plan.recentHistory">Historial reciente</div>
           <div class="historial" id="historialDt"></div>
         </div>
-      </div><!-- fin dt-right -->
+      </div><!-- fin actividad-panels -->
 
     </div>
   </div>
@@ -3040,7 +3056,7 @@ function abrirDialogo(id, selector, cancelar) {
     rama = rama.parentElement;
   }
   dialogoActivo = { el, anterior, fondo, cancelar };
-  const inicial = selector && el.querySelector(selector);
+  const inicial = selector && (el.matches(selector) ? el : el.querySelector(selector));
   (inicial || controlesDialogo(el)[0] || el).focus({preventScroll:true});
 }
 function cerrarDialogo(id, restaurar = true) {
@@ -3210,7 +3226,7 @@ let salidaEnCurso = false;
 
 function actualizarEstadoGuardado(valor) {
   const el = document.getElementById('saveStatus');
-  el.hidden = !valor;
+  el.hidden = !valor || valor === 'saved';
   document.getElementById('saveStatusText').textContent = valor ? I18N.t('persistence.' + valor) : '';
   document.getElementById('btnRetrySave').hidden = valor !== 'error';
   el.style.color = valor === 'error' ? 'var(--red)' : 'var(--text-sec)';
@@ -4155,12 +4171,14 @@ I18N.onLocaleChange(function() {
 let panelAbierto = false;
 let pantallaActiva = 'app';
 
-function abrirPanel() {
+function abrirPanel(focoTeclado = true) {
   if (!estadoListo() || salidaEnCurso) return;
   panelAbierto = true;
-  abrirDialogo('panelLateral', null, cerrarPanel);
-  document.getElementById('panelOverlay').classList.add('show');
   actualizarNavegacion();
+  // Al tocar o hacer clic, enfocar el panel evita un contorno en la primera opción.
+  // Con teclado, conservar el foco visible en la opción activa desde la apertura.
+  abrirDialogo('panelLateral', focoTeclado ? '.panel-nav-item.active' : '#panelLateral', cerrarPanel);
+  document.getElementById('panelOverlay').classList.add('show');
 }
 
 function cerrarPanel() {
@@ -4465,7 +4483,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Mobile panel
   document.querySelectorAll('[data-panel-toggle]').forEach(function(btn) {
-    btn.addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
+    btn.addEventListener('click', function(event) { panelAbierto ? cerrarPanel() : abrirPanel(event.detail === 0); });
   });
   document.getElementById('panelOverlay').addEventListener('click', cerrarPanel);
   document.querySelectorAll('.dt-nav-item[data-screen], .panel-nav-item[data-screen]').forEach(function(btn) {
