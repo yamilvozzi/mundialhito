@@ -96,6 +96,7 @@ I18N.registrarIdioma('ja', {
     trophiesShort: 'カップ'
   },
   stats: {
+    sectionLabel: "総合成績",
     played: '試合数',
     won: '勝',
     lost: '敗',

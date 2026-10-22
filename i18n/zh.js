@@ -96,6 +96,7 @@ I18N.registrarIdioma('zh', {
     trophiesShort: "奖杯"
   },
   stats: {
+    sectionLabel: "总体统计",
     played: '场次',
     won: '胜',
     lost: '负',

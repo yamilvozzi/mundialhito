@@ -96,6 +96,7 @@ I18N.registrarIdioma('pt', {
     trophiesShort: "Taças"
   },
   stats: {
+    sectionLabel: "Estatísticas gerais",
     played: 'Jogos',
     won: 'Vitórias',
     lost: 'Derrotas',

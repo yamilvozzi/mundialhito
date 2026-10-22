@@ -96,6 +96,7 @@ I18N.registrarIdioma('fr', {
     trophiesShort: 'Coupes'
   },
   stats: {
+    sectionLabel: "Statistiques générales",
     played: 'Joués',
     won: 'Gagnés',
     lost: 'Perdus',

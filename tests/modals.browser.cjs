@@ -70,16 +70,26 @@ const root=path.join(__dirname,'..');
   }
   // La propia moneda es el control de lanzamiento por mouse, touch y teclado.
   for(const action of ['click','tap','Enter','Space']){
-   await draw.click();await page.locator('.modal-btn-cara').click();
+   await draw.click();
+   assert.equal(await page.locator('#modalSub').isVisible(),true);
+   assert.equal(await page.locator('#modalSub').textContent(),await page.evaluate(()=>I18N.t('coinModal.subtitleInitial')));
+   await page.locator('.modal-btn-cara').click();
+   assert.equal(await page.locator('#modalSub').isVisible(),true);
+   assert.equal(await page.locator('#modalSub').textContent(),await page.evaluate(()=>I18N.t('coinModal.subtitleChosen',{choice:I18N.t('coinModal.heads')})));
    const coin=page.locator('#moneda');assert.equal(await page.evaluate(()=>document.activeElement.id),'moneda');
    if(action==='click')await coin.click();else if(action==='tap')await coin.tap();else await coin.press(action);
    assert.equal(await page.locator('#btnCancelarEmpate').isDisabled(),true);
    assert.equal(await page.locator('#btnCancelarEmpate').isVisible(),false);
+   assert.equal(await page.locator('#modalSub').isVisible(),true);
    await page.keyboard.press('Escape');await page.evaluate(()=>cancelarEmpate());
    assert.equal(await page.locator('#modalOverlay').isVisible(),true);
    await page.keyboard.press('Tab');await page.keyboard.press('Shift+Tab');
    assert.equal(await page.evaluate(()=>document.getElementById('modalOverlay').contains(document.activeElement)),true);
    await page.locator('#btnConfirmar').waitFor({state:'visible'});
+   assert.equal(await page.locator('#modalSub').isVisible(),false);
+   assert.equal(await page.locator('#modalSub').evaluate(el=>el.getClientRects().length),0);
+   assert.equal(await page.locator('#modalOverlay').getAttribute('aria-describedby'),'modalResultado');
+   if(process.env.QA_OUTPUT_DIR && action==='click')await page.screenshot({path:path.join(process.env.QA_OUTPUT_DIR,`ui-moneda-final-${width}.png`),animations:'disabled'});
    assert.equal(await page.locator('#btnCancelarEmpate').isVisible(),false);
    const result=await page.evaluate(()=>pendingResult);
    await page.keyboard.press('Escape');

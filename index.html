@@ -1113,6 +1113,11 @@ body {
 
 .section-label[data-i18n="result.sectionLabel"] { color: var(--text); }
 
+/* Envolver sin reducir el ancho de las estadísticas ni del torneo. */
+.home-section { margin: 0 -8px 14px; padding: 18px 7px 16px; background: transparent; }
+.home-section > .section-label { color: var(--text); padding-inline: 8px; }
+.home-section > :last-child { margin-bottom: 0; }
+
 .btn-row {
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -1294,8 +1299,11 @@ body {
 .btn-plan-reset svg { flex-shrink: 0; }
 .btn-plan-reset span { white-space: nowrap; }
 .btn-plan-reset:hover { border-color: var(--cyan); color: var(--cyan); }
-@media (max-width: 360px) {
-  .plan-card { grid-template-columns: minmax(0, 1fr) auto; gap: 8px 14px; }
+@media (max-width: 899px) {
+  .plan-num-label { white-space: nowrap; overflow-wrap: normal; letter-spacing: 0.1em; }
+}
+@media (max-width: 480px) {
+  .plan-card { grid-template-columns: minmax(max-content, 1fr) auto; gap: 8px 14px; }
   .plan-count { grid-row: 1 / 3; }
   .btn-plan-reset { grid-column: 2; justify-self: center; }
 }
@@ -1512,6 +1520,7 @@ body {
   .br-label { font-size: 0.82rem; }
   .br-sub { font-size: 0.56rem; }
   .result-section { padding: 22px 20px 20px; }
+  .home-section { padding: 22px 7px 20px; margin-bottom: 20px; }
   .section-label { font-size: 0.64rem; margin-bottom: 16px; }
   .btn-row { gap: 10px; margin-bottom: 12px; }
   .btn { padding: 18px 8px 16px; font-size: 0.82rem; gap: 9px; }
@@ -2012,14 +2021,19 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
     </div>
 
     <!-- Stats -->
+    <div class="result-section home-section">
+      <div class="section-label" data-i18n="stats.sectionLabel">Estadísticas generales</div>
     <div class="stats-row">
       <div class="stat-card"><div class="stat-num" id="totalJugadosMob">0</div><div class="stat-label" data-i18n="stats.played">Jugados</div></div>
       <div class="stat-card g"><div class="stat-num" id="totalGanadosMob">0</div><div class="stat-label" data-i18n="stats.won">Ganados</div></div>
       <div class="stat-card e"><div class="stat-num" id="totalEmpatadosMob">0</div><div class="stat-label" data-i18n="stats.drawn">Empatados</div></div>
       <div class="stat-card p"><div class="stat-num" id="totalPerdidosMob">0</div><div class="stat-label" data-i18n="stats.lost">Perdidos</div></div>
     </div>
+    </div>
 
     <!-- Fase -->
+    <div class="result-section home-section">
+      <div class="section-label" data-i18n="nav.mundialhito">Mundialhito</div>
     <div class="fase-card">
       <div class="fase-left">
         <div class="fase-nombre" id="faseNombreMob">Fase de Grupos</div>
@@ -2040,6 +2054,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
       <div class="br-step locked" id="brm-SF"><div class="br-label">SF</div><div class="br-sub" data-i18n="bracket.sf">Semi</div></div>
       <div class="br-step locked" id="brm-FINAL"><div class="br-label" data-i18n="bracket.final">Final</div><div class="br-sub br-final-trophy" style="color:var(--yellow);opacity:0.5" aria-hidden="true"></div></div>
     </div>
+
+    </div><!-- fin Mundialhito -->
 
     <!-- Resultado -->
     <div class="result-section">
@@ -2152,14 +2168,19 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
       <!-- Centro -->
       <div class="dt-center">
         <!-- Stats -->
-        <div class="stats-row" style="margin-bottom:18px;">
+        <div class="result-section home-section">
+          <div class="section-label" data-i18n="stats.sectionLabel">Estadísticas generales</div>
+        <div class="stats-row">
           <div class="stat-card"><div class="stat-num" id="totalJugadosDt">0</div><div class="stat-label" data-i18n="stats.played">Jugados</div></div>
           <div class="stat-card g"><div class="stat-num" id="totalGanadosDt">0</div><div class="stat-label" data-i18n="stats.won">Ganados</div></div>
           <div class="stat-card e"><div class="stat-num" id="totalEmpatadosDt">0</div><div class="stat-label" data-i18n="stats.drawn">Empatados</div></div>
           <div class="stat-card p"><div class="stat-num" id="totalPerdidosDt">0</div><div class="stat-label" data-i18n="stats.lost">Perdidos</div></div>
         </div>
+        </div>
 
         <!-- Fase -->
+        <div class="result-section home-section">
+          <div class="section-label" data-i18n="nav.mundialhito">Mundialhito</div>
         <div class="fase-card">
           <div class="fase-left">
             <div class="fase-nombre" id="faseNombreDt">Fase de Grupos</div>
@@ -2180,6 +2201,8 @@ button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px s
           <div class="br-step locked" id="brd-SF"><div class="br-label">SF</div><div class="br-sub" data-i18n="bracket.sf">Semi</div></div>
           <div class="br-step locked" id="brd-FINAL"><div class="br-label" data-i18n="bracket.final">Final</div><div class="br-sub br-final-trophy" style="color:var(--yellow);opacity:0.5" aria-hidden="true"></div></div>
         </div>
+
+        </div><!-- fin Mundialhito -->
 
         <!-- Registrar resultado -->
         <div class="result-section">
@@ -3627,6 +3650,8 @@ function abrirModal() {
   document.getElementById('modalElegir').style.display = 'flex';
   document.getElementById('btnConfirmar').style.display = 'none';
   document.getElementById('modalSub').textContent = I18N.t('coinModal.subtitleInitial');
+  document.getElementById('modalSub').hidden = false;
+  document.getElementById('modalOverlay').setAttribute('aria-describedby', 'modalSub');
   abrirDialogo('modalOverlay', '.modal-btn-cara', cancelarEmpate);
 }
 
@@ -3662,6 +3687,8 @@ document.getElementById('moneda').addEventListener('click', function() {
     const resEl = document.getElementById('modalResultado');
     resEl.textContent = I18N.t('coinModal.resultOut', {result: I18N.t(resultado === 'cara' ? 'coinModal.heads' : 'coinModal.tails')}) + (gano ? I18N.t('coinModal.resultWin') : I18N.t('coinModal.resultLoss'));
     resEl.className = 'modal-resultado ' + (gano ? 'win' : 'loss');
+    document.getElementById('modalSub').hidden = true;
+    document.getElementById('modalOverlay').setAttribute('aria-describedby', 'modalResultado');
     document.getElementById('btnConfirmar').style.display = 'block';
     document.getElementById('btnConfirmar').focus();
   }, 850);

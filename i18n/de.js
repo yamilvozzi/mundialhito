@@ -96,6 +96,7 @@ I18N.registrarIdioma('de', {
     trophiesShort: 'Pokale'
   },
   stats: {
+    sectionLabel: "Gesamtstatistik",
     played: 'Spiele',
     won: 'Siege',
     lost: 'Niederlagen',

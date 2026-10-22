@@ -96,6 +96,7 @@ I18N.registrarIdioma('ko', {
     trophiesShort: "우승컵"
   },
   stats: {
+    sectionLabel: "전체 통계",
     played: '경기',
     won: '승',
     lost: '패',

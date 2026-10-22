@@ -29,6 +29,21 @@ const root = path.join(__dirname, '..');
       await page.locator('#appScreen').waitFor({ state: 'visible' });
       const baseline = await page.evaluate(() => JSON.stringify(state));
 
+      const home = page.locator(width >= 900 ? '#appScreen .dt-center' : '#appScreen .app-mobile');
+      assert.deepEqual(await home.locator(':scope > .result-section > .section-label').allTextContents(),
+        ['Estadísticas generales', 'Mundialhito', 'Registrar resultado']);
+      assert.equal(await home.locator('.home-section .stat-card').count(), 4);
+      assert.equal(await home.locator('.home-section .fase-card').count(), 1);
+      assert.equal(await home.locator('.home-section .fg-dot').count(), 3);
+      assert.equal(await home.locator('.home-section .br-step').count(), 4);
+      const titles = await home.locator(':scope > .result-section > .section-label').evaluateAll(nodes => nodes.map(el => {
+        const css = getComputedStyle(el);
+        return { font: css.font, color: css.color, tracking: css.letterSpacing, spacing: css.marginBottom };
+      }));
+      assert.deepEqual(titles[0], titles[2]);
+      assert.deepEqual(titles[1], titles[2]);
+      await shot('inicio');
+
       if (width < 900) {
         // La primera apertura táctil y la vuelta a Inicio comparten el estado activo.
         const activeStyle = () => page.locator('#panelBtnApp').evaluate(el => ({
@@ -64,7 +79,7 @@ const root = path.join(__dirname, '..');
 
       await page.evaluate(() => irAActividad());
       const suffix = width >= 900 ? 'Dt' : 'Mob';
-      for (const testWidth of [width, width >= 900 ? 900 : 320]) {
+      for (const testWidth of width >= 900 ? [width, 900] : [390, 375, 320]) {
         await page.setViewportSize({ width: testWidth, height: 1000 });
         for (const locale of ['es', 'de', 'ja']) {
           await page.evaluate(locale => I18N.setLocale(locale), locale);
@@ -73,14 +88,21 @@ const root = path.join(__dirname, '..');
             const card = el.closest('.plan-card');
             const renew = document.createRange();
             renew.selectNodeContents(card.querySelector('.btn-plan-reset span'));
+            const label = card.querySelector('.plan-num-label'), text = document.createRange();
+            text.selectNodeContents(label);
             return { rows: dots.reduce((rows, dot) => { rows[dot.top] = (rows[dot.top] || 0) + 1; return rows; }, {}),
               columns: new Set(dots.map(dot => dot.left)).size, overflow: card.scrollWidth > card.clientWidth,
+              labelLines: new Set([...text.getClientRects()].map(rect => rect.top)).size, labelOverflow: label.scrollWidth > label.clientWidth,
               renewLines: new Set([...renew.getClientRects()].map(rect => rect.top)).size };
           });
           assert.deepEqual(Object.values(grid.rows), [5, 5], `${testWidth}px ${locale}`);
           assert.equal(grid.columns, 5);
           assert.equal(grid.overflow, false, `${testWidth}px ${locale}: contenido dentro de la tarjeta`);
           assert.equal(grid.renewLines, 1, `${testWidth}px ${locale}: Renovar legible en una línea`);
+          if (testWidth < 900) {
+            assert.equal(grid.labelLines, 1, `${testWidth}px ${locale}: Completados en una línea`);
+            assert.equal(grid.labelOverflow, false, `${testWidth}px ${locale}: etiqueta completa`);
+          }
           if (testWidth !== width && locale === 'de') await shot(`actividad-${testWidth}-de`);
         }
       }

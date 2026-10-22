@@ -96,6 +96,7 @@ I18N.registrarIdioma('ca', {
     trophiesShort: 'Copes'
   },
   stats: {
+    sectionLabel: "Estadístiques generals",
     played: 'Jugats',
     won: 'Guanyats',
     lost: 'Perduts',

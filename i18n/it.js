@@ -96,6 +96,7 @@ I18N.registrarIdioma('it', {
     trophiesShort: "Coppe"
   },
   stats: {
+    sectionLabel: "Statistiche generali",
     played: 'Partite',
     won: 'Vittorie',
     lost: 'Sconfitte',
