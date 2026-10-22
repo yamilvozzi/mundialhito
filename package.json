@@ -1,0 +1,16 @@
+{
+  "name": "mundialhito",
+  "private": true,
+  "scripts": {
+    "test": "node tests/run.cjs",
+    "test:unit": "node tests/run.cjs --unit",
+    "test:browser": "node tests/run.cjs --browser"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "@supabase/supabase-js": "2.118.0",
+    "playwright": "1.62.1"
+  }
+}

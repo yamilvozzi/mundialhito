@@ -1,0 +1,35 @@
+# Dependencias regenerables y cache/logs locales de npm.
+# Conservar package.json y package-lock.json para reproducir el entorno.
+node_modules/
+.npm/
+npm-debug.log*
+
+# Salidas convencionales de Playwright si se usa su runner/CLI.
+# Las capturas de nuestras suites van a QA_OUTPUT_DIR fuera del repositorio.
+/test-results/
+/playwright-report/
+/blob-report/
+
+# Sesiones locales de Playwright: pueden contener cookies y tokens.
+/playwright/.auth/
+
+# Entornos locales o privados; conservar plantillas sin secretos.
+.env
+.env.*
+!.env.example
+!.env.*.example
+!.env.sample
+!.env.*.sample
+!.env.template
+!.env.*.template
+
+# Metadatos del sistema y archivos temporales de Word/editores.
+.DS_Store
+._*
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+~$*
+*.swp
+*.swo
+*~

@@ -1,7 +1,14 @@
-// Diccionario generado automáticamente desde es.js (ca).
-// No editar manualmente: ejecutar sincronizar_i18n.py.
+// Diccionario ca. Base de claves: es.js; plantilla: template.js.
+// Editar las traducciones aquí y verificar con npm test.
 
 I18N.registrarIdioma('ca', {
+  persistence: {
+    saving: "Desant…",
+    saved: "Desat",
+    error: "No s’han desat els canvis. No tanquis aquesta pestanya.",
+    sessionEnded: "La sessió ha acabat amb canvis sense confirmar. Torna a iniciar sessió i revisa les últimes dades.",
+    logoutError: "No s’ha pogut tancar la sessió. Torna-ho a provar."
+  },
   common: {
     save: 'Desa',
     cancel: 'Cancel·la',
@@ -10,6 +17,9 @@ I18N.registrarIdioma('ca', {
     menu: 'Menú'
   },
   login: {
+    loadError: "No hem pogut carregar les dades. Torna-ho a provar per continuar.",
+    retryLoad: "Torna-ho a provar",
+    startupError: 'No hem pogut iniciar l’aplicació. Comprova la connexió i torna-ho a provar.',
     subtitle: 'Tracker personal',
     emailPlaceholder: 'Email',
     passwordPlaceholder: 'Contrasenya',
@@ -101,13 +111,14 @@ I18N.registrarIdioma('ca', {
     },
     desc: {
       FG: 'Guanya 2 dels 3 partits per classificar.',
-      E8: 'Partit únic. Si perdés tornés a començar.',
-      E4: 'Partit únic. Si perdés tornés a començar.',
-      SF: 'Partit únic. Si perdés tornés a començar.',
-      FINAL: '¡L\'última batalla!'
+      E8: "Partit únic. Si perds, tornes a començar.",
+      E4: "Partit únic. Si perds, tornes a començar.",
+      SF: "Partit únic. Si perds, tornes a començar.",
+      FINAL: "L’última batalla!"
     }
   },
   bracket: {
+    final: "Final",
     r16: 'Vuitens',
     qf: 'Quarts',
     sf: 'Semi'
@@ -134,31 +145,33 @@ I18N.registrarIdioma('ca', {
     resetTournamentConfirmBody: 'Començaràs un torneig nou. Les teves estadístiques i copes es conserven.',
     resetTournamentSuccess: 'Torneig reiniciat.',
     resetAllConfirmTitle: 'Reiniciar-ho tot',
-    resetAllConfirmBody: 'Reinicia les estadístiques, les copes i el torneig actual. Les ràfegues, l\'historial i el pla de partits es conserven. Aquesta acció no es pot desfer.',
+    resetAllConfirmBody: 'Reinicia les estadístiques, les copes i el torneig actual. Les ratxes, l\'historial i el pla de partits es conserven. Aquesta acció no es pot desfer.',
     resetAllSuccess: 'Estadístiques del torneig reiniciades.'
   },
   plan: {
     title: 'Pla de 10 partits',
-    matchNumber: 'Partit #',
+    matchNumber: 'Completats',
     renew: 'Renovar',
     recentHistory: 'Historial recent',
     emptyHistory: 'Sense partits registrats encara.',
-    renewed: 'Pla renovat des de 1'
+    renewed: 'Pla renovat: 0 de 10 completats',
+    nextMatch: 'Proper partit: {{number}}'
   },
   championModal: {
     title: 'Campió de MUNDIALHITO',
     continue: 'Continuar'
   },
   coinModal: {
+    flip: 'Llançar moneda',
     title: 'Definició per penals',
     subtitleInitial: 'Empat. Tria cara o creu abans de llançar.',
     subtitleChosen: 'Has triat {{choice}}. Toca la moneda.',
     heads: 'Cara',
-    tails: 'Ceca',
+    tails: "Creu",
     confirm: 'Confirmar resultat',
     resultOut: 'Va sortir {{result}} — ',
     resultWin: 'Guanyes!',
-    resultLoss: 'Perdés'
+    resultLoss: "Perds"
   },
   rachas: {
     title: 'Ratxes',
@@ -192,7 +205,7 @@ I18N.registrarIdioma('ca', {
     archivedOn: 'Arxivat el {{date}}',
     loading: 'Carregant...',
     loadError: 'Error en carregar l\'historial.',
-    empty: 'Encara no hi ha temporades arxivades.<br>Feu servir l\'opció Fitxer per desar el progrés actual.',
+    empty: "Encara no hi ha temporades arxivades.<br>Fes servir l’opció Arxivar per desar el progrés actual.",
     deleteTitle: 'Eliminar temporada',
     deleteConfirm: 'Esteu segur que voleu eliminar-la? Aquesta acció no es pot desfer.',
     deleteError: 'Error en suprimir.',

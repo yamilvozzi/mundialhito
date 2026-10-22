@@ -1,7 +1,14 @@
-// Diccionario generado automáticamente desde es.js (en).
-// No editar manualmente: ejecutar sincronizar_i18n.py.
+// Diccionario en. Base de claves: es.js; plantilla: template.js.
+// Editar las traducciones aquí y verificar con npm test.
 
 I18N.registrarIdioma('en', {
+  persistence: {
+    saving: "Saving…",
+    saved: "Saved",
+    error: "Changes were not saved. Do not close this tab.",
+    sessionEnded: "The session ended with unconfirmed changes. Sign in again and check your latest data.",
+    logoutError: "Could not sign out. Try again."
+  },
   common: {
     save: 'Save',
     cancel: 'Cancel',
@@ -10,6 +17,9 @@ I18N.registrarIdioma('en', {
     menu: 'Menu'
   },
   login: {
+    loadError: "We could not load your data. Try again to continue.",
+    retryLoad: "Retry",
+    startupError: 'We could not start the app. Check your connection and try again.',
     subtitle: 'Personal tracker',
     emailPlaceholder: 'E-mail',
     passwordPlaceholder: 'Password',
@@ -31,7 +41,7 @@ I18N.registrarIdioma('en', {
   country: {
     AR: 'Argentina',
     BR: 'Brazil',
-    CL: 'Chili',
+    CL: "Chile",
     UY: 'Uruguay',
     US: 'USA',
     MX: 'Mexico',
@@ -108,6 +118,7 @@ I18N.registrarIdioma('en', {
     }
   },
   bracket: {
+    final: "Final",
     r16: 'Round of 16',
     qf: 'Quarter-finals',
     sf: 'Semi'
@@ -139,17 +150,19 @@ I18N.registrarIdioma('en', {
   },
   plan: {
     title: '10-match plan',
-    matchNumber: 'Game #',
+    matchNumber: 'Completed',
     renew: 'Renew',
     recentHistory: 'Recent history',
     emptyHistory: 'No matches registered yet.',
-    renewed: 'Plan renewed from match 1'
+    renewed: 'Plan renewed: 0 of 10 completed',
+    nextMatch: 'Next match: {{number}}'
   },
   championModal: {
     title: 'MUNDIALHITO Champion',
     continue: 'Continue'
   },
   coinModal: {
+    flip: 'Flip coin',
     title: 'Penalty shootout',
     subtitleInitial: 'Draw. Choose heads or tails before flipping.',
     subtitleChosen: 'You chose {{choice}}. Tap the coin.',
@@ -168,8 +181,8 @@ I18N.registrarIdioma('en', {
     lossStreak: 'Consecutive losses',
     historicRecord: 'All-time record',
     current: 'Current',
-    fastestCup: 'Fastest cup',
-    longestCup: 'Longest tournament',
+    fastestCup: "Fastest cup",
+    longestCup: "Slowest cup",
     currentCampaign: 'Current campaign',
     finals: 'Finals',
     played: 'Played',
@@ -203,8 +216,8 @@ I18N.registrarIdioma('en', {
     subtitle: 'Archived stages',
     wins: 'Victories',
     losses: 'Defeats',
-    fastestCup: 'Fastest tournament',
-    longestCup: 'Longest tournament',
+    fastestCup: "Fastest cup",
+    longestCup: "Slowest cup",
     finals: 'Finals',
     won: 'Won',
     lost: 'Losses',

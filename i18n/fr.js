@@ -1,7 +1,14 @@
-// Diccionario generado automáticamente desde es.js (fr).
-// No editar manualmente: ejecutar sincronizar_i18n.py.
+// Diccionario fr. Base de claves: es.js; plantilla: template.js.
+// Editar las traducciones aquí y verificar con npm test.
 
 I18N.registrarIdioma('fr', {
+  persistence: {
+    saving: "Enregistrement…",
+    saved: "Enregistré",
+    error: "Les modifications n’ont pas été enregistrées. Ne fermez pas cet onglet.",
+    sessionEnded: "La session s’est terminée avec des modifications non confirmées. Reconnectez-vous et vérifiez vos dernières données.",
+    logoutError: "Impossible de se déconnecter. Réessayez."
+  },
   common: {
     save: 'Enregistrer',
     cancel: 'Annuler',
@@ -10,6 +17,9 @@ I18N.registrarIdioma('fr', {
     menu: 'Menu'
   },
   login: {
+    loadError: "Impossible de charger vos données. Réessayez pour continuer.",
+    retryLoad: "Réessayer",
+    startupError: 'Impossible de démarrer l’application. Vérifiez votre connexion et réessayez.',
     subtitle: 'tracker personnel',
     emailPlaceholder: 'E-mail',
     passwordPlaceholder: 'Mot de passe',
@@ -17,15 +27,15 @@ I18N.registrarIdioma('fr', {
     separator: 'ou',
     createAccount: 'Créer un nouveau compte',
     continueWithGoogle: 'Continuer avec Google',
-    fillCredentials: 'Adresse e-mail et mot de passe complets.',
-    signingIn: 'En entrant...',
+    fillCredentials: "Saisissez votre adresse e-mail et votre mot de passe.",
+    signingIn: "Connexion...",
     emailNotConfirmed: 'Confirmez votre email avant d\'entrer.',
     invalidCredentials: 'Email ou mot de passe incorrect.',
     passwordMinLength: 'Le mot de passe doit comporter au moins 6 caractères.',
     creatingAccount: 'Création d\'un compte...',
     signUpError: 'Impossible de créer le compte : {{message}}',
     accountCreated: 'Compte créé ! Vérifiez votre courrier électronique pour le confirmer.',
-    connectingGoogle: 'De liaison...',
+    connectingGoogle: "Connexion...",
     googleError: 'Erreur de connexion à Google.'
   },
   country: {
@@ -64,17 +74,17 @@ I18N.registrarIdioma('fr', {
     nationalityUpdated: 'Nationalité mise à jour.',
     languageUpdated: 'Langue mise à jour.',
     personalTracker: 'tracker personnel',
-    nameSaving: 'Économie...',
+    nameSaving: "Enregistrement...",
     nameUpdated: 'Nom mis à jour.',
     nameRemoved: 'Nom supprimé.'
   },
   nav: {
     mundialhito: 'MUNDIALHITO',
     activity: 'Activité',
-    streaks: 'Séries',
-    archive: 'Archiver',
-    history: 'Historique',
-    streakHistory: 'Hist. Traces',
+    streaks: "Séries",
+    archive: "Archiver",
+    history: "Historique",
+    streakHistory: "Hist. séries",
     logout: 'Se déconnecter'
   },
   activity: {
@@ -101,16 +111,17 @@ I18N.registrarIdioma('fr', {
     },
     desc: {
       FG: 'Gagnez 2 des 3 matchs pour vous qualifier.',
-      E8: 'Parti unique. Si vous perdez, vous recommencez.',
-      E4: 'Parti unique. Si vous perdez, vous recommencez.',
-      SF: 'Parti unique. Si vous perdez, vous recommencez.',
-      FINAL: 'Le baroud d\'honneur!'
+      E8: "Match unique. Si vous perdez, vous recommencez.",
+      E4: "Match unique. Si vous perdez, vous recommencez.",
+      SF: "Match unique. Si vous perdez, vous recommencez.",
+      FINAL: "La dernière bataille !"
     }
   },
   bracket: {
-    r16: 'Huitième',
+    final: "Finale",
+    r16: "Huitièmes",
     qf: 'Quarts',
-    sf: 'Semi'
+    sf: "Demi"
   },
   result: {
     sectionLabel: 'Enregistrer le résultat',
@@ -120,74 +131,76 @@ I18N.registrarIdioma('fr', {
     undo: 'Annuler le dernier match',
     resetTournament: 'Recommencer le tournoi',
     resetAll: 'Redémarrez tout',
-    qualified: 'Vous vous êtes qualifié pour le huitième ({{wins}}/3)',
+    qualified: "Qualification pour les huitièmes ({{wins}}/3)",
     groupStageFailed: 'Phase de groupes : {{wins}}/3. A recommencer.',
-    advancedTo: 'Vous avez déménagé vers {{phase}}',
-    eliminated: 'Supprimé dans {{phase}}. Vous revenez au début.',
+    advancedTo: "Qualification : {{phase}}",
+    eliminated: "Élimination : {{phase}}. Retour au début.",
     champion: 'CHAMPION! Coupe #{{n}} conquise.',
     noUndo: 'Il n\'y a aucun mouvement à annuler.',
     undoSuccess: 'Dernière partie annulée.',
-    groupDrawPenalty: '≈ Nul (pénalités) · P{{match}}/3',
+    groupDrawPenalty: "≈ Nul (tirs au but) · P{{match}}/3",
     groupMatchWin: '✓ Victoire · P{{match}}/3',
     groupMatchLoss: '✗ Défaite · P{{match}}/3',
     resetTournamentConfirmTitle: 'Recommencer le tournoi',
     resetTournamentConfirmBody: 'Vous démarrez un nouveau tournoi. Vos statistiques et vos coupes sont préservées.',
     resetTournamentSuccess: 'Le tournoi a repris.',
     resetAllConfirmTitle: 'Redémarrez tout',
-    resetAllConfirmBody: 'Réinitialisez vos statistiques, vos coupes et le tournoi en cours. Les séquences, l\'historique et le plan de match sont préservés. Cette action ne peut pas être annulée.',
+    resetAllConfirmBody: 'Réinitialisez vos statistiques, vos coupes et le tournoi en cours. Les séries, l\'historique et le plan de match sont préservés. Cette action ne peut pas être annulée.',
     resetAllSuccess: 'Les statistiques du tournoi sont réinitialisées.'
   },
   plan: {
     title: 'plan de 10 matchs',
-    matchNumber: 'Jeu #',
+    matchNumber: 'Terminés',
     renew: 'Renouveler',
-    recentHistory: 'Histoire récente',
+    recentHistory: "Historique récent",
     emptyHistory: 'Aucun match enregistré pour l\'instant.',
-    renewed: 'Plan renouvelé du 1'
+    renewed: 'Plan renouvelé : 0 sur 10 terminés',
+    nextMatch: 'Prochain match : {{number}}'
   },
   championModal: {
     title: 'Champion de MUNDIALHITO',
     continue: 'Continuer'
   },
   coinModal: {
-    title: 'Définition par pénalités',
-    subtitleInitial: 'Dessiner. J\'ai choisi pile ou face avant de tourner.',
+    flip: 'Lancer la pièce',
+    title: "Tirs au but",
+    subtitleInitial: "Match nul. Choisissez pile ou face avant de lancer la pièce.",
     subtitleChosen: 'Vous avez choisi {{choice}}. Touchez la pièce.',
-    heads: 'Pile',
-    tails: 'Face',
+    heads: 'Face',
+    tails: 'Pile',
     confirm: 'Confirmer le résultat',
     resultOut: '{{result}} est sorti — ',
     resultWin: 'Vous gagnez !',
     resultLoss: 'tu perds'
   },
   rachas: {
-    title: 'Séries',
-    subtitle: 'Dossiers personnels',
+    title: "Séries",
+    subtitle: "Records personnels",
     empty: 'Il n\'y a pas encore de matchs enregistrés.<br>Jouez votre premier match pour commencer à voir vos séries.',
     winStreak: 'Victoires consécutives',
-    lossStreak: 'Pertes consécutives',
-    historicRecord: 'Dossier historique',
+    lossStreak: "Défaites consécutives",
+    historicRecord: "Record historique",
     current: 'Actuel',
-    fastestCup: 'Coupe la plus rapide',
-    longestCup: 'Coupe plus longue',
+    fastestCup: "Coupe la plus rapide",
+    longestCup: "Coupe la plus longue",
     currentCampaign: 'Campagne en cours',
     finals: 'Finales',
     played: 'Jouées',
     won: 'Gagné',
     lost: 'Perdues',
-    resetButton: 'Redémarrer les séquences',
-    resetConfirmTitle: 'Redémarrer les séquences',
-    resetConfirmBody: 'Toutes les séquences reviennent à zéro. L\'histoire et les statistiques sont préservées.',
+    resetButton: 'Redémarrer les séries',
+    resetConfirmTitle: 'Redémarrer les séries',
+    resetConfirmBody: 'Toutes les séries reviennent à zéro. L\'histoire et les statistiques sont préservées.',
     resetSuccess: 'Séries redémarrées. Nouveau cycle à partir de maintenant.',
-    archiveType: 'Traces',
-    archiveDescription: 'Enregistrez l\'état actuel de vos séquences.',
+    archiveType: "Séries",
+    archiveDescription: 'Enregistrez l\'état actuel de vos séries.',
     archivePlaceholder: 'Ex : Étape 2025',
-    archiveSaving: 'Économie...',
+    archiveSaving: "Enregistrement...",
     archiveError: 'Erreur d\'enregistrement. Essayer à nouveau.',
     archiveSuccess: 'Étape "{{name}}" archivée.'
   },
   history: {
-    title: 'Enregistrer',
+    title: "Historique",
     subtitle: 'Saisons archivées',
     archivedOn: 'Déposé le {{date}}',
     loading: 'Chargement...',
@@ -195,34 +208,34 @@ I18N.registrarIdioma('fr', {
     empty: 'Il n\'y a pas encore de saisons archivées.<br>Utilisez l\'option Archiver pour enregistrer votre progression actuelle.',
     deleteTitle: 'Supprimer la saison',
     deleteConfirm: 'Êtes-vous sûr de vouloir le supprimer ? Cette action ne peut pas être annulée.',
-    deleteError: 'Supprimer l\'erreur.',
-    deleteSuccess: 'Saison éliminée.'
+    deleteError: "Erreur lors de la suppression.",
+    deleteSuccess: "Saison supprimée."
   },
   streakHistory: {
-    title: 'Séries d\'histoire',
+    title: "Historique des séries",
     subtitle: 'Étapes archivées',
     wins: 'Victoires',
     losses: 'Défaites',
-    fastestCup: 'tasse rapide',
-    longestCup: 'longue tasse',
+    fastestCup: "Coupe la plus rapide",
+    longestCup: "Coupe la plus longue",
     finals: 'Finales',
     won: 'Gagné',
     lost: 'Perdues',
     archivedOn: 'Déposé le {{date}}',
     loading: 'Chargement...',
     loadError: 'Erreur de chargement.',
-    empty: 'Il n\'y a pas encore d\'étapes archivées.<br>Utilisez "Archiver les séquences" pour enregistrer l\'état actuel.',
+    empty: 'Il n\'y a pas encore d\'étapes archivées.<br>Utilisez "Archiver les séries" pour enregistrer l\'état actuel.',
     deleteTitle: 'Supprimer l\'étape',
     deleteConfirm: 'Êtes-vous sûr de vouloir le supprimer ? Cette action ne peut pas être annulée.',
-    deleteError: 'Supprimer l\'erreur.',
+    deleteError: "Erreur lors de la suppression.",
     deleteSuccess: 'Étape supprimée.'
   },
   archive: {
-    title: 'Déposer',
+    title: "Archiver",
     seasonType: 'Saison',
     seasonDescription: 'Enregistrez les statistiques actuelles.',
     seasonPlaceholder: 'Ex : Saison 2026',
-    saving: 'Économie...',
+    saving: "Enregistrement...",
     saveError: 'Erreur d\'enregistrement. Essayer à nouveau.',
     seasonArchived: 'Saison "{{name}}" archivée.'
   }

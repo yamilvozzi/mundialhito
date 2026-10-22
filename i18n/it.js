@@ -1,23 +1,33 @@
-// Diccionario generado automáticamente desde es.js (it).
-// No editar manualmente: ejecutar sincronizar_i18n.py.
+// Diccionario it. Base de claves: es.js; plantilla: template.js.
+// Editar las traducciones aquí y verificar con npm test.
 
 I18N.registrarIdioma('it', {
+  persistence: {
+    saving: "Salvataggio…",
+    saved: "Salvato",
+    error: "Le modifiche non sono state salvate. Non chiudere questa scheda.",
+    sessionEnded: "La sessione è terminata con modifiche non confermate. Accedi di nuovo e controlla gli ultimi dati.",
+    logoutError: "Impossibile uscire. Riprova."
+  },
   common: {
     save: 'Salva',
-    cancel: 'Cancellare',
+    cancel: 'Annulla',
     delete: 'Eliminare',
     confirm: 'Confermare',
     menu: 'Menu'
   },
   login: {
-    subtitle: 'localizzatore personale',
+    loadError: "Impossibile caricare i tuoi dati. Riprova per continuare.",
+    retryLoad: "Riprova",
+    startupError: 'Impossibile avviare l’app. Controlla la connessione e riprova.',
+    subtitle: "Tracker personale",
     emailPlaceholder: 'E-mail',
     passwordPlaceholder: 'Password',
     signIn: 'Entra',
-    separator: 'O',
+    separator: "o",
     createAccount: 'Crea nuovo account',
     continueWithGoogle: 'Continua con Google',
-    fillCredentials: 'Email e password complete.',
+    fillCredentials: "Inserisci email e password.",
     signingIn: 'Entrando...',
     emailNotConfirmed: 'Conferma la tua email prima di entrare.',
     invalidCredentials: 'E-mail o password errati.',
@@ -63,27 +73,27 @@ I18N.registrarIdioma('it', {
     namePlaceholder: 'Esempio: Yamil',
     nationalityUpdated: 'Nazionalità aggiornata.',
     languageUpdated: 'Lingua aggiornata.',
-    personalTracker: 'localizzatore personale',
-    nameSaving: 'Risparmio...',
+    personalTracker: "Tracker personale",
+    nameSaving: "Salvataggio...",
     nameUpdated: 'Nome aggiornato.',
     nameRemoved: 'Nome rimosso.'
   },
   nav: {
     mundialhito: 'MUNDIALHITO',
     activity: 'Attività',
-    streaks: 'Strisce',
-    archive: 'File',
-    history: 'Documentazione',
-    streakHistory: 'Storia. Strisce',
+    streaks: "Serie",
+    archive: "Archivia",
+    history: "Cronologia",
+    streakHistory: "Storico serie",
     logout: 'Esci'
   },
   activity: {
     title: 'Attività',
-    subtitle: 'Piano e storia recenti'
+    subtitle: "Piano e cronologia recenti"
   },
   copas: {
     trophiesWon: 'Coppe vinte',
-    trophiesShort: 'Tazze'
+    trophiesShort: "Coppe"
   },
   stats: {
     played: 'Partite',
@@ -101,14 +111,15 @@ I18N.registrarIdioma('it', {
     },
     desc: {
       FG: 'Vinci 2 delle 3 partite per qualificarti.',
-      E8: 'Partito unico. Se perdi ricominci da capo.',
-      E4: 'Partito unico. Se perdi ricominci da capo.',
-      SF: 'Partito unico. Se perdi ricominci da capo.',
-      FINAL: 'The Last Stand!'
+      E8: "Partita unica. Se perdi, ricominci da capo.",
+      E4: "Partita unica. Se perdi, ricominci da capo.",
+      SF: "Partita unica. Se perdi, ricominci da capo.",
+      FINAL: "L’ultima battaglia!"
     }
   },
   bracket: {
-    r16: 'Ottavo',
+    final: "Finale",
+    r16: "Ottavi",
     qf: 'Quarti',
     sf: 'Semi'
   },
@@ -120,10 +131,10 @@ I18N.registrarIdioma('it', {
     undo: 'Annulla l\'ultima partita',
     resetTournament: 'Ricomincia il torneo',
     resetAll: 'Ricomincia tutto',
-    qualified: 'Ti sei qualificato per l\'ottavo ({{wins}}/3)',
+    qualified: "Qualificato agli ottavi ({{wins}}/3)",
     groupStageFailed: 'Fase a gironi: {{wins}}/3. Per ricominciare.',
-    advancedTo: 'Ti sei trasferito in {{phase}}',
-    eliminated: 'Rimosso in {{phase}}. Torni all\'inizio.',
+    advancedTo: "Passaggio a {{phase}}",
+    eliminated: "Eliminazione: {{phase}}. Si torna all’inizio.",
     champion: 'CAMPIONE! Coppa #{{n}} conquistata.',
     noUndo: 'Non c\'è movimento da annullare.',
     undoSuccess: 'Ultima partita annullata.',
@@ -139,19 +150,21 @@ I18N.registrarIdioma('it', {
   },
   plan: {
     title: 'Piano di 10 partite',
-    matchNumber: 'Gioco #',
+    matchNumber: 'Completati',
     renew: 'Rinnovare',
-    recentHistory: 'Storia recente',
+    recentHistory: "Cronologia recente",
     emptyHistory: 'Nessuna partita ancora registrata.',
-    renewed: 'Piano rinnovato dal 1'
+    renewed: 'Piano rinnovato: 0 di 10 completati',
+    nextMatch: 'Prossima partita: {{number}}'
   },
   championModal: {
     title: 'Campione di MUNDIALHITO',
     continue: 'Continuare'
   },
   coinModal: {
-    title: 'Definizione mediante sanzioni',
-    subtitleInitial: 'Disegno. Ho scelto testa o croce prima di scattare.',
+    flip: 'Lancia la moneta',
+    title: "Calci di rigore",
+    subtitleInitial: "Pareggio. Scegli testa o croce prima di lanciare la moneta.",
     subtitleChosen: 'Hai scelto {{choice}}. Tocca la moneta.',
     heads: 'Testa',
     tails: 'Croce',
@@ -161,15 +174,15 @@ I18N.registrarIdioma('it', {
     resultLoss: 'perdi'
   },
   rachas: {
-    title: 'Serie',
-    subtitle: 'Documenti personali',
+    title: "Serie",
+    subtitle: "Record personali",
     empty: 'Non ci sono ancora partite registrate.<br>Gioca la tua prima partita per iniziare a vedere le tue serie consecutive.',
     winStreak: 'Vittorie consecutive',
-    lossStreak: 'Perdite consecutive',
-    historicRecord: 'Documentazione storica',
+    lossStreak: "Sconfitte consecutive",
+    historicRecord: "Record storico",
     current: 'Attuale',
-    fastestCup: 'Coppa più veloce',
-    longestCup: 'Coppa più lunga',
+    fastestCup: "Coppa più veloce",
+    longestCup: "Coppa più lenta",
     currentCampaign: 'Campagna attuale',
     finals: 'Finale',
     played: 'Giocate',
@@ -177,52 +190,52 @@ I18N.registrarIdioma('it', {
     lost: 'Perse',
     resetButton: 'Riavvia le serie',
     resetConfirmTitle: 'Riavvia le serie',
-    resetConfirmBody: 'Tutte le serie tornano a zero. La storia e le statistiche vengono preservate.',
-    resetSuccess: 'Strisce ricominciate. Nuovo ciclo da ora in poi.',
-    archiveType: 'Strisce',
+    resetConfirmBody: 'Tutte le serie tornano a zero. La cronologia e le statistiche vengono preservate.',
+    resetSuccess: 'Serie ricominciate. Nuovo ciclo da ora in poi.',
+    archiveType: "Serie",
     archiveDescription: 'Salva lo stato attuale delle tue serie.',
     archivePlaceholder: 'Esempio: Fase 2025',
-    archiveSaving: 'Risparmio...',
+    archiveSaving: "Salvataggio...",
     archiveError: 'Errore durante il salvataggio. Riprova.',
     archiveSuccess: 'Fase "{{name}}" archiviata.'
   },
   history: {
-    title: 'Documentazione',
+    title: "Cronologia",
     subtitle: 'Stagioni archiviate',
     archivedOn: 'Archiviato il {{date}}',
-    loading: 'Ricarica...',
+    loading: "Caricamento...",
     loadError: 'Errore durante il caricamento della cronologia.',
     empty: 'Non ci sono ancora stagioni archiviate.<br>Utilizza l\'opzione Archivia per salvare i tuoi progressi attuali.',
     deleteTitle: 'Elimina stagione',
     deleteConfirm: 'Sei sicuro di volerlo eliminare? Questa azione non può essere annullata.',
-    deleteError: 'Elimina errore.',
+    deleteError: "Errore durante l’eliminazione.",
     deleteSuccess: 'Stagione eliminata.'
   },
   streakHistory: {
-    title: 'Strisce di storia',
+    title: "Storico serie",
     subtitle: 'Tappe archiviate',
     wins: 'Vittorie',
     losses: 'Sconfitte',
-    fastestCup: 'tazza veloce',
-    longestCup: 'tazza lunga',
+    fastestCup: "Coppa più veloce",
+    longestCup: "Coppa più lenta",
     finals: 'Finale',
     won: 'Vinte',
     lost: 'Perse',
     archivedOn: 'Archiviato il {{date}}',
-    loading: 'Ricarica...',
+    loading: "Caricamento...",
     loadError: 'Errore durante il caricamento.',
     empty: 'Non ci sono ancora fasi archiviate.<br>Utilizza "Archivia serie" per salvare lo stato corrente.',
     deleteTitle: 'Elimina fase',
     deleteConfirm: 'Sei sicuro di volerlo eliminare? Questa azione non può essere annullata.',
-    deleteError: 'Elimina errore.',
+    deleteError: "Errore durante l’eliminazione.",
     deleteSuccess: 'Fase eliminata.'
   },
   archive: {
-    title: 'File',
+    title: "Archivia",
     seasonType: 'Stagione',
     seasonDescription: 'Salva le statistiche attuali.',
     seasonPlaceholder: 'Esempio: stagione 2026',
-    saving: 'Risparmio...',
+    saving: "Salvataggio...",
     saveError: 'Errore durante il salvataggio. Riprova.',
     seasonArchived: 'Stagione "{{name}}" archiviata.'
   }

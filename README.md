@@ -1,49 +1,60 @@
 # Mundialhito
 
-Si alguna vez terminaste un año preguntándote cuántos partidos jugaste, cuántos ganaste, cuántos perdiste o cuál fue tu mejor racha, **Mundialhito** nació para responder esas preguntas.
+Mundialhito registra partidos personales y los convierte en un torneo permanente:
+tres partidos de grupos, eliminatorias y una copa al ganar la final. Conserva
+estadísticas, actividad, rachas, campañas y archivos de temporadas. Está pensado
+para uso personal y pocos usuarios.
 
-Es una aplicación web de uso personal que transforma partidos aislados entre amigos en un torneo permanente inspirado en la estructura de una Copa del Mundo. Cada resultado suma a tu historial, modifica tus estadísticas y puede acercarte a una nueva copa o hacerte empezar otra vez desde el principio.
+Es una aplicación estática en HTML, CSS y JavaScript, con autenticación y datos en
+Supabase. Requiere conexión. No tiene compilación, framework ni servidor propio.
 
-El objetivo no es solo registrar resultados, sino darle contexto a cada partido y construir un historial que permita ver tu evolución a lo largo del tiempo.
+## Documentación
 
----
+- [Documentación técnica](DOCUMENTACION_TECNICA.md): funcionamiento, arquitectura,
+  persistencia, compatibilidad, autenticación y mantenimiento.
+- [Supabase](docs/SUPABASE.md): esquema, RLS, permisos y límites de la evidencia.
+- [Pruebas](tests/README.md): preparación, comandos, cobertura y ampliación.
+- [Auditoría final](docs/AUDITORIA_FINAL.md): revisión del estado actual, resultados,
+  correcciones y riesgos pendientes.
+- `AUDITORIA UX.UI.docx`: revisión visual y de experiencia reservada para otra etapa.
 
-## ¿Qué permite hacer?
+## Desarrollo y pruebas
 
-* Registrar victorias, empates y derrotas.
-* Jugar torneos inspirados en un Mundial, con fase de grupos y eliminación directa.
-* Resolver empates mediante definición por penales con lanzamiento de moneda.
-* Llevar estadísticas generales de partidos jugados, ganados, empatados y perdidos.
-* Conservar un historial de temporadas y copas obtenidas.
-* Registrar rachas actuales e históricas, con posibilidad de archivarlas.
-* Deshacer el último partido registrado en caso de haber cargado un resultado por error.
-* Reiniciar un torneo o comenzar desde cero cuando sea necesario.
-* Utilizar un contador renovable de 10 partidos para seguir ciclos personales de juego.
-* Personalizar nombre, nacionalidad, idioma, sonidos y celebraciones.
-* Utilizar la aplicación desde una cuenta personal con persistencia de datos.
+Requiere Node.js >=22 y npm. Las versiones están fijadas en `package.json` y
+`package-lock.json`.
 
----
+```sh
+npm ci
+npx playwright install chromium
+npm test
+```
 
-## Internacionalización
+Para ejecutar la app, servir esta carpeta con un servidor HTTP estático y abrirla
+en el navegador. No abrir `index.html` mediante `file://`. El service worker requiere
+HTTPS o localhost. El acceso local por correo usa el proyecto Supabase configurado;
+Google OAuth vuelve al dominio de producción. Las pruebas automatizadas interceptan
+la red y usan datos ficticios, sin escribir en Supabase real.
 
-Mundialhito incorpora un sistema propio de internacionalización (**i18n**) desarrollado específicamente para el proyecto. Los idiomas funcionan mediante diccionarios independientes y un mecanismo de *fallback* que garantiza que, si una traducción aún no existe, la aplicación continúe funcionando utilizando el español como idioma base.
+## Despliegue
 
----
+Publicar en la raíz de un sitio HTTPS:
 
-## Tecnologías
+- `index.html`, `manifest.json`, `sw.js`;
+- `icon-180.png`, `icon-192.png`, `icon-512.png`;
+- `i18n/` (motor y diez diccionarios), `celebracion/` y `audio/`.
 
-* HTML5
-* CSS3
-* Vanilla JavaScript
-* Supabase
-* Progressive Web App (PWA)
+No se necesita Node en producción. `icon.png` es el original de los iconos y se
+conserva para mantenimiento; `i18n/template.js` es una plantilla y no se carga.
+El manifest y el registro del service worker usan `/`: publicar en un subdirectorio
+requiere revisar rutas expresamente. El SDK usa jsDelivr con versión fija y la
+fuente Nunito usa Google Fonts; esos servicios necesitan estar accesibles.
 
----
+Excluir del sitio publicado `.git/`, `node_modules/`, tests, documentación, Word
+y archivos npm. En Git sí se conservan las pruebas, documentación y ambos archivos
+npm; `node_modules/` está excluido mediante `.gitignore` y se reconstruye con `npm ci`.
+No hay secretos administrativos requeridos por el cliente. La clave pública anon
+incluida en el HTML depende de RLS y permisos correctos en el servidor.
 
-## Estado del proyecto
-
-Mundialhito es un proyecto personal, funcional y en uso. Su núcleo se encuentra estable y completamente operativo, aunque continúa evolucionando con nuevas ideas, mejoras de interfaz y funcionalidades que se incorporan de manera progresiva.
-
----
-
-*"Porque a veces un simple partido entre amigos también merece quedar en la historia."*
+Antes de publicar, ejecutar las pruebas y revisar los límites de validación remota
+en la auditoría final. No cambiar políticas, formatos históricos ni versiones de
+dependencias como parte incidental de un despliegue.

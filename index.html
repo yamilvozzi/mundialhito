@@ -4,14 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Mundialhito</title>
-<link rel="apple-touch-icon" sizes="180x180" href="icon.png">
-<link rel="icon" type="image/png" sizes="512x512" href="icon.png">
+<link rel="apple-touch-icon" sizes="180x180" href="icon-180.png">
+<link rel="icon" type="image/png" sizes="512x512" href="icon-512.png">
 <link rel="manifest" href="manifest.json">
-<meta name="theme-color" content="#2A2A2A">
+<meta name="theme-color" content="#272727">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="application-name" content="Mundialhito">
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.118.0"></script>
 <script src="i18n/i18n.js"></script>
 <script src="i18n/es.js"></script>
 <script src="i18n/ca.js"></script>
@@ -1259,6 +1259,11 @@ body {
   opacity: 0.65;
 }
 
+.plan-dot.current {
+  background: var(--yellow);
+  border-color: var(--yellow);
+}
+
 .btn-plan-reset {
   font-family: 'Nunito', sans-serif;
   font-size: 0.58rem;
@@ -1858,19 +1863,43 @@ body {
   border-color: var(--yellow);
   color: var(--yellow-text);
 }
+
+/* Ocultos también para teclado y lectores de pantalla. */
+.modal-overlay:not(.show), .archivar-overlay:not(.show), .confirm-overlay:not(.show),
+.panel-lateral:not(.show), .panel-overlay:not(.show) { visibility: hidden; }
+.modal-overlay button, .archivar-overlay button, .confirm-overlay button, .panel-lateral button { transition-property: background, border-color, color, transform, filter, opacity; }
+button.moneda { border: 0; padding: 0; background: transparent; color: inherit; font-family: inherit; }
+button.moneda:disabled { cursor: default; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--yellow); outline-offset: 3px; }
+.config-switch:focus-within { outline: 2px solid var(--yellow); outline-offset: 3px; border-radius: 20px; }
+#btnCancelarEmpate:disabled { opacity: 0.4; cursor: default; }
+#btnCancelarEmpate { display: block; width: 100%; margin-top: 10px; }
 </style>
 </head>
 <body>
 
 <div class="flash" id="flash"></div>
+<div id="saveStatus" hidden role="status" style="position:fixed; bottom:8px; left:50%; transform:translateX(-50%); z-index:10000; max-width:94vw; padding:6px 12px; border-radius:8px; background:var(--surface); font-size:0.75rem; text-align:center">
+  <span id="saveStatusText"></span>
+  <button id="btnRetrySave" hidden style="margin:4px 0 0 8px; padding:5px 9px; background:transparent; border:1px solid var(--border); border-radius:6px; color:var(--yellow); font:inherit; cursor:pointer" data-i18n="login.retryLoad">Reintentar</button>
+</div>
 
 <!-- ══ LOADING ══ -->
 <div id="loadingScreen">
   <div class="loading-brand"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
-  <div class="loading-dots">
+  <div class="loading-dots" id="loadingDots">
     <span class="loading-dot"></span>
     <span class="loading-dot"></span>
     <span class="loading-dot"></span>
+  </div>
+  <div id="startupError" hidden style="width:min(340px, 90vw); text-align:center">
+    <p role="alert" data-i18n="login.startupError">No pudimos iniciar la aplicación. Revisá tu conexión y reintentá.</p>
+    <button class="login-btn-primary" id="btnRetryStartup" onclick="window.location.reload()" data-i18n="login.retryLoad">Reintentar</button>
+  </div>
+  <div id="loadError" hidden style="width:min(340px, 90vw); text-align:center">
+    <p role="alert" data-i18n="login.loadError">No pudimos cargar tus datos. Reintentá para continuar.</p>
+    <button class="login-btn-primary" id="btnRetryLoad" data-i18n="login.retryLoad">Reintentar</button>
+    <button class="login-btn-secondary" id="btnLogoutLoad" data-i18n="nav.logout">Salir</button>
   </div>
 </div>
 
@@ -1913,17 +1942,18 @@ body {
 <div id="appScreen">
 
   <!-- Modal moneda -->
-  <div class="modal-overlay" id="modalOverlay">
+  <div class="modal-overlay" id="modalOverlay" role="dialog" aria-modal="true" aria-labelledby="coinModalTitle" aria-describedby="modalSub">
     <div class="modal">
-      <div class="modal-title" data-i18n="coinModal.title">Definición por penales</div>
+      <div class="modal-title" id="coinModalTitle" data-i18n="coinModal.title">Definición por penales</div>
       <div class="modal-sub" id="modalSub" data-i18n="coinModal.subtitleInitial">Empate. Elegí cara o ceca antes de tirar.</div>
-      <span class="moneda" id="moneda">🪙</span>
-      <div class="modal-resultado" id="modalResultado"></div>
+      <button type="button" class="moneda" id="moneda" aria-label="Tirar moneda" data-i18n-aria-label="coinModal.flip" disabled>🪙</button>
+      <div class="modal-resultado" id="modalResultado" role="status" aria-live="polite"></div>
       <div class="modal-elegir" id="modalElegir">
         <button class="modal-btn modal-btn-cara" onclick="elegir('cara')" data-i18n="coinModal.heads">Cara</button>
         <button class="modal-btn modal-btn-ceca" onclick="elegir('ceca')" data-i18n="coinModal.tails">Ceca</button>
       </div>
-      <button class="modal-btn-confirmar" id="btnConfirmar" onclick="confirmarEmpate()" data-i18n="coinModal.confirm">Confirmar resultado</button>
+      <button class="modal-btn-confirmar" id="btnConfirmar" aria-describedby="modalResultado" onclick="confirmarEmpate()" data-i18n="coinModal.confirm">Confirmar resultado</button>
+      <button type="button" class="archivar-btn-cancel" id="btnCancelarEmpate" onclick="cancelarEmpate()" data-i18n="common.cancel">Cancelar</button>
     </div>
   </div>
 
@@ -1940,7 +1970,7 @@ body {
   <div class="app-mobile">
     <div class="header">
       <div class="brand">
-        <button class="brand-icon-btn" id="btnAbrirPanel" data-i18n-aria-label="common.menu" aria-label="Menú">
+        <button class="brand-icon-btn" id="btnAbrirPanel" data-i18n-aria-label="common.menu" aria-label="Menú" data-panel-toggle>
           <div class="brand-icon">
             <svg viewBox="185 200 405 405" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
               <path fill="#FFE033" d="M407.500153,208.342773 C368.835785,208.345398 330.171387,208.323181 291.507050,208.361588 C273.367035,208.379593 263.231354,218.499054 263.217865,236.535858 C263.192291,270.700562 263.187683,304.865234 263.215118,339.029938 C263.220734,346.026337 263.080292,353.045471 263.569458,360.014648 C264.950562,379.691772 274.184021,396.350616 284.911560,412.154358 C312.696289,453.086487 348.094238,486.823059 386.068878,518.074768 C388.735809,520.269592 390.424042,519.237000 392.495087,517.419006 C405.139862,506.319733 418.172974,495.638397 430.441650,484.140198 C454.692963,461.411896 477.086761,437.004547 495.338928,409.044891 C507.112518,391.009430 515.346558,371.999939 515.111755,349.795868 C514.711731,311.968811 515.004028,274.134705 514.957031,236.303604 C514.934875,218.528168 504.837982,208.409042 486.995605,208.360428 C460.830658,208.289124 434.665344,208.341003 407.500153,208.342773z"/>
@@ -1990,7 +2020,7 @@ body {
       <div class="br-step locked" id="brm-E8"><div class="br-label">E8</div><div class="br-sub" data-i18n="bracket.r16">Octavos</div></div>
       <div class="br-step locked" id="brm-E4"><div class="br-label">E4</div><div class="br-sub" data-i18n="bracket.qf">Cuartos</div></div>
       <div class="br-step locked" id="brm-SF"><div class="br-label">SF</div><div class="br-sub" data-i18n="bracket.sf">Semi</div></div>
-      <div class="br-step locked" id="brm-FINAL"><div class="br-label">Final</div><div class="br-sub br-final-trophy" style="color:var(--yellow);opacity:0.5" aria-hidden="true"></div></div>
+      <div class="br-step locked" id="brm-FINAL"><div class="br-label" data-i18n="bracket.final">Final</div><div class="br-sub br-final-trophy" style="color:var(--yellow);opacity:0.5" aria-hidden="true"></div></div>
     </div>
 
     <!-- Resultado -->
@@ -2042,7 +2072,7 @@ body {
       </div>
 
       <!-- Copas en sidebar -->
-      <div style="padding:16px 20px 0;border-bottom:1px solid var(--border-soft);padding-bottom:16px;">
+      <div id="copasSidebar" style="padding:16px 20px 0;border-bottom:1px solid var(--border-soft);padding-bottom:16px;">
         <div style="display:flex;align-items:center;justify-content:space-between;">
           <span style="font-size:0.7rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text);" data-i18n="copas.trophiesWon">Copas ganadas</span>
           <span style="font-size:2.2rem;font-weight:800;color:var(--yellow);font-family:'Nunito',sans-serif;line-height:1;" id="copasNumDt">0</span>
@@ -2051,7 +2081,7 @@ body {
       </div>
 
       <nav class="dt-nav">
-        <button class="dt-nav-item active" id="dtBtnApp">
+        <button class="dt-nav-item active" id="dtBtnApp" data-screen="app">
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14">
             <path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/>
             <path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
@@ -2065,33 +2095,33 @@ body {
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.activity">Actividad</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnRachas">
+        <button class="dt-nav-item" id="dtBtnRachas" data-screen="rachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streaks">Rachas</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnArchivar">
+        <button class="dt-nav-item" id="dtBtnArchivar" data-nav-action="archivar">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.archive">Archivar</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnHistorial">
+        <button class="dt-nav-item" id="dtBtnHistorial" data-screen="historial">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.history">Historial</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnHistRachas">
+        <button class="dt-nav-item" id="dtBtnHistRachas" data-screen="histRachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="10.5" r="2.5" fill="var(--bg)" stroke="currentColor" stroke-width="1.1"/><path d="M10.5 9.25V10.65L11.45 11.2" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streakHistory">Hist. Rachas</span>
         </button>
       </nav>
 
       <div class="dt-nav-footer">
-        <button class="dt-nav-item" id="dtBtnConfig">
+        <button class="dt-nav-item" id="dtBtnConfig" data-screen="config">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.79,2.56 L5.95,0.99 L8.05,0.99 L8.21,2.56 L9.28,3.0 L10.51,2.01 L11.99,3.49 L11.0,4.72 L11.44,5.79 L13.01,5.95 L13.01,8.05 L11.44,8.21 L11.0,9.28 L11.99,10.51 L10.51,11.99 L9.28,11.0 L8.21,11.44 L8.05,13.01 L5.95,13.01 L5.79,11.44 L4.72,11.0 L3.49,11.99 L2.01,10.51 L3.0,9.28 L2.56,8.21 L0.99,8.05 L0.99,5.95 L2.56,5.79 L3.0,4.72 L2.01,3.49 L3.49,2.01 L4.72,3.0 Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/><circle cx="7" cy="7" r="1.7" stroke="currentColor" stroke-width="1.1" fill="none"/>          </svg>
           <span data-i18n="config.title">Configuración</span>
         </button>
         <div class="dt-nav-sep" style="margin-bottom:10px;margin-top:6px;"></div>
-        <button class="dt-nav-item" id="dtBtnLogout">
+        <button class="dt-nav-item" id="dtBtnLogout" data-nav-action="logout">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span data-i18n="nav.logout">Salir</span>
         </button>
@@ -2130,7 +2160,7 @@ body {
           <div class="br-step locked" id="brd-E8"><div class="br-label">E8</div><div class="br-sub" data-i18n="bracket.r16">Octavos</div></div>
           <div class="br-step locked" id="brd-E4"><div class="br-label">E4</div><div class="br-sub" data-i18n="bracket.qf">Cuartos</div></div>
           <div class="br-step locked" id="brd-SF"><div class="br-label">SF</div><div class="br-sub" data-i18n="bracket.sf">Semi</div></div>
-          <div class="br-step locked" id="brd-FINAL"><div class="br-label">Final</div><div class="br-sub br-final-trophy" style="color:var(--yellow);opacity:0.5" aria-hidden="true"></div></div>
+          <div class="br-step locked" id="brd-FINAL"><div class="br-label" data-i18n="bracket.final">Final</div><div class="br-sub br-final-trophy" style="color:var(--yellow);opacity:0.5" aria-hidden="true"></div></div>
         </div>
 
         <!-- Registrar resultado -->
@@ -2181,7 +2211,7 @@ body {
   <div class="actividad-screen-mobile">
     <div class="hist-screen-header">
       <div style="display:flex;align-items:center;gap:12px;">
-        <button class="brand-icon-btn" id="btnAbrirPanelActividad" data-i18n-aria-label="common.menu" aria-label="Menú">
+        <button class="brand-icon-btn" id="btnAbrirPanelActividad" data-i18n-aria-label="common.menu" aria-label="Menú" data-panel-toggle>
           <div class="brand-icon"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="#FFE033" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="#FFE033" stroke-width="1.2" stroke-linecap="round"/></svg></div>
         </button>
         <div>
@@ -2194,8 +2224,8 @@ body {
       <div class="section-label" data-i18n="plan.title">Plan de 10 partidos</div>
       <div class="plan-card">
         <div style="text-align:center;flex-shrink:0;">
-          <div class="plan-num" id="numPartidoMob">1</div>
-          <div class="plan-num-label" data-i18n="plan.matchNumber">Partido #</div>
+          <div class="plan-num" id="numPartidoMob">0</div>
+          <div class="plan-num-label" data-i18n="plan.matchNumber">Completados</div>
         </div>
         <div class="plan-right">
           <div class="plan-dots" id="planDotsMob"></div>
@@ -2221,7 +2251,7 @@ body {
         <div class="dt-logo-sub js-user-subtitle">Tracker personal</div>
       </div>
       <nav class="dt-nav">
-        <button class="dt-nav-item" id="dtBtnAppFromActividad">
+        <button class="dt-nav-item" id="dtBtnAppFromActividad" data-screen="app">
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/></svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
         </button>
@@ -2229,32 +2259,32 @@ body {
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.activity">Actividad</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnRachasFromActividad">
+        <button class="dt-nav-item" id="dtBtnRachasFromActividad" data-screen="rachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streaks">Rachas</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnArchivarFromActividad">
+        <button class="dt-nav-item" id="dtBtnArchivarFromActividad" data-nav-action="archivar">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/></svg>
           <span data-i18n="nav.archive">Archivar</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnHistorialFromActividad">
+        <button class="dt-nav-item" id="dtBtnHistorialFromActividad" data-screen="historial">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12M2 7H9M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span data-i18n="nav.history">Historial</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnHistRachasFromActividad">
+        <button class="dt-nav-item" id="dtBtnHistRachasFromActividad" data-screen="histRachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="10.5" r="2.5" fill="var(--bg)" stroke="currentColor" stroke-width="1.1"/><path d="M10.5 9.25V10.65L11.45 11.2" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streakHistory">Hist. Rachas</span>
         </button>
       </nav>
       <div class="dt-nav-footer">
-        <button class="dt-nav-item" id="dtBtnConfigFromActividad">
+        <button class="dt-nav-item" id="dtBtnConfigFromActividad" data-screen="config">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="4" stroke="currentColor" stroke-width="1.1"/><circle cx="7" cy="7" r="1.5" stroke="currentColor" stroke-width="1.1"/></svg>
           <span data-i18n="config.title">Configuración</span>
         </button>
         <div class="dt-nav-sep" style="margin-bottom:10px;margin-top:6px;"></div>
-        <button class="dt-nav-item" id="dtBtnLogoutFromActividad">
+        <button class="dt-nav-item" id="dtBtnLogoutFromActividad" data-nav-action="logout">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5M9.5 4.5L12 7L9.5 9.5M12 7H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.logout">Salir</span>
         </button>
@@ -2272,8 +2302,8 @@ body {
           <span class="dt-right-label" data-i18n="plan.title">Plan de 10 partidos</span>
           <div style="display:flex;align-items:center;gap:14px;">
             <div style="text-align:center;flex-shrink:0;">
-              <div class="plan-num" id="numPartidoDt">1</div>
-              <div class="plan-num-label" data-i18n="plan.matchNumber">Partido #</div>
+              <div class="plan-num" id="numPartidoDt">0</div>
+              <div class="plan-num-label" data-i18n="plan.matchNumber">Completados</div>
             </div>
             <div class="plan-right">
               <div class="plan-dots" id="planDotsDt"></div>
@@ -2301,13 +2331,13 @@ body {
 <div class="panel-overlay" id="panelOverlay"></div>
 
 <!-- ══ PANEL LATERAL (mobile) ══ -->
-<div class="panel-lateral" id="panelLateral">
+<div class="panel-lateral" id="panelLateral" role="dialog" aria-modal="true" aria-label="Menú" data-i18n-aria-label="common.menu">
   <div class="panel-header">
     <div class="panel-logo"><span class="w">MUNDIAL</span><span class="h">HITO</span></div>
     <div class="panel-sub js-user-subtitle">Tracker personal</div>
   </div>
   <nav class="panel-nav">
-    <button class="panel-nav-item active" id="panelBtnApp">
+    <button class="panel-nav-item active" id="panelBtnApp" data-screen="app">
       <svg viewBox="0 0 14 16" fill="none" width="14" height="14">
         <path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/>
         <path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/>
@@ -2321,32 +2351,32 @@ body {
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
       <span data-i18n="nav.activity">Actividad</span>
     </button>
-    <button class="panel-nav-item" id="panelBtnRachas">
+    <button class="panel-nav-item" id="panelBtnRachas" data-screen="rachas">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span data-i18n="nav.streaks">Rachas</span>
     </button>
     <div class="panel-separator"></div>
-    <button class="panel-nav-item" id="panelBtnArchivar">
+    <button class="panel-nav-item" id="panelBtnArchivar" data-nav-action="archivar">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
       <span data-i18n="nav.archive">Archivar</span>
     </button>
     <div class="panel-separator"></div>
-    <button class="panel-nav-item" id="panelBtnHistorial">
+    <button class="panel-nav-item" id="panelBtnHistorial" data-screen="historial">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
       <span data-i18n="nav.history">Historial</span>
     </button>
-    <button class="panel-nav-item" id="panelBtnHistRachas">
+    <button class="panel-nav-item" id="panelBtnHistRachas" data-screen="histRachas">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="10.5" r="2.5" fill="var(--bg)" stroke="currentColor" stroke-width="1.1"/><path d="M10.5 9.25V10.65L11.45 11.2" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
       <span data-i18n="nav.streakHistory">Hist. Rachas</span>
     </button>
   </nav>
   <div class="panel-footer">
-    <button class="panel-nav-item" id="panelBtnConfig">
+    <button class="panel-nav-item" id="panelBtnConfig" data-screen="config">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.79,2.56 L5.95,0.99 L8.05,0.99 L8.21,2.56 L9.28,3.0 L10.51,2.01 L11.99,3.49 L11.0,4.72 L11.44,5.79 L13.01,5.95 L13.01,8.05 L11.44,8.21 L11.0,9.28 L11.99,10.51 L10.51,11.99 L9.28,11.0 L8.21,11.44 L8.05,13.01 L5.95,13.01 L5.79,11.44 L4.72,11.0 L3.49,11.99 L2.01,10.51 L3.0,9.28 L2.56,8.21 L0.99,8.05 L0.99,5.95 L2.56,5.79 L3.0,4.72 L2.01,3.49 L3.49,2.01 L4.72,3.0 Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/><circle cx="7" cy="7" r="1.7" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
       <span data-i18n="config.title">Configuración</span>
     </button>
     <div class="panel-separator" style="margin:6px 0 10px 0;"></div>
-    <button class="panel-nav-item" id="panelBtnLogout">
+    <button class="panel-nav-item" id="panelBtnLogout" data-nav-action="logout">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
       <span data-i18n="nav.logout">Salir</span>
     </button>
@@ -2362,7 +2392,7 @@ body {
   <div class="hist-rachas-screen-mobile">
     <div class="hist-screen-header">
       <div style="display:flex;align-items:center;gap:12px;">
-        <button class="brand-icon-btn" id="btnAbrirPanelHistRachas" data-i18n-aria-label="common.menu" aria-label="Menú">
+        <button class="brand-icon-btn" id="btnAbrirPanelHistRachas" data-i18n-aria-label="common.menu" aria-label="Menú" data-panel-toggle>
           <div class="brand-icon">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="#FFE033" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="10.5" r="2.5" fill="var(--bg)" stroke="#FFE033" stroke-width="1.1"/><path d="M10.5 9.25V10.65L11.45 11.2" stroke="#FFE033" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           </div>
@@ -2384,7 +2414,7 @@ body {
         <div class="dt-logo-sub js-user-subtitle">Tracker personal</div>
       </div>
       <nav class="dt-nav">
-        <button class="dt-nav-item" id="dtBtnAppFromHistRachas">
+        <button class="dt-nav-item" id="dtBtnAppFromHistRachas" data-screen="app">
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/><line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
         </button>
@@ -2392,32 +2422,32 @@ body {
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.activity">Actividad</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnRachasFromHistRachas">
+        <button class="dt-nav-item" id="dtBtnRachasFromHistRachas" data-screen="rachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streaks">Rachas</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnArchivarFromHistRachas">
+        <button class="dt-nav-item" id="dtBtnArchivarFromHistRachas" data-nav-action="archivar">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.archive">Archivar</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnHistorialFromHistRachas">
+        <button class="dt-nav-item" id="dtBtnHistorialFromHistRachas" data-screen="historial">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.history">Historial</span>
         </button>
-        <button class="dt-nav-item active" id="dtBtnHistRachasFromHistRachas">
+        <button class="dt-nav-item active" id="dtBtnHistRachasFromHistRachas" data-screen="histRachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="10.5" r="2.5" fill="var(--bg)" stroke="currentColor" stroke-width="1.1"/><path d="M10.5 9.25V10.65L11.45 11.2" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streakHistory">Hist. Rachas</span>
         </button>
       </nav>
       <div class="dt-nav-footer">
-        <button class="dt-nav-item" id="dtBtnConfigFromHistRachas">
+        <button class="dt-nav-item" id="dtBtnConfigFromHistRachas" data-screen="config">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.79,2.56 L5.95,0.99 L8.05,0.99 L8.21,2.56 L9.28,3.0 L10.51,2.01 L11.99,3.49 L11.0,4.72 L11.44,5.79 L13.01,5.95 L13.01,8.05 L11.44,8.21 L11.0,9.28 L11.99,10.51 L10.51,11.99 L9.28,11.0 L8.21,11.44 L8.05,13.01 L5.95,13.01 L5.79,11.44 L4.72,11.0 L3.49,11.99 L2.01,10.51 L3.0,9.28 L2.56,8.21 L0.99,8.05 L0.99,5.95 L2.56,5.79 L3.0,4.72 L2.01,3.49 L3.49,2.01 L4.72,3.0 Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/><circle cx="7" cy="7" r="1.7" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
           <span data-i18n="config.title">Configuración</span>
         </button>
         <div class="dt-nav-sep" style="margin-bottom:10px;margin-top:6px;"></div>
-        <button class="dt-nav-item" id="dtBtnLogoutFromHistRachas">
+        <button class="dt-nav-item" id="dtBtnLogoutFromHistRachas" data-nav-action="logout">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span data-i18n="nav.logout">Salir</span>
         </button>
@@ -2441,7 +2471,7 @@ body {
   <div class="config-screen-mobile">
     <div class="hist-screen-header">
       <div style="display:flex;align-items:center;gap:12px;">
-        <button class="brand-icon-btn" id="btnAbrirPanelConfig" data-i18n-aria-label="common.menu" aria-label="Menú">
+        <button class="brand-icon-btn" id="btnAbrirPanelConfig" data-i18n-aria-label="common.menu" aria-label="Menú" data-panel-toggle>
           <div class="brand-icon">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.79,2.56 L5.95,0.99 L8.05,0.99 L8.21,2.56 L9.28,3.0 L10.51,2.01 L11.99,3.49 L11.0,4.72 L11.44,5.79 L13.01,5.95 L13.01,8.05 L11.44,8.21 L11.0,9.28 L11.99,10.51 L10.51,11.99 L9.28,11.0 L8.21,11.44 L8.05,13.01 L5.95,13.01 L5.79,11.44 L4.72,11.0 L3.49,11.99 L2.01,10.51 L3.0,9.28 L2.56,8.21 L0.99,8.05 L0.99,5.95 L2.56,5.79 L3.0,4.72 L2.01,3.49 L3.49,2.01 L4.72,3.0 Z" stroke="#FFE033" stroke-width="1.1" stroke-linejoin="round" fill="none"/><circle cx="7" cy="7" r="1.7" stroke="#FFE033" stroke-width="1.1" fill="none"/></svg>
           </div>
@@ -2460,9 +2490,9 @@ body {
 
         <div class="config-row">
           <div class="config-row-text">
-            <div class="config-row-label" data-i18n="config.name">Nombre</div>
+            <div class="config-row-label" id="labelNombreMob" data-i18n="config.name">Nombre</div>
           </div>
-          <button class="config-value-btn" id="btnAbrirNombreMob" onclick="abrirModalNombre()">
+          <button class="config-value-btn" id="btnAbrirNombreMob" aria-labelledby="labelNombreMob" onclick="abrirModalNombre()">
             <span id="configNombreValMob">Sin definir</span>
             <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M7.5 1.5L9.5 3.5L3.5 9.5H1.5V7.5L7.5 1.5Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
           </button>
@@ -2470,16 +2500,16 @@ body {
 
         <div class="config-row">
           <div class="config-row-text">
-            <div class="config-row-label" data-i18n="config.nationality">Nacionalidad</div>
+            <div class="config-row-label" id="labelNacionalidadMob" data-i18n="config.nationality">Nacionalidad</div>
           </div>
-          <select class="config-select" id="configNacionalidadMob" onchange="onChangeNacionalidad(this.value)"></select>
+          <select class="config-select" id="configNacionalidadMob" aria-labelledby="labelNacionalidadMob" onchange="onChangeNacionalidad(this.value)"></select>
         </div>
 
         <div class="config-row">
           <div class="config-row-text">
-            <div class="config-row-label" data-i18n="config.language">Idioma</div>
+            <div class="config-row-label" id="labelIdiomaMob" data-i18n="config.language">Idioma</div>
           </div>
-          <select class="config-select" id="configIdiomaMob" onchange="onChangeIdioma(this.value)"></select>
+          <select class="config-select" id="configIdiomaMob" aria-labelledby="labelIdiomaMob" onchange="onChangeIdioma(this.value)"></select>
         </div>
       </div>
 
@@ -2488,10 +2518,10 @@ body {
         <div class="config-section-title" data-i18n="config.celebrations">Celebraciones</div>
         <div class="config-row">
           <div class="config-row-text">
-            <div class="config-row-label" data-i18n="config.celebrationsActive">Celebraciones activas</div>
+            <div class="config-row-label" id="labelCelebracionesMob" data-i18n="config.celebrationsActive">Celebraciones activas</div>
           </div>
           <label class="config-switch">
-            <input type="checkbox" id="configCelebracionesMob" onchange="toggleCelebraciones(this.checked)">
+            <input type="checkbox" id="configCelebracionesMob" aria-labelledby="labelCelebracionesMob" onchange="toggleCelebraciones(this.checked)">
             <span class="config-switch-track"></span>
             <span class="config-switch-thumb"></span>
           </label>
@@ -2503,19 +2533,19 @@ body {
         <div class="config-section-title" data-i18n="config.sounds">Sonidos</div>
         <div class="config-row">
           <div class="config-row-text">
-            <div class="config-row-label" data-i18n="config.sound">Sonido</div>
+            <div class="config-row-label" id="labelSonidoMob" data-i18n="config.sound">Sonido</div>
           </div>
           <label class="config-switch">
-            <input type="checkbox" id="configSonidoMob" onchange="toggleSonido(this.checked)">
+            <input type="checkbox" id="configSonidoMob" aria-labelledby="labelSonidoMob" onchange="toggleSonido(this.checked)">
             <span class="config-switch-track"></span>
             <span class="config-switch-thumb"></span>
           </label>
         </div>
         <div class="config-row config-slider-row">
           <div class="config-row-text" style="width:100%;">
-            <div class="config-row-label" data-i18n="config.volume">Volumen</div>
+            <div class="config-row-label" id="labelVolumenMob" data-i18n="config.volume">Volumen</div>
             <div class="config-slider-wrap">
-              <input type="range" class="config-slider" id="configVolumenMob" min="0" max="100" step="5" oninput="onChangeVolumen(this.value)">
+              <input type="range" class="config-slider" id="configVolumenMob" aria-labelledby="labelVolumenMob" min="0" max="100" step="5" oninput="onChangeVolumen(this.value)">
               <span class="config-slider-val" id="configVolumenValMob">70%</span>
             </div>
           </div>
@@ -2533,7 +2563,7 @@ body {
         <div class="dt-logo-sub js-user-subtitle">Tracker personal</div>
       </div>
       <nav class="dt-nav">
-        <button class="dt-nav-item" id="dtBtnAppFromConfig">
+        <button class="dt-nav-item" id="dtBtnAppFromConfig" data-screen="app">
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/><line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
         </button>
@@ -2541,32 +2571,32 @@ body {
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.activity">Actividad</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnRachasFromConfig">
+        <button class="dt-nav-item" id="dtBtnRachasFromConfig" data-screen="rachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streaks">Rachas</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnArchivarFromConfig">
+        <button class="dt-nav-item" id="dtBtnArchivarFromConfig" data-nav-action="archivar">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.archive">Archivar</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnHistorialFromConfig">
+        <button class="dt-nav-item" id="dtBtnHistorialFromConfig" data-screen="historial">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.history">Historial</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnHistRachasFromConfig">
+        <button class="dt-nav-item" id="dtBtnHistRachasFromConfig" data-screen="histRachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="10.5" r="2.5" fill="var(--bg)" stroke="currentColor" stroke-width="1.1"/><path d="M10.5 9.25V10.65L11.45 11.2" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streakHistory">Hist. Rachas</span>
         </button>
       </nav>
       <div class="dt-nav-footer">
-        <button class="dt-nav-item active" id="dtBtnConfigFromConfig">
+        <button class="dt-nav-item active" id="dtBtnConfigFromConfig" data-screen="config">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.79,2.56 L5.95,0.99 L8.05,0.99 L8.21,2.56 L9.28,3.0 L10.51,2.01 L11.99,3.49 L11.0,4.72 L11.44,5.79 L13.01,5.95 L13.01,8.05 L11.44,8.21 L11.0,9.28 L11.99,10.51 L10.51,11.99 L9.28,11.0 L8.21,11.44 L8.05,13.01 L5.95,13.01 L5.79,11.44 L4.72,11.0 L3.49,11.99 L2.01,10.51 L3.0,9.28 L2.56,8.21 L0.99,8.05 L0.99,5.95 L2.56,5.79 L3.0,4.72 L2.01,3.49 L3.49,2.01 L4.72,3.0 Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/><circle cx="7" cy="7" r="1.7" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
           <span data-i18n="config.title">Configuración</span>
         </button>
         <div class="dt-nav-sep" style="margin-bottom:10px;margin-top:6px;"></div>
-        <button class="dt-nav-item" id="dtBtnLogoutFromConfig">
+        <button class="dt-nav-item" id="dtBtnLogoutFromConfig" data-nav-action="logout">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span data-i18n="nav.logout">Salir</span>
         </button>
@@ -2587,9 +2617,9 @@ body {
 
           <div class="config-row">
             <div class="config-row-text">
-              <div class="config-row-label" data-i18n="config.name">Nombre</div>
+              <div class="config-row-label" id="labelNombreDt" data-i18n="config.name">Nombre</div>
             </div>
-            <button class="config-value-btn" id="btnAbrirNombreDt" onclick="abrirModalNombre()">
+            <button class="config-value-btn" id="btnAbrirNombreDt" aria-labelledby="labelNombreDt" onclick="abrirModalNombre()">
               <span id="configNombreValDt">Sin definir</span>
               <svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M7.5 1.5L9.5 3.5L3.5 9.5H1.5V7.5L7.5 1.5Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round"/></svg>
             </button>
@@ -2597,16 +2627,16 @@ body {
 
           <div class="config-row">
             <div class="config-row-text">
-              <div class="config-row-label" data-i18n="config.nationality">Nacionalidad</div>
+              <div class="config-row-label" id="labelNacionalidadDt" data-i18n="config.nationality">Nacionalidad</div>
             </div>
-            <select class="config-select" id="configNacionalidadDt" onchange="onChangeNacionalidad(this.value)"></select>
+            <select class="config-select" id="configNacionalidadDt" aria-labelledby="labelNacionalidadDt" onchange="onChangeNacionalidad(this.value)"></select>
           </div>
 
           <div class="config-row">
             <div class="config-row-text">
-              <div class="config-row-label" data-i18n="config.language">Idioma</div>
+              <div class="config-row-label" id="labelIdiomaDt" data-i18n="config.language">Idioma</div>
             </div>
-            <select class="config-select" id="configIdiomaDt" onchange="onChangeIdioma(this.value)"></select>
+            <select class="config-select" id="configIdiomaDt" aria-labelledby="labelIdiomaDt" onchange="onChangeIdioma(this.value)"></select>
           </div>
         </div>
 
@@ -2615,10 +2645,10 @@ body {
           <div class="config-section-title" data-i18n="config.celebrations">Celebraciones</div>
           <div class="config-row">
             <div class="config-row-text">
-              <div class="config-row-label" data-i18n="config.celebrationsActive">Celebraciones activas</div>
+              <div class="config-row-label" id="labelCelebracionesDt" data-i18n="config.celebrationsActive">Celebraciones activas</div>
             </div>
             <label class="config-switch">
-              <input type="checkbox" id="configCelebracionesDt" onchange="toggleCelebraciones(this.checked)">
+              <input type="checkbox" id="configCelebracionesDt" aria-labelledby="labelCelebracionesDt" onchange="toggleCelebraciones(this.checked)">
               <span class="config-switch-track"></span>
               <span class="config-switch-thumb"></span>
             </label>
@@ -2630,19 +2660,19 @@ body {
           <div class="config-section-title" data-i18n="config.sounds">Sonidos</div>
           <div class="config-row">
             <div class="config-row-text">
-              <div class="config-row-label" data-i18n="config.sound">Sonido</div>
+              <div class="config-row-label" id="labelSonidoDt" data-i18n="config.sound">Sonido</div>
             </div>
             <label class="config-switch">
-              <input type="checkbox" id="configSonidoDt" onchange="toggleSonido(this.checked)">
+              <input type="checkbox" id="configSonidoDt" aria-labelledby="labelSonidoDt" onchange="toggleSonido(this.checked)">
               <span class="config-switch-track"></span>
               <span class="config-switch-thumb"></span>
             </label>
           </div>
           <div class="config-row config-slider-row">
             <div class="config-row-text" style="width:100%;">
-              <div class="config-row-label" data-i18n="config.volume">Volumen</div>
+              <div class="config-row-label" id="labelVolumenDt" data-i18n="config.volume">Volumen</div>
               <div class="config-slider-wrap">
-                <input type="range" class="config-slider" id="configVolumenDt" min="0" max="100" step="5" oninput="onChangeVolumen(this.value)">
+                <input type="range" class="config-slider" id="configVolumenDt" aria-labelledby="labelVolumenDt" min="0" max="100" step="5" oninput="onChangeVolumen(this.value)">
                 <span class="config-slider-val" id="configVolumenValDt">70%</span>
               </div>
             </div>
@@ -2660,7 +2690,7 @@ body {
   <div class="rachas-screen-mobile">
     <div class="hist-screen-header">
       <div style="display:flex;align-items:center;gap:12px;">
-        <button class="brand-icon-btn" id="btnAbrirPanelRachas" data-i18n-aria-label="common.menu" aria-label="Menú">
+        <button class="brand-icon-btn" id="btnAbrirPanelRachas" data-i18n-aria-label="common.menu" aria-label="Menú" data-panel-toggle>
           <div class="brand-icon">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="#FFE033" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <svg style="display:none" viewBox="185 200 405 405" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
@@ -2689,7 +2719,7 @@ body {
         <div class="dt-logo-sub js-user-subtitle">Tracker personal</div>
       </div>
       <nav class="dt-nav">
-        <button class="dt-nav-item" id="dtBtnAppFromRachas">
+        <button class="dt-nav-item" id="dtBtnAppFromRachas" data-screen="app">
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/><line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
         </button>
@@ -2697,32 +2727,32 @@ body {
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.activity">Actividad</span>
         </button>
-        <button class="dt-nav-item active" id="dtBtnRachasFromRachas">
+        <button class="dt-nav-item active" id="dtBtnRachasFromRachas" data-screen="rachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="rachas.title">Rachas</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnArchivarFromRachas">
+        <button class="dt-nav-item" id="dtBtnArchivarFromRachas" data-nav-action="archivar">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.archive">Archivar</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnHistorialFromRachas">
+        <button class="dt-nav-item" id="dtBtnHistorialFromRachas" data-screen="historial">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.history">Historial</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnHistRachasFromRachas">
+        <button class="dt-nav-item" id="dtBtnHistRachasFromRachas" data-screen="histRachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="10.5" r="2.5" fill="var(--bg)" stroke="currentColor" stroke-width="1.1"/><path d="M10.5 9.25V10.65L11.45 11.2" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streakHistory">Hist. Rachas</span>
         </button>
       </nav>
       <div class="dt-nav-footer">
-        <button class="dt-nav-item" id="dtBtnConfigFromRachas">
+        <button class="dt-nav-item" id="dtBtnConfigFromRachas" data-screen="config">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.79,2.56 L5.95,0.99 L8.05,0.99 L8.21,2.56 L9.28,3.0 L10.51,2.01 L11.99,3.49 L11.0,4.72 L11.44,5.79 L13.01,5.95 L13.01,8.05 L11.44,8.21 L11.0,9.28 L11.99,10.51 L10.51,11.99 L9.28,11.0 L8.21,11.44 L8.05,13.01 L5.95,13.01 L5.79,11.44 L4.72,11.0 L3.49,11.99 L2.01,10.51 L3.0,9.28 L2.56,8.21 L0.99,8.05 L0.99,5.95 L2.56,5.79 L3.0,4.72 L2.01,3.49 L3.49,2.01 L4.72,3.0 Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/><circle cx="7" cy="7" r="1.7" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
           <span data-i18n="config.title">Configuración</span>
         </button>
         <div class="dt-nav-sep" style="margin-bottom:10px;margin-top:6px;"></div>
-        <button class="dt-nav-item" id="dtBtnLogoutFromRachas">
+        <button class="dt-nav-item" id="dtBtnLogoutFromRachas" data-nav-action="logout">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span data-i18n="nav.logout">Salir</span>
         </button>
@@ -2741,26 +2771,26 @@ body {
 </div>
 
 <!-- ══ MODAL ARCHIVAR UNIFICADO ══ -->
-<div class="archivar-overlay" id="archivarOverlay">
+<div class="archivar-overlay" id="archivarOverlay" role="dialog" aria-modal="true" aria-labelledby="archiveTitle" aria-describedby="archDesc">
   <div class="archivar-modal">
-    <div class="archivar-title" data-i18n="archive.title">Archivar</div>
+    <div class="archivar-title" id="archiveTitle" data-i18n="archive.title">Archivar</div>
     <div class="arch-tipo-row">
       <button class="arch-tipo-btn selected" id="archTipoTemporada" data-i18n="archive.seasonType">Temporada</button>
       <button class="arch-tipo-btn" id="archTipoRachas" data-i18n="rachas.archiveType">Rachas</button>
     </div>
     <div class="archivar-desc" id="archDesc" data-i18n="archive.seasonDescription">Guardá las estadísticas actuales con un nombre. Podés seguir jugando normalmente después.</div>
-    <input class="archivar-input" id="archivarNombre" type="text" data-i18n-placeholder="archive.seasonPlaceholder" placeholder="Ej: Temporada 2026" maxlength="40">
+    <input class="archivar-input" id="archivarNombre" aria-label="Nombre" data-i18n-aria-label="config.name" type="text" data-i18n-placeholder="archive.seasonPlaceholder" placeholder="Ej: Temporada 2026" maxlength="40">
     <button class="archivar-btn-guardar" id="btnArchivarGuardar" data-i18n="common.save">Guardar</button>
     <button class="archivar-btn-cancel" id="btnArchivarCancelar" data-i18n="common.cancel">Cancelar</button>
   </div>
 </div>
 
 <!-- ══ MODAL CAMBIAR NOMBRE ══ -->
-<div class="archivar-overlay" id="nombreOverlay">
+<div class="archivar-overlay" id="nombreOverlay" role="dialog" aria-modal="true" aria-labelledby="nameModalTitle">
   <div class="archivar-modal">
-    <div class="archivar-title" data-i18n="config.nameModalTitle">Tu nombre</div>
+    <div class="archivar-title" id="nameModalTitle" data-i18n="config.nameModalTitle">Tu nombre</div>
     <div class="archivar-desc" data-i18n="config.nameModalDesc">Es solo un detalle visual — aparece debajo de Mundialhito en toda la app. No afecta tu cuenta ni tu login.</div>
-    <input class="archivar-input" id="nombreInput" type="text" data-i18n-placeholder="config.namePlaceholder" placeholder="Ej: Yamil" maxlength="24">
+    <input class="archivar-input" id="nombreInput" aria-label="Nombre" data-i18n-aria-label="config.name" type="text" data-i18n-placeholder="config.namePlaceholder" placeholder="Ej: Yamil" maxlength="24">
     <button class="archivar-btn-guardar" id="btnNombreGuardar" data-i18n="common.save">Guardar</button>
     <button class="archivar-btn-cancel" id="btnNombreCancelar" data-i18n="common.cancel">Cancelar</button>
   </div>
@@ -2772,7 +2802,7 @@ body {
   <div class="hist-screen-mobile">
     <div class="hist-screen-header">
       <div style="display:flex;align-items:center;gap:12px;">
-        <button class="brand-icon-btn" id="btnAbrirPanelHistorial" data-i18n-aria-label="common.menu" aria-label="Menú">
+        <button class="brand-icon-btn" id="btnAbrirPanelHistorial" data-i18n-aria-label="common.menu" aria-label="Menú" data-panel-toggle>
           <div class="brand-icon">
             <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="#FFE033" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="#FFE033" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="#FFE033" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" fill="var(--bg)" stroke="#FFE033" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="#FFE033" stroke-width="1" stroke-linecap="round"/></svg>
             <svg style="display:none" viewBox="185 200 405 405" xmlns="http://www.w3.org/2000/svg" width="24" height="24">
@@ -2801,7 +2831,7 @@ body {
         <div class="dt-logo-sub js-user-subtitle">Tracker personal</div>
       </div>
       <nav class="dt-nav">
-        <button class="dt-nav-item" id="dtBtnAppFromHist">
+        <button class="dt-nav-item" id="dtBtnAppFromHist" data-screen="app">
           <svg viewBox="0 0 14 16" fill="none" width="14" height="14"><path d="M4 2H10V8C10 10.2091 8.65685 12 7 12C5.34315 12 4 10.2091 4 8V2Z" stroke="currentColor" stroke-width="1.1" fill="none"/><path d="M4 3H2C2 3 1.5 6.5 4 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><path d="M10 3H12C12 3 12.5 6.5 10 7.5" stroke="currentColor" stroke-width="1" stroke-linecap="round" opacity="0.7"/><line x1="7" y1="12" x2="7" y2="13.5" stroke="currentColor" stroke-width="1"/><line x1="5" y1="13.5" x2="9" y2="13.5" stroke="currentColor" stroke-width="1.1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.mundialhito">Mundialhito</span>
         </button>
@@ -2809,32 +2839,32 @@ body {
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 11.5V8.5M5 11.5V5.5M8 11.5V7M11 11.5V2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M1.5 12.5H12.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.activity">Actividad</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnRachasFromHist">
+        <button class="dt-nav-item" id="dtBtnRachasFromHist" data-screen="rachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streaks">Rachas</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item" id="dtBtnArchivarFromHist">
+        <button class="dt-nav-item" id="dtBtnArchivarFromHist" data-nav-action="archivar">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1.5" y="3" width="11" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1.5 5.5H12.5" stroke="currentColor" stroke-width="1.2"/><path d="M5 1.5H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 8V10M6 9H8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
           <span data-i18n="nav.archive">Archivar</span>
         </button>
         <div class="dt-nav-sep"></div>
-        <button class="dt-nav-item active" id="dtBtnHistorialFromHist">
+        <button class="dt-nav-item active" id="dtBtnHistorialFromHist" data-screen="historial">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M2 3H12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 7H9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 11H6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="11" cy="10" r="2.5" stroke="currentColor" stroke-width="1.2"/><path d="M11 9V10.5L12 11" stroke="currentColor" stroke-width="1" stroke-linecap="round"/></svg>
           <span data-i18n="nav.history">Historial</span>
         </button>
-        <button class="dt-nav-item" id="dtBtnHistRachasFromHist">
+        <button class="dt-nav-item" id="dtBtnHistRachasFromHist" data-screen="histRachas">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 13C4.239 13 2 10.985 2 8.5c0-1.8 1-3.2 2-4 0 1.5 1 2.5 1 2.5C5 5 6 3 7 1c0 2 1.5 3 2.5 4.5.5.75.5 1.5.5 1.5C10.5 6.5 11 5.5 11 5c1 1.2 1.5 2.2 1.5 3.5C12.5 10.985 10.261 13 7 13z" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/><circle cx="10.5" cy="10.5" r="2.5" fill="var(--bg)" stroke="currentColor" stroke-width="1.1"/><path d="M10.5 9.25V10.65L11.45 11.2" stroke="currentColor" stroke-width="0.9" stroke-linecap="round" stroke-linejoin="round"/></svg>
           <span data-i18n="nav.streakHistory">Hist. Rachas</span>
         </button>
       </nav>
       <div class="dt-nav-footer">
-        <button class="dt-nav-item" id="dtBtnConfigFromHist">
+        <button class="dt-nav-item" id="dtBtnConfigFromHist" data-screen="config">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.79,2.56 L5.95,0.99 L8.05,0.99 L8.21,2.56 L9.28,3.0 L10.51,2.01 L11.99,3.49 L11.0,4.72 L11.44,5.79 L13.01,5.95 L13.01,8.05 L11.44,8.21 L11.0,9.28 L11.99,10.51 L10.51,11.99 L9.28,11.0 L8.21,11.44 L8.05,13.01 L5.95,13.01 L5.79,11.44 L4.72,11.0 L3.49,11.99 L2.01,10.51 L3.0,9.28 L2.56,8.21 L0.99,8.05 L0.99,5.95 L2.56,5.79 L3.0,4.72 L2.01,3.49 L3.49,2.01 L4.72,3.0 Z" stroke="currentColor" stroke-width="1.1" stroke-linejoin="round" fill="none"/><circle cx="7" cy="7" r="1.7" stroke="currentColor" stroke-width="1.1" fill="none"/></svg>
           <span data-i18n="config.title">Configuración</span>
         </button>
         <div class="dt-nav-sep" style="margin-bottom:10px;margin-top:6px;"></div>
-        <button class="dt-nav-item" id="dtBtnLogoutFromHist">
+        <button class="dt-nav-item" id="dtBtnLogoutFromHist" data-nav-action="logout">
           <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M5.5 2H3C2.44772 2 2 2.44772 2 3V11C2 11.5523 2.44772 12 3 12H5.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M9.5 4.5L12 7L9.5 9.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/><line x1="12" y1="7" x2="5.5" y2="7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
           <span data-i18n="nav.logout">Salir</span>
         </button>
@@ -2854,7 +2884,7 @@ body {
 
 
 <!-- ══ MODAL CONFIRMACIÓN ══ -->
-<div class="confirm-overlay" id="confirmOverlay">
+<div class="confirm-overlay" id="confirmOverlay" role="dialog" aria-modal="true" aria-labelledby="confirmTitle" aria-describedby="confirmBody">
   <div class="confirm-modal">
     <div class="confirm-title" id="confirmTitle"></div>
     <div class="confirm-body" id="confirmBody"></div>
@@ -2869,18 +2899,18 @@ body {
 // ── SUPABASE ──────────────────────────────────────────
 const SUPABASE_URL = 'https://xmkjtvojohizixdujkvl.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inhta2p0dm9qb2hpeml4ZHVqa3ZsIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQ1MTQ5MzIsImV4cCI6MjA5MDA5MDkzMn0.mEjhngHbVqa_NE9AONWHdmVgKglBkcL-jaQzY2PeFcQ';
-const sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+let sb = null;
+try {
+  if (typeof window.supabase?.createClient === 'function') {
+    sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+  }
+} catch (error) {
+  console.error('No se pudo inicializar Supabase:', error.message);
+}
 
 // ── CONSTANTES ────────────────────────────────────────
 const FASES = ['FG','E8','E4','SF','FINAL'];
 const FASE_NOMBRES = { FG:'Fase de Grupos', E8:'Octavos de Final', E4:'Cuartos de Final', SF:'Semifinal', FINAL:'Gran Final' };
-const FASE_DESC = {
-  FG:'Jugás los 3 partidos. Pasás si ganás 2 o más.',
-  E8:'Partido único — si perdés, volvés al inicio.',
-  E4:'Partido único — si perdés, volvés al inicio.',
-  SF:'Partido único — si perdés, volvés al inicio.',
-  FINAL:'¡La última batalla!'
-};
 
 const TROPHY_SVG = `<svg viewBox="185 200 405 405" xmlns="http://www.w3.org/2000/svg" width="18" height="18">
   <path fill="#FFE033" d="M407.500153,208.342773 C368.835785,208.345398 330.171387,208.323181 291.507050,208.361588 C273.367035,208.379593 263.231354,218.499054 263.217865,236.535858 C263.192291,270.700562 263.187683,304.865234 263.215118,339.029938 C263.220734,346.026337 263.080292,353.045471 263.569458,360.014648 C264.950562,379.691772 274.184021,396.350616 284.911560,412.154358 C312.696289,453.086487 348.094238,486.823059 386.068878,518.074768 C388.735809,520.269592 390.424042,519.237000 392.495087,517.419006 C405.139862,506.319733 418.172974,495.638397 430.441650,484.140198 C454.692963,461.411896 477.086761,437.004547 495.338928,409.044891 C507.112518,391.009430 515.346558,371.999939 515.111755,349.795868 C514.711731,311.968811 515.004028,274.134705 514.957031,236.303604 C514.934875,218.528168 504.837982,208.409042 486.995605,208.360428 C460.830658,208.289124 434.665344,208.341003 407.500153,208.342773z"/>
@@ -2902,9 +2932,9 @@ function defaultState() {
     copaCampañaActual:0, copaMejorCampaña:0, copaPeorCampaña:0,
     // Finales
     finalesJugadas:0, finalesGanadas:0, finalesPerdidas:0,
-    // Punto de corte para rachas: calcRachas solo lee historial desde este índice
+    // Punto de corte para reconstruir rachas: ignorar todo lo anterior a este índice
     rachaResetIndex:0,
-    // Preferencias de usuario (Configuración) — puramente estéticas/futuras, no afectan la lógica del juego
+    // Preferencias de perfil, idioma, celebraciones y sonido; independientes del estado deportivo.
     nombrePerfil: '',
     nacionalidad: 'AR',
     idioma: 'es',
@@ -2979,35 +3009,136 @@ const IDIOMAS = [
 
 let state = defaultState();
 let currentUser = null;
+// Permiso de escritura local: solo después de cargar los datos de esta cuenta.
+let estadoCargadoUsuario = null;
+let cargaEstadoVersion = 0;
 let eleccionUsuario = null, pendingResult = null, monedaUsada = false;
 
-// ── PANTALLAS ─────────────────────────────────────────
-function mostrarLoading() {
-  document.getElementById('loadingScreen').style.display = 'flex';
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('historialScreen').style.display = 'none';
-  document.getElementById('actividadScreen').style.display = 'none';
+// ── DIÁLOGOS: apertura, aislamiento y foco compartidos ──
+let dialogoActivo = null;
+let giroVersion = 0;
+function controlesDialogo(el) {
+  return [...el.querySelectorAll('button, input, select, textarea, a[href], [tabindex]')].filter(function(control) {
+    return !control.disabled && control.tabIndex >= 0 && !control.closest('[inert]') && control.getClientRects().length && getComputedStyle(control).visibility !== 'hidden';
+  });
 }
+function abrirDialogo(id, selector, cancelar) {
+  if (dialogoActivo) dialogoActivo.cancelar();
+  const el = document.getElementById(id);
+  const anterior = document.activeElement;
+  const fondo = [];
+  el.inert = false;
+  el.classList.add('show');
+  el.setAttribute('tabindex', '-1');
+  // Recorrer los ancestros permite aislar también modales dentro de appScreen.
+  let rama = el;
+  while (rama.parentElement && rama !== document.body) {
+    [...rama.parentElement.children].forEach(function(hermano) {
+      if (hermano === rama || (id === 'panelLateral' && hermano.id === 'panelOverlay')) return;
+      fondo.push([hermano, hermano.inert]); hermano.inert = true;
+    });
+    rama = rama.parentElement;
+  }
+  dialogoActivo = { el, anterior, fondo, cancelar };
+  const inicial = selector && el.querySelector(selector);
+  (inicial || controlesDialogo(el)[0] || el).focus({preventScroll:true});
+}
+function cerrarDialogo(id, restaurar = true) {
+  const el = document.getElementById(id);
+  el.classList.remove('show'); el.inert = true;
+  if (!dialogoActivo || dialogoActivo.el !== el) return;
+  const anterior = dialogoActivo.anterior;
+  dialogoActivo.fondo.forEach(function(item) { item[0].inert = item[1]; });
+  dialogoActivo = null;
+  if (restaurar && anterior && anterior.isConnected && !anterior.closest('[inert]') && anterior.getClientRects().length && getComputedStyle(anterior).visibility !== 'hidden') {
+    anterior.focus({preventScroll:true});
+  }
+}
+function cerrarDialogosSesion() {
+  if (dialogoActivo) dialogoActivo.cancelar();
+}
+document.addEventListener('keydown', function(event) {
+  if (!dialogoActivo || document.body.inert) return;
+  if (event.key === 'Escape') { event.preventDefault(); dialogoActivo.cancelar(); return; }
+  if (event.key !== 'Tab') return;
+  const controles = controlesDialogo(dialogoActivo.el);
+  const primero = controles[0], ultimo = controles[controles.length - 1];
+  if (!primero) { event.preventDefault(); dialogoActivo.el.focus(); return; }
+  if (event.shiftKey && (document.activeElement === primero || !controles.includes(document.activeElement))) {
+    event.preventDefault(); ultimo.focus();
+  } else if (!event.shiftKey && (document.activeElement === ultimo || !controles.includes(document.activeElement))) {
+    event.preventDefault(); primero.focus();
+  }
+});
+document.addEventListener('focusin', function(event) {
+  if (dialogoActivo && !document.body.inert && !dialogoActivo.el.contains(event.target)) {
+    (controlesDialogo(dialogoActivo.el)[0] || dialogoActivo.el).focus();
+  }
+});
 
+// ── PANTALLAS ─────────────────────────────────────────
+// La versión de carga distingue incluso dos sesiones sucesivas de la misma cuenta.
+function capturarSesion() {
+  return { usuarioId: currentUser && currentUser.id, version: cargaEstadoVersion };
+}
+function sesionVigente(sesion) {
+  return estadoListo() && sesion.usuarioId === currentUser.id && sesion.version === cargaEstadoVersion;
+}
+function cambiarPantallaSesion(destino) {
+  cerrarDialogosSesion();
+  ['loading','login','app','historial','actividad','rachas','config','histRachas'].forEach(function(nombre) {
+    document.getElementById(nombre + 'Screen').style.display = nombre === destino
+      ? (nombre === 'loading' || nombre === 'login' ? 'flex' : 'block') : 'none';
+  });
+  ['modalOverlay','championModalOverlay','panelOverlay','panelLateral','archivarOverlay','nombreOverlay','confirmOverlay'].forEach(function(id) {
+    const el = document.getElementById(id);
+    el.classList.remove('show');
+    el.style.display = destino === 'app' ? '' : 'none';
+    el.inert = destino !== 'app';
+  });
+  panelAbierto = false;
+  pantallaActiva = 'app';
+  actualizarNavegacion();
+}
+function limpiarSesion() {
+  invalidarCargaEstado();
+  CELEBRACION.detener();
+  currentUser = null;
+  state = defaultState();
+  eleccionUsuario = null; pendingResult = null; monedaUsada = false;
+  if (_confirmResolve) { _confirmResolve(false); _confirmResolve = null; }
+  ['nombreInput','archivarNombre','loginEmail','loginPassword'].forEach(function(id) { document.getElementById(id).value = ''; });
+  ['confirmTitle','confirmBody','modalResultado','flash','historialListaMob','historialListaDt','histRachasListaMob','histRachasListaDt','rachasContenidoMob','rachasContenidoDt'].forEach(function(id) {
+    document.getElementById(id).textContent = '';
+  });
+  document.getElementById('flash').className = 'flash';
+  ['btnNombreGuardar','btnArchivarGuardar'].forEach(function(id) {
+    const el = document.getElementById(id); el.disabled = false; el.textContent = I18N.t('common.save');
+  });
+  [['btnLogin','login.signIn'],['btnRegister','login.createAccount'],['btnGoogle','login.continueWithGoogle']].forEach(function(item) {
+    const el = document.getElementById(item[0]); el.disabled = false; el.textContent = I18N.t(item[1]);
+  });
+  archTipoActual = 'temporada';
+  aplicarIdiomaLocalGuardado();
+  actualizarSubtitulosPerfil();
+  renderizar();
+  renderizarConfig();
+  mostrarLogin();
+}
+function mostrarLoading() {
+  document.getElementById('startupError').hidden = true;
+  document.getElementById('loadError').hidden = true;
+  document.getElementById('loadingDots').style.display = 'flex';
+  cambiarPantallaSesion('loading');
+}
 function mostrarLogin() {
-  document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'flex';
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('historialScreen').style.display = 'none';
-  document.getElementById('rachasScreen').style.display = 'none';
-  document.getElementById('actividadScreen').style.display = 'none';
+  cambiarPantallaSesion('login');
   document.getElementById('loginError').textContent = '';
 }
-
 function mostrarApp() {
+  if (!estadoListo()) return;
   I18N.translateDOM();
-  document.getElementById('loadingScreen').style.display = 'none';
-  document.getElementById('loginScreen').style.display = 'none';
-  document.getElementById('appScreen').style.display = 'block';
-  document.getElementById('historialScreen').style.display = 'none';
-  document.getElementById('rachasScreen').style.display = 'none';
-  document.getElementById('actividadScreen').style.display = 'none';
+  cambiarPantallaSesion('app');
   poblarSelectsConfig();
   actualizarSubtitulosPerfil();
   renderizar();
@@ -3015,6 +3146,7 @@ function mostrarApp() {
 
 // ── AUTH ──────────────────────────────────────────────
 document.getElementById('btnLogin').addEventListener('click', async function() {
+  const version = cargaEstadoVersion;
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginError');
@@ -3022,6 +3154,7 @@ document.getElementById('btnLogin').addEventListener('click', async function() {
   if (!email || !password) { errEl.textContent = I18N.t('login.fillCredentials'); return; }
   this.textContent = I18N.t('login.signingIn'); this.disabled = true;
   const { data, error } = await sb.auth.signInWithPassword({ email, password });
+  if (version !== cargaEstadoVersion) return;
   this.textContent = I18N.t('login.signIn'); this.disabled = false;
   if (error) {
     errEl.textContent = error.message && error.message.toLowerCase().includes('email not confirmed')
@@ -3030,11 +3163,11 @@ document.getElementById('btnLogin').addEventListener('click', async function() {
     return;
   }
   currentUser = data.user;
-  await cargarEstado();
-  mostrarApp();
+  await cargarYMostrarApp();
 });
 
 document.getElementById('btnRegister').addEventListener('click', async function() {
+  const version = cargaEstadoVersion;
   const email = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
   const errEl = document.getElementById('loginError');
@@ -3043,6 +3176,7 @@ document.getElementById('btnRegister').addEventListener('click', async function(
   if (password.length < 6) { errEl.textContent = I18N.t('login.passwordMinLength'); return; }
   this.textContent = I18N.t('login.creatingAccount'); this.disabled = true;
   const { data, error } = await sb.auth.signUp({ email, password });
+  if (version !== cargaEstadoVersion) return;
   this.textContent = I18N.t('login.createAccount'); this.disabled = false;
   if (error) { errEl.textContent = I18N.t('login.signUpError', {message: error.message || ''}); return; }
   if (!data.session) {
@@ -3051,14 +3185,12 @@ document.getElementById('btnRegister').addEventListener('click', async function(
     return;
   }
   currentUser = data.user;
-  state = defaultState();
-  I18N.setLocale(state.idioma);
-  guardarIdiomaLocal(state.idioma);
-  await guardar();
-  mostrarApp();
+  // También al registrarse, consultar antes de habilitar cualquier escritura.
+  await cargarYMostrarApp();
 });
 
 document.getElementById('btnGoogle').addEventListener('click', async function() {
+  const version = cargaEstadoVersion;
   const errEl = document.getElementById('loginError');
   errEl.textContent = '';
   this.textContent = I18N.t('login.connectingGoogle'); this.disabled = true;
@@ -3066,43 +3198,167 @@ document.getElementById('btnGoogle').addEventListener('click', async function() 
     provider: 'google',
     options: { redirectTo: 'https://mundialhito.vercel.app/' }
   });
+  if (version !== cargaEstadoVersion) return;
   this.textContent = I18N.t('login.continueWithGoogle'); this.disabled = false;
   if (error) { errEl.textContent = I18N.t('login.googleError'); }
 });
 
 // ── PERSISTENCIA ──────────────────────────────────────
 let guardarTimeout = null;
+let guardado = null;
+let salidaEnCurso = false;
+
+function actualizarEstadoGuardado(valor) {
+  const el = document.getElementById('saveStatus');
+  el.hidden = !valor;
+  document.getElementById('saveStatusText').textContent = valor ? I18N.t('persistence.' + valor) : '';
+  document.getElementById('btnRetrySave').hidden = valor !== 'error';
+  el.style.color = valor === 'error' ? 'var(--red)' : 'var(--text-sec)';
+}
+
+function hayCambiosSinGuardar() {
+  return !!guardado && !!(guardado.pendiente || guardado.enCurso);
+}
+
+function prepararGuardado() {
+  if (!estadoListo() || salidaEnCurso) return null;
+  if (!guardado) guardado = { usuarioId: currentUser.id, pendiente: null, enCurso: null };
+  if (guardado.usuarioId !== currentUser.id) return null;
+  const { snapshot, ...datos } = state;
+  // Copia independiente: una modificación posterior no cambia una petición en vuelo.
+  guardado.pendiente = JSON.parse(JSON.stringify(datos));
+  actualizarEstadoGuardado('saving');
+  return guardado;
+}
+
+async function vaciarGuardado() {
+  clearTimeout(guardarTimeout);
+  guardarTimeout = null;
+  const contexto = guardado;
+  if (!estadoListo() || !contexto || contexto.usuarioId !== currentUser.id) return false;
+  if (contexto.enCurso) return contexto.enCurso;
+  if (!contexto.pendiente) return true;
+  actualizarEstadoGuardado('saving');
+  contexto.enCurso = (async function() {
+    while (contexto.pendiente && guardado === contexto && estadoListo()) {
+      const datos = contexto.pendiente;
+      contexto.pendiente = null;
+      try {
+        const { error } = await sb.from('game_state').upsert(
+          { user_id: contexto.usuarioId, state: datos, updated_at: new Date().toISOString() },
+          { onConflict: 'user_id' }
+        );
+        if (error) throw error;
+      } catch (error) {
+        // Si llegó otro cambio mientras se escribía, conservar la versión más nueva.
+        if (!contexto.pendiente) contexto.pendiente = datos;
+        if (guardado === contexto) actualizarEstadoGuardado('error');
+        console.error('Error guardando:', error.message);
+        return false;
+      }
+      // Una respuesta de una sesión anterior no confirma datos de la actual.
+      if (guardado !== contexto || !estadoListo()) return false;
+    }
+    if (guardado !== contexto || !estadoListo()) return false;
+    actualizarEstadoGuardado('saved');
+    return true;
+  })().finally(function() { contexto.enCurso = null; });
+  return contexto.enCurso;
+}
+
+function estadoListo() {
+  return !!currentUser && estadoCargadoUsuario === currentUser.id;
+}
+
+function invalidarCargaEstado() {
+  estadoCargadoUsuario = null;
+  cargaEstadoVersion++;
+  clearTimeout(guardarTimeout);
+  guardarTimeout = null;
+  guardado = null;
+  actualizarEstadoGuardado(null);
+}
 
 function guardarConDebounce() {
+  if (!prepararGuardado()) return;
   clearTimeout(guardarTimeout);
-  guardarTimeout = setTimeout(guardar, 800);
+  guardarTimeout = setTimeout(vaciarGuardado, 800);
 }
 
 async function guardar() {
-  if (!currentUser) return;
-  const { snapshot, ...stateToSave } = state;
-  const { error } = await sb.from('game_state').upsert(
-    { user_id: currentUser.id, state: stateToSave, updated_at: new Date().toISOString() },
-    { onConflict: 'user_id' }
-  );
-  if (error) console.error('Error guardando:', error.message);
+  if (!prepararGuardado()) return false;
+  return vaciarGuardado();
 }
 
 async function cargarEstado() {
-  if (!currentUser) return;
-  const { data, error } = await sb.from('game_state').select('state').eq('user_id', currentUser.id).single();
-  if (error && error.code !== 'PGRST116') { console.error('Error cargando:', error.message); return; }
-  state = (data && data.state) ? data.state : defaultState();
-  // Migración defensiva de preferencias — usuarios con state guardado antes de que existiera Configuración
-  if (state.nombrePerfil === undefined) state.nombrePerfil = '';
-  if (state.nacionalidad === undefined) state.nacionalidad = 'AR';
-  if (state.idioma === undefined) state.idioma = 'es';
-  if (state.celebracionesActivas === undefined) state.celebracionesActivas = true;
-  if (state.sonidoActivo === undefined) state.sonidoActivo = true;
-  if (state.volumenSonido === undefined) state.volumenSonido = 70;
-  I18N.setLocale(state.idioma);
-  guardarIdiomaLocal(state.idioma);
+  // No reemplazar cambios locales pendientes por una nueva lectura.
+  if (hayCambiosSinGuardar() && !(await vaciarGuardado())) return false;
+  invalidarCargaEstado();
+  if (!currentUser) return false;
+  const usuarioId = currentUser.id;
+  const version = cargaEstadoVersion;
+  const sigueVigente = () => version === cargaEstadoVersion && currentUser && currentUser.id === usuarioId;
+  try {
+    // Una lista vacía exitosa significa ausencia de filas. Ningún código de
+    // error (incluido PGRST116) se interpreta como una cuenta sin datos.
+    const { data, error } = await sb.from('game_state').select('state').eq('user_id', usuarioId);
+    if (!sigueVigente()) return false;
+    if (error) throw error;
+    if (!Array.isArray(data) || data.length > 1) throw new Error('Respuesta de estado inesperada');
+    const cargado = data.length === 0 ? defaultState() : data[0].state;
+    if (!cargado || typeof cargado !== 'object' || Array.isArray(cargado) || Object.keys(cargado).length === 0) {
+      throw new Error('El registro no contiene un estado válido');
+    }
+    // Campos esenciales usados por el render y los partidos, también en estados antiguos.
+    // Ante una estructura incompleta, bloquear la carga; nunca rellenar ni guardar datos inventados.
+    if (!FASES.includes(cargado.fase) ||
+        !['fgResultados', 'eliminatoriasDone', 'historial'].every(campo => Array.isArray(cargado[campo]))) {
+      throw new Error('El estado no contiene la estructura deportiva necesaria');
+    }
+    // Conservar la compatibilidad de preferencias existente, sin migrar históricos.
+    if (cargado.nombrePerfil === undefined) cargado.nombrePerfil = '';
+    if (cargado.nacionalidad === undefined) cargado.nacionalidad = 'AR';
+    if (cargado.idioma === undefined) cargado.idioma = 'es';
+    if (cargado.celebracionesActivas === undefined) cargado.celebracionesActivas = true;
+    if (cargado.sonidoActivo === undefined) cargado.sonidoActivo = true;
+    if (cargado.volumenSonido === undefined) cargado.volumenSonido = 70;
+    state = cargado;
+    // Resolver compatibilidad antes de registrar partidos, sin guardar por leer.
+    // Si el historial no es interpretable, conservar los acumuladores existentes.
+    const rachas = reconstruirRachasDesdeHistorial();
+    if (rachas) Object.assign(state, rachas);
+    I18N.setLocale(state.idioma);
+    guardarIdiomaLocal(state.idioma);
+    estadoCargadoUsuario = usuarioId;
+    return true;
+  } catch (error) {
+    if (!sigueVigente()) return false;
+    console.error('Error cargando:', error.message);
+    document.getElementById('loadingDots').style.display = 'none';
+    document.getElementById('loadError').hidden = false;
+    I18N.translateDOM();
+    return false;
+  }
 }
+
+async function cargarYMostrarApp() {
+  if (hayCambiosSinGuardar() && !(await vaciarGuardado())) return;
+  mostrarLoading();
+  if (await cargarEstado()) mostrarApp();
+}
+
+document.getElementById('btnRetryLoad').addEventListener('click', cargarYMostrarApp);
+document.getElementById('btnLogoutLoad').addEventListener('click', logout);
+document.getElementById('btnRetrySave').addEventListener('click', vaciarGuardado);
+window.addEventListener('beforeunload', function(event) {
+  if (!hayCambiosSinGuardar()) return;
+  void vaciarGuardado();
+  event.preventDefault();
+  event.returnValue = '';
+});
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden' && hayCambiosSinGuardar()) void vaciarGuardado();
+});
 
 // ── ARRANQUE ──────────────────────────────────────────
 // ── PERSISTENCIA LOCAL DE IDIOMA (para la pantalla de Login) ─────────
@@ -3126,21 +3382,42 @@ function guardarIdiomaLocal(code) {
   try { localStorage.setItem(IDIOMA_LOCAL_KEY, code); } catch (e) { /* no-op */ }
 }
 
+function mostrarErrorInicio() {
+  mostrarLoading();
+  document.getElementById('loadingDots').style.display = 'none';
+  document.getElementById('startupError').hidden = false;
+  document.getElementById('btnRetryStartup').focus();
+}
+
 async function inicializar() {
   aplicarIdiomaLocalGuardado();
   mostrarLoading();
-  const { data: { session } } = await sb.auth.getSession();
-  if (session) {
-    currentUser = session.user;
-    await cargarEstado();
-    mostrarApp();
-  } else {
-    mostrarLogin();
+  if (!sb) { mostrarErrorInicio(); return; }
+  const version = cargaEstadoVersion;
+  try {
+    sb.auth.onAuthStateChange(function(event, session) {
+      if (event === 'SIGNED_OUT') {
+        const sinConfirmar = hayCambiosSinGuardar();
+        limpiarSesion();
+        if (sinConfirmar) document.getElementById('loginError').textContent = I18N.t('persistence.sessionEnded');
+      }
+      if (event === 'TOKEN_REFRESHED' && session && currentUser && session.user.id === currentUser.id) { currentUser = session.user; }
+    });
+    const { data, error } = await sb.auth.getSession();
+    if (error) throw error;
+    const session = data.session;
+    if (version !== cargaEstadoVersion) return;
+    if (session) {
+      currentUser = session.user;
+      await cargarYMostrarApp();
+    } else {
+      mostrarLogin();
+    }
+  } catch (error) {
+    if (version !== cargaEstadoVersion) return;
+    console.error('Error de inicio:', error.message);
+    mostrarErrorInicio();
   }
-  sb.auth.onAuthStateChange(function(event, session) {
-    if (event === 'SIGNED_OUT') { currentUser = null; state = defaultState(); aplicarIdiomaLocalGuardado(); mostrarLogin(); }
-    if (event === 'TOKEN_REFRESHED' && session) { currentUser = session.user; }
-  });
 }
 
 
@@ -3157,13 +3434,13 @@ function actualizarSubtitulosPerfil() {
 }
 
 function abrirModalNombre() {
+  if (!estadoListo() || salidaEnCurso) return;
   document.getElementById('nombreInput').value = state.nombrePerfil || '';
-  document.getElementById('nombreOverlay').classList.add('show');
-  setTimeout(function() { document.getElementById('nombreInput').focus(); }, 100);
+  abrirDialogo('nombreOverlay', '#nombreInput', cerrarModalNombre);
 }
 
 function cerrarModalNombre() {
-  document.getElementById('nombreOverlay').classList.remove('show');
+  cerrarDialogo('nombreOverlay');
 }
 
 function poblarSelectsConfig() {
@@ -3198,15 +3475,15 @@ function repoblarNacionalidadPorIdioma() {
   ['configNacionalidadMob', 'configNacionalidadDt'].forEach(function(id) {
     const el = document.getElementById(id);
     if (!el) return;
-    const valorActual = el.value;
     el.innerHTML = PAISES.map(function(p) {
       return '<option value="' + p.code + '">' + I18N.t('country.' + p.code) + '</option>';
     }).join('');
-    el.value = valorActual;
+    el.value = state.nacionalidad || 'AR';
   });
 }
 
 function renderizarConfig() {
+  // Ambas representaciones se actualizan desde state, incluso la vista oculta.
   // Nombre
   const nombreVal = state.nombrePerfil || I18N.t('config.nameNotSet');
   ['configNombreValMob', 'configNombreValDt'].forEach(function(id) {
@@ -3240,8 +3517,8 @@ function renderizarConfig() {
 
 function onChangeNacionalidad(code) {
   state.nacionalidad = code;
+  renderizarConfig();
   guardarConDebounce();
-  flash(I18N.t('config.nationalityUpdated'), 'yellow');
 }
 
 function onChangeIdioma(code) {
@@ -3251,28 +3528,23 @@ function onChangeIdioma(code) {
   renderizarConfig();
   actualizarSubtitulosPerfil();
   guardarConDebounce();
-  flash(I18N.t('config.languageUpdated'), 'yellow');
 }
 
 function toggleCelebraciones(activo) {
   state.celebracionesActivas = activo;
+  renderizarConfig();
   guardarConDebounce();
 }
 
 function toggleSonido(activo) {
   state.sonidoActivo = activo;
-  ['configVolumenMob', 'configVolumenDt'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.disabled = !activo;
-  });
+  renderizarConfig();
   guardarConDebounce();
 }
 
 function onChangeVolumen(val) {
   state.volumenSonido = parseInt(val, 10);
-  const volVal = val + '%';
-  ['configVolumenValMob', 'configVolumenValDt'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.textContent = volVal;
-  });
+  renderizarConfig();
   guardarConDebounce();
 }
 
@@ -3280,6 +3552,9 @@ function onChangeVolumen(val) {
 let _confirmResolve = null;
 
 function confirmar(titulo, cuerpo, esDestructivo) {
+  const sesion = capturarSesion();
+  if (!sesionVigente(sesion)) return Promise.resolve(false);
+  if (_confirmResolve) cancelarConfirmacion();
   return new Promise(function(resolve) {
     _confirmResolve = resolve;
     document.getElementById('confirmTitle').textContent = titulo;
@@ -3290,24 +3565,21 @@ function confirmar(titulo, cuerpo, esDestructivo) {
     } else {
       okBtn.classList.remove('neutral');
     }
-    document.getElementById('confirmOverlay').classList.add('show');
-  });
+    abrirDialogo('confirmOverlay', '#confirmCancel', cancelarConfirmacion);
+  }).then(function(ok) { return ok && sesionVigente(sesion); });
 }
 
+function resolverConfirmacion(ok) {
+  cerrarDialogo('confirmOverlay');
+  const resolver = _confirmResolve; _confirmResolve = null;
+  if (resolver) resolver(ok);
+}
+function cancelarConfirmacion() { resolverConfirmacion(false); }
 document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById('confirmCancel').addEventListener('click', function() {
-    document.getElementById('confirmOverlay').classList.remove('show');
-    if (_confirmResolve) { _confirmResolve(false); _confirmResolve = null; }
-  });
-  document.getElementById('confirmOk').addEventListener('click', function() {
-    document.getElementById('confirmOverlay').classList.remove('show');
-    if (_confirmResolve) { _confirmResolve(true); _confirmResolve = null; }
-  });
+  document.getElementById('confirmCancel').addEventListener('click', cancelarConfirmacion);
+  document.getElementById('confirmOk').addEventListener('click', function() { resolverConfirmacion(true); });
   document.getElementById('confirmOverlay').addEventListener('click', function(e) {
-    if (e.target === this) {
-      document.getElementById('confirmOverlay').classList.remove('show');
-      if (_confirmResolve) { _confirmResolve(false); _confirmResolve = null; }
-    }
+    if (e.target === this) cancelarConfirmacion();
   });
 });
 
@@ -3316,7 +3588,8 @@ function flash(msg, tipo) {
   const el = document.getElementById('flash');
   el.textContent = msg;
   el.className = 'flash ' + tipo + ' show';
-  setTimeout(() => el.className = 'flash ' + tipo, 2800);
+  const sesion = capturarSesion();
+  setTimeout(function() { if (sesionVigente(sesion) && el.textContent === msg) el.className = 'flash ' + tipo; }, 2800);
 }
 
 // ── LÓGICA DEL JUEGO ──────────────────────────────────
@@ -3326,7 +3599,11 @@ function registrar(r) {
 }
 
 function abrirModal() {
+  if (!estadoListo() || salidaEnCurso || monedaUsada) return;
+  document.getElementById('btnCancelarEmpate').disabled = false;
+  giroVersion++;
   eleccionUsuario = null; pendingResult = null; monedaUsada = false;
+  document.getElementById('moneda').disabled = true;
   document.getElementById('moneda').innerHTML = '🪙';
   document.getElementById('moneda').className = 'moneda';
   document.getElementById('modalResultado').textContent = '';
@@ -3334,23 +3611,32 @@ function abrirModal() {
   document.getElementById('modalElegir').style.display = 'flex';
   document.getElementById('btnConfirmar').style.display = 'none';
   document.getElementById('modalSub').textContent = I18N.t('coinModal.subtitleInitial');
-  document.getElementById('modalOverlay').classList.add('show');
+  abrirDialogo('modalOverlay', '.modal-btn-cara', cancelarEmpate);
 }
 
 function elegir(e) {
+  if (monedaUsada) return;
   eleccionUsuario = e; monedaUsada = false;
   document.getElementById('modalSub').textContent = I18N.t('coinModal.subtitleChosen', {choice: I18N.t(e === 'cara' ? 'coinModal.heads' : 'coinModal.tails')});
   document.getElementById('modalElegir').style.display = 'none';
+  document.getElementById('moneda').disabled = false;
+  document.getElementById('moneda').focus();
 }
 
 document.getElementById('moneda').addEventListener('click', function() {
-  if (!eleccionUsuario || monedaUsada) return;
+  if (!estadoListo() || salidaEnCurso || !eleccionUsuario || monedaUsada) return;
+  const sesion = capturarSesion();
   monedaUsada = true;
+  const versionGiro = giroVersion;
+  this.disabled = true;
+  document.getElementById('btnCancelarEmpate').disabled = true;
+  document.getElementById('modalOverlay').focus({preventScroll:true});
   const r = (Math.random() * 1000 + Math.random() * 500 + (performance.now() % 100) + (Date.now() % 200));
   const resultado = (r % 2 < 1) ? 'cara' : 'ceca';
   const mon = document.getElementById('moneda');
   mon.className = 'moneda girando';
   setTimeout(function() {
+    if (!sesionVigente(sesion) || versionGiro !== giroVersion || !document.getElementById('modalOverlay').classList.contains('show')) return;
     mon.className = 'moneda';
     mon.innerHTML = resultado === 'cara'
       ? '<svg viewBox="0 0 48 48" fill="none" style="width:52px;height:52px"><circle cx="24" cy="24" r="22" stroke="#8FA39A" stroke-width="1.5"/><circle cx="24" cy="19" r="6" stroke="#8FA39A" stroke-width="1.4"/><path d="M12 38c0-6.627 5.373-10 12-10s12 3.373 12 10" stroke="#8FA39A" stroke-width="1.4" stroke-linecap="round"/></svg>'
@@ -3361,12 +3647,24 @@ document.getElementById('moneda').addEventListener('click', function() {
     resEl.textContent = I18N.t('coinModal.resultOut', {result: I18N.t(resultado === 'cara' ? 'coinModal.heads' : 'coinModal.tails')}) + (gano ? I18N.t('coinModal.resultWin') : I18N.t('coinModal.resultLoss'));
     resEl.className = 'modal-resultado ' + (gano ? 'win' : 'loss');
     document.getElementById('btnConfirmar').style.display = 'block';
+    document.getElementById('btnConfirmar').focus();
   }, 850);
 });
 
 function confirmarEmpate() {
-  document.getElementById('modalOverlay').classList.remove('show');
-  procesarResultado(pendingResult, true);
+  if (!estadoListo() || salidaEnCurso || !pendingResult) return;
+  const resultado = pendingResult;
+  monedaUsada = false;
+  cancelarEmpate();
+  procesarResultado(resultado, true);
+}
+
+function cancelarEmpate() {
+  // La tirada queda comprometida desde el clic; una sesión invalidada sí debe limpiarse.
+  if (monedaUsada && estadoListo()) return;
+  giroVersion++;
+  eleccionUsuario = null; pendingResult = null; monedaUsada = false;
+  cerrarDialogo('modalOverlay');
 }
 
 function actualizarIconosDeCopa() {
@@ -3380,7 +3678,7 @@ function mostrarModalCampeon() {
   const trophy = document.getElementById('championTrophy');
   const source = document.querySelector('#btnAbrirPanel .brand-icon svg');
   if (trophy && source) trophy.innerHTML = source.outerHTML;
-  document.getElementById('championModalOverlay').classList.add('show');
+  abrirDialogo('championModalOverlay', '#btnChampionContinue', continuarTrasCampeonato);
   CELEBRACION.celebrar(state.nacionalidad, {
     celebracionesActivas: state.celebracionesActivas,
     sonidoActivo: state.sonidoActivo,
@@ -3390,21 +3688,72 @@ function mostrarModalCampeon() {
 
 function continuarTrasCampeonato() {
   CELEBRACION.detener();
-  document.getElementById('championModalOverlay').classList.remove('show');
-  flash(I18N.t('result.champion', {n: state.copas}), 'yellow');
-  state.fase = 'FG'; state.fgResultados = []; state.eliminatoriasDone = [];
-  guardarConDebounce();
+  cerrarDialogo('championModalOverlay');
+}
+
+// Solo datos modificados por un partido. Nunca copiar preferencias, historial
+// completo ni snapshots anteriores; Deshacer conserva una única operación.
+function crearSnapshotPartido() {
+  const deportivo = {};
+  const rachas = {};
+  ['fase', 'totalJugados', 'totalGanados', 'totalPerdidos', 'totalEmpatados', 'copas'].forEach(function(campo) {
+    deportivo[campo] = state[campo];
+  });
+  deportivo.fgResultados = state.fgResultados.slice();
+  deportivo.eliminatoriasDone = state.eliminatoriasDone.slice();
+  ['rachaWinsActual', 'rachaWinsMax', 'rachaLossActual', 'rachaLossMax',
+   'copaCampañaActual', 'copaMejorCampaña', 'copaPeorCampaña',
+   'finalesJugadas', 'finalesGanadas', 'finalesPerdidas', 'rachaResetIndex'].forEach(function(campo) {
+    rachas[campo] = state[campo];
+  });
+  return { deportivo, rachas, historialLength: state.historial.length, contadorRenov: state.contadorRenov };
+}
+
+async function deshacerUltimoPartido() {
+  const snapshot = state.snapshot;
+  if (!snapshot) { flash(I18N.t('result.noUndo'), 'cyan'); return; }
+  Object.assign(state, snapshot.deportivo);
+  state.historial.length = snapshot.historialLength;
+  state.contadorRenov = snapshot.contadorRenov;
+  if (snapshot.rachas) {
+    Object.assign(state, snapshot.rachas);
+  } else {
+    // Un reinicio confirmado después del partido se conserva. Ajustar su
+    // corte al historial reducido para no saltar el próximo partido.
+    state.rachaResetIndex = Math.min(state.rachaResetIndex, state.historial.length);
+  }
+  state.snapshot = null;
   renderizar();
+  if (await guardar()) flash(I18N.t('result.undoSuccess'), 'cyan');
+}
+
+async function renovarPlan() {
+  state.contadorRenov = 1;
+  // La renovación manual posterior al partido no forma parte de Deshacer.
+  if (state.snapshot) state.snapshot.contadorRenov = 1;
+  renderizar();
+  if (await guardar()) flash(I18N.t('plan.renewed'), 'cyan');
 }
 
 async function procesarResultado(resultadoCompetitivo, fueEmpate) {
-  const snapCopy = JSON.parse(JSON.stringify(state));
-  snapCopy.snapshot = state.snapshot;
-  state.snapshot = JSON.stringify(snapCopy);
+  if (!estadoListo() || salidaEnCurso) return;
+  // Compatibilidad con la versión anterior: FINAL en eliminatoriasDone ya
+  // significa copa ganada. El próximo partido pertenece a un nuevo torneo.
+  // No reconstruir estadísticas ni modificar el historial guardado.
+  if (state.fase === 'FINAL' && state.eliminatoriasDone.includes('FINAL')) {
+    state.fase = 'FG'; state.fgResultados = []; state.eliminatoriasDone = [];
+  }
+  let aviso = null, campeon = false;
+  const avisar = (texto, color) => { aviso = [texto, color]; };
+  const estadoPartido = state;
+  state.snapshot = crearSnapshotPartido();
+  const snapshotPartido = state.snapshot;
 
   state.totalJugados++;
+  // Valores históricos 1..10 = 0..9 completados. 11 conserva el plan completo.
+  // El siguiente partido inicia automáticamente otro ciclo con uno completado.
   state.contadorRenov++;
-  if (state.contadorRenov > 10) state.contadorRenov = 1;
+  if (state.contadorRenov > 11) state.contadorRenov = 2;
 
   // ── Migración defensiva ──
   if (state.rachaWinsActual === undefined) state.rachaWinsActual = 0;
@@ -3446,17 +3795,17 @@ async function procesarResultado(resultadoCompetitivo, fueEmpate) {
     state.historial.push({ res: pipColor, draw: fueEmpate, texto: fechaStr + ' · FG · P' + n + ' — ' + label });
     if (n === 3) {
       if (wins >= 2) {
-        flash(I18N.t('result.qualified', {wins: wins}), 'green');
+        avisar(I18N.t('result.qualified', {wins: wins}), 'green');
         state.fase = 'E8';
       } else {
-        flash(I18N.t('result.groupStageFailed', {wins: wins}), 'red');
+        avisar(I18N.t('result.groupStageFailed', {wins: wins}), 'red');
         state.fase = 'FG'; state.fgResultados = [];
       }
     } else {
       const flashLabel = fueEmpate
         ? I18N.t('result.groupDrawPenalty', {match: n})
         : I18N.t(resultadoCompetitivo === 'win' ? 'result.groupMatchWin' : 'result.groupMatchLoss', {match: n});
-      flash(flashLabel, fueEmpate ? 'yellow' : (resultadoCompetitivo === 'win' ? 'green' : 'red'));
+      avisar(flashLabel, fueEmpate ? 'yellow' : (resultadoCompetitivo === 'win' ? 'green' : 'red'));
     }
   } else {
     const label = fueEmpate
@@ -3478,11 +3827,12 @@ async function procesarResultado(resultadoCompetitivo, fueEmpate) {
         }
         state.copaCampañaActual = 0; // nueva campaña comienza
         state.copas++;
-        // Se conserva la Final completada hasta que el usuario cierre la celebración.
-        setTimeout(mostrarModalCampeon, 0);
+        // Cerrar el torneo antes de persistir, independientemente de la celebración.
+        state.fase = 'FG'; state.fgResultados = []; state.eliminatoriasDone = [];
+        campeon = true;
       } else {
         state.fase = FASES[FASES.indexOf(state.fase) + 1];
-        flash(I18N.t('result.advancedTo', {phase: I18N.t('phase.name.' + state.fase)}), 'green');
+        avisar(I18N.t('result.advancedTo', {phase: I18N.t('phase.name.' + state.fase)}), 'green');
       }
     } else {
       // ── Derrota en eliminatoria ──
@@ -3491,7 +3841,7 @@ async function procesarResultado(resultadoCompetitivo, fueEmpate) {
         state.finalesJugadas++;
         state.finalesPerdidas++;
       }
-      flash(I18N.t('result.eliminated', {phase: I18N.t('phase.name.' + state.fase)}), 'red');
+      avisar(I18N.t('result.eliminated', {phase: I18N.t('phase.name.' + state.fase)}), 'red');
       state.fase = 'FG'; state.fgResultados = []; state.eliminatoriasDone = [];
     }
   }
@@ -3509,14 +3859,15 @@ async function procesarResultado(resultadoCompetitivo, fueEmpate) {
   }
   // Empates no cortan racha (son como puntos neutros)
 
-  guardarConDebounce();
   renderizar();
+  if (await guardar() && state === estadoPartido && state.snapshot === snapshotPartido && !salidaEnCurso) {
+    if (aviso) flash(...aviso);
+    if (campeon) mostrarModalCampeon();
+  }
 }
 
 // ── RENDERIZAR ────────────────────────────────────────
 function renderizar() {
-  const isMob = window.innerWidth < 900;
-
   // Stats
   function setEl(id, val) { const el = document.getElementById(id); if (el) el.textContent = val; }
   setEl('totalJugadosMob', state.totalJugados); setEl('totalJugadosDt', state.totalJugados);
@@ -3547,7 +3898,9 @@ function renderizar() {
     el.innerHTML = '';
     for (let i = 1; i <= 10; i++) {
       const d = document.createElement('div');
-      d.className = 'plan-dot' + (i < state.contadorRenov ? ' used' : '');
+      d.className = 'plan-dot' + (i < state.contadorRenov ? ' used' : i === state.contadorRenov ? ' current' : '');
+      d.title = i === state.contadorRenov ? I18N.t('plan.nextMatch', {number: i}) : i + '/10';
+      if (i === state.contadorRenov) d.setAttribute('aria-current', 'step');
       el.appendChild(d);
     }
   }
@@ -3562,9 +3915,6 @@ function renderizar() {
     fn.textContent = I18N.t('phase.name.' + state.fase);
     fd.textContent = I18N.t('phase.desc.' + state.fase);
     fg.style.display = 'flex';
-    [['fg1','m'],['fg2','m'],['fg3','m']].forEach(function(pair, i) {
-      // handled per-suffix below
-    });
     const prefix = sufijo === 'Mob' ? 'fg' : 'fg';
     const suffix2 = sufijo === 'Mob' ? 'm' : 'd';
     [1,2,3].forEach(function(n) {
@@ -3597,7 +3947,7 @@ function renderizar() {
       hist.innerHTML = '<div style="color:var(--text-dim);font-size:0.72rem;padding:8px 0;">' + I18N.t('plan.emptyHistory') + '</div>';
     } else {
       hist.innerHTML = state.historial.slice().reverse().slice(0, 20).map(function(h) {
-        return '<div class="hist-item"><div class="hist-pip ' + h.res + '"></div><span>' + h.texto + '</span></div>';
+        return '<div class="hist-item"><div class="hist-pip ' + escaparHTML(h.res) + '"></div><span>' + escaparHTML(h.texto) + '</span></div>';
       }).join('');
     }
   }
@@ -3607,96 +3957,71 @@ function renderizar() {
 
 // ── RACHAS RENDERIZAR ─────────────────────────────────
 
+// Adaptador de lectura del formato histórico. Estos textos son datos persistidos,
+// no traducciones de interfaz: no usar I18N ni reescribir las entradas.
+function interpretarPartidoHistorico(partido) {
+  if (!partido || typeof partido.texto !== 'string') return null;
+  const formato = /^(?:\d{2}\/\d{2}\/\d{2} · )?(FG · P[123]|Octavos de Final|Cuartos de Final|Semifinal|Gran Final) — (Victoria|Derrota|Empate → (?:ganó por penales|perdió por penales|victoria penales|derrota penales))$/;
+  const partes = partido.texto.match(formato);
+  if (!partes) return null;
+  const porPenales = partes[2].startsWith('Empate → ');
+  const resultadoTexto = /^(Victoria|Empate → (ganó por penales|victoria penales))$/.test(partes[2]) ? 'win' : 'loss';
+  // Las versiones iniciales guardaban win/loss incluso con draw:true.
+  // Las siguientes guardan draw y conservan el resultado competitivo en texto.
+  const resultado = partido.res === 'draw' ? resultadoTexto : partido.res;
+  if ((resultado !== 'win' && resultado !== 'loss') || resultado !== resultadoTexto) return null;
+  if (partido.res === 'draw' && !porPenales) return null;
+  if (partido.draw !== undefined && Boolean(partido.draw) !== porPenales) return null;
+  return { esFinal: partes[1] === 'Gran Final', fueEmpate: porPenales, resultado: resultado };
+}
+
 function reconstruirRachasDesdeHistorial() {
-  // Recalcula rachas solo desde rachaResetIndex en adelante.
-  // Los partidos anteriores al corte se ignoran completamente.
-  const full = state.historial || [];
-  const resetIdx = state.rachaResetIndex || 0;
-  const h = full.slice(resetIdx);
-  if (h.length === 0) {
-    state.rachaWinsActual = 0; state.rachaWinsMax = 0;
-    state.rachaLossActual = 0; state.rachaLossMax = 0;
-    state.copaCampañaActual = 0; state.copaMejorCampaña = 0; state.copaPeorCampaña = 0;
-    state.finalesJugadas = 0; state.finalesGanadas = 0; state.finalesPerdidas = 0;
-    return;
-  }
-
-  let rachaWinsActual = 0, rachaWinsMax = 0;
-  let rachaLossActual = 0, rachaLossMax = 0;
-  let copaMejorCampaña = 0, copaPeorCampaña = 0;
-  let copaCampañaActual = 0;
-  let finalesJugadas = 0, finalesGanadas = 0, finalesPerdidas = 0;
-
-  for (let i = 0; i < h.length; i++) {
-    const res   = h[i].res   || '';   // 'win', 'loss', 'draw'
-    const texto = h[i].texto || '';
-    const fueEmpate = Boolean(h[i].draw);
-
-    // Campaña acumula sin importar eliminaciones (nuevo concepto)
-    copaCampañaActual++;
-
-    // Rachas: empates no cortan
-    if (!fueEmpate && res === 'win') {
-      rachaWinsActual++;
-      rachaLossActual = 0;
-      if (rachaWinsActual > rachaWinsMax) rachaWinsMax = rachaWinsActual;
-    } else if (!fueEmpate && res === 'loss') {
-      rachaLossActual++;
-      rachaWinsActual = 0;
-      if (rachaLossActual > rachaLossMax) rachaLossMax = rachaLossActual;
+  // Función pura: devuelve métricas o null si faltan datos interpretables.
+  // El corte es autoritativo, incluso si todas las métricas guardadas son cero.
+  if (!Array.isArray(state.historial)) return null;
+  const resetIdx = state.rachaResetIndex === undefined ? 0 : state.rachaResetIndex;
+  if (!Number.isInteger(resetIdx) || resetIdx < 0 || resetIdx > state.historial.length) return null;
+  const rachas = {
+    rachaWinsActual: 0, rachaWinsMax: 0, rachaLossActual: 0, rachaLossMax: 0,
+    copaCampañaActual: 0, copaMejorCampaña: 0, copaPeorCampaña: 0,
+    finalesJugadas: 0, finalesGanadas: 0, finalesPerdidas: 0
+  };
+  for (let i = resetIdx; i < state.historial.length; i++) {
+    const partido = interpretarPartidoHistorico(state.historial[i]);
+    if (!partido) return null; // No reemplazar cifras válidas por una reconstrucción parcial.
+    rachas.copaCampañaActual++;
+    if (!partido.fueEmpate) {
+      if (partido.resultado === 'win') {
+        rachas.rachaWinsActual++;
+        rachas.rachaLossActual = 0;
+        rachas.rachaWinsMax = Math.max(rachas.rachaWinsMax, rachas.rachaWinsActual);
+      } else {
+        rachas.rachaLossActual++;
+        rachas.rachaWinsActual = 0;
+        rachas.rachaLossMax = Math.max(rachas.rachaLossMax, rachas.rachaLossActual);
+      }
     }
-
-    // Detectar Final: el texto contiene "Gran Final"
-    const esFinal = texto.indexOf('Gran Final') !== -1;
-
-    if (esFinal) {
-      const esVictoria = (res === 'win') && !fueEmpate;
-      const esDerrota  = (res === 'loss') && !fueEmpate;
-
-      finalesJugadas++;
-      if (esVictoria) {
-        finalesGanadas++;
-        // Campaña: partidos hasta ganar esta copa
-        if (copaMejorCampaña === 0 || copaCampañaActual < copaMejorCampaña) copaMejorCampaña = copaCampañaActual;
-        if (copaCampañaActual > copaPeorCampaña) copaPeorCampaña = copaCampañaActual;
-        copaCampañaActual = 0; // nueva campaña
-      } else if (esDerrota) {
-        finalesPerdidas++;
-        // Derrota en final: campaña NO se reinicia
+    // Los empates son neutros en rachas, pero su desenlace sí decide finales/copas.
+    if (partido.esFinal) {
+      rachas.finalesJugadas++;
+      if (partido.resultado === 'win') {
+        rachas.finalesGanadas++;
+        if (rachas.copaMejorCampaña === 0 || rachas.copaCampañaActual < rachas.copaMejorCampaña) {
+          rachas.copaMejorCampaña = rachas.copaCampañaActual;
+        }
+        rachas.copaPeorCampaña = Math.max(rachas.copaPeorCampaña, rachas.copaCampañaActual);
+        rachas.copaCampañaActual = 0;
+      } else {
+        rachas.finalesPerdidas++;
+        // Una eliminación no reinicia campaña: cuenta partidos hasta la próxima copa.
       }
     }
   }
-
-  state.rachaWinsActual  = rachaWinsActual;
-  state.rachaWinsMax     = rachaWinsMax;
-  state.rachaLossActual  = rachaLossActual;
-  state.rachaLossMax     = rachaLossMax;
-  state.copaMejorCampaña = copaMejorCampaña;
-  state.copaPeorCampaña  = copaPeorCampaña;
-  state.copaCampañaActual = copaCampañaActual;
-  state.finalesJugadas   = finalesJugadas;
-  state.finalesGanadas   = finalesGanadas;
-  state.finalesPerdidas  = finalesPerdidas;
+  return rachas;
 }
 
 function calcRachas() {
-  if (state.rachaResetIndex === undefined) state.rachaResetIndex = 0;
-
-  // Reconstrucción automática solo si no hubo reset previo (rachaResetIndex === 0)
-  // y todos los campos son 0. Esto cubre usuarios con historial previo a la sección Rachas.
-  // Si rachaResetIndex > 0, el usuario reinició deliberadamente: los 0 son correctos, no reconstruir.
-  const sinRachas = (state.rachaWinsMax === 0 || state.rachaWinsMax === undefined) &&
-                    (state.rachaLossMax === 0 || state.rachaLossMax === undefined) &&
-                    (state.copaMejorCampaña === 0 || state.copaMejorCampaña === undefined) &&
-                    (state.finalesJugadas === 0 || state.finalesJugadas === undefined);
-  const esPrimeraCarga = state.rachaResetIndex === 0;
-  const hayHistorial = state.historial && state.historial.length > 0;
-
-  if (sinRachas && esPrimeraCarga && hayHistorial) {
-    reconstruirRachasDesdeHistorial();
-    guardarConDebounce();
-  }
-
+  // Consultar o archivar no migra, no modifica state y no programa escrituras.
   const rwa  = state.rachaWinsActual  || 0;
   const rwm  = state.rachaWinsMax     || 0;
   const rla  = state.rachaLossActual  || 0;
@@ -3805,7 +4130,7 @@ function buildRachasHTML() {
   // Footer acciones de rachas — solo Reiniciar (Archivar va por el sidebar)
   const footer =
     '<div style="display:flex;gap:7px;margin-top:6px;padding-top:14px;border-top:1px solid var(--border-soft);">' +
-      '<button class="btn-footer" id="btnReiniciarRachasInline" style="flex:1;" onclick="reiniciarRachas()">' +
+      '<button class="btn-footer" style="flex:1;" onclick="reiniciarRachas()">' +
         '<svg width="11" height="11" viewBox="0 0 11 11" fill="none"><path d="M9.5 5.5A4 4 0 1 1 7.7 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><polyline points="7.4,1 7.7,2 6.6,2.6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
         I18N.t('rachas.resetButton') +
       '</button>' +
@@ -3831,136 +4156,85 @@ let panelAbierto = false;
 let pantallaActiva = 'app';
 
 function abrirPanel() {
+  if (!estadoListo() || salidaEnCurso) return;
   panelAbierto = true;
-  document.getElementById('panelLateral').classList.add('show');
+  abrirDialogo('panelLateral', null, cerrarPanel);
   document.getElementById('panelOverlay').classList.add('show');
-  actualizarPanelActivo();
+  actualizarNavegacion();
 }
 
 function cerrarPanel() {
   panelAbierto = false;
-  document.getElementById('panelLateral').classList.remove('show');
+  cerrarDialogo('panelLateral');
   document.getElementById('panelOverlay').classList.remove('show');
 }
 
-function actualizarPanelActivo() {
-  document.getElementById('panelBtnApp').classList.toggle('active', pantallaActiva === 'app');
-  document.getElementById('panelBtnActividad').classList.toggle('active', pantallaActiva === 'actividad');
-  document.getElementById('panelBtnHistorial').classList.toggle('active', pantallaActiva === 'historial');
-  document.getElementById('panelBtnRachas').classList.toggle('active', pantallaActiva === 'rachas');
-  document.getElementById('panelBtnArchivar').classList.remove('active');
-}
-
-const botonesDesktopPorPantalla = {
-  app: ['dtBtnApp','dtBtnAppFromHist','dtBtnAppFromRachas','dtBtnAppFromHistRachas','dtBtnAppFromConfig','dtBtnAppFromActividad'],
-  actividad: ['dtBtnActividad','dtBtnActividadFromHist','dtBtnActividadFromRachas','dtBtnActividadFromHistRachas','dtBtnActividadFromConfig','dtBtnActividadFromActividad'],
-  historial: ['dtBtnHistorial','dtBtnHistorialFromHist','dtBtnHistorialFromRachas','dtBtnHistorialFromHistRachas','dtBtnHistorialFromConfig','dtBtnHistorialFromActividad'],
-  rachas: ['dtBtnRachas','dtBtnRachasFromHist','dtBtnRachasFromRachas','dtBtnRachasFromHistRachas','dtBtnRachasFromConfig','dtBtnRachasFromActividad'],
-  histRachas: ['dtBtnHistRachas','dtBtnHistRachasFromHist','dtBtnHistRachasFromRachas','dtBtnHistRachasFromHistRachas','dtBtnHistRachasFromConfig','dtBtnHistRachasFromActividad'],
-  config: ['dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig','dtBtnConfigFromActividad']
+const destinosNavegacion = {
+  app: irAApp, actividad: irAActividad, historial: irAHistorial,
+  rachas: irARachas, histRachas: irAHistRachas, config: irAConfig
 };
 
-function actualizarNavegacionDesktop() {
-  Object.keys(botonesDesktopPorPantalla).forEach(function(pantalla) {
-    botonesDesktopPorPantalla[pantalla].forEach(function(id) {
-      const el = document.getElementById(id);
-      if (el) el.classList.toggle('active', pantalla === pantallaActiva);
-    });
+function actualizarNavegacion() {
+  // Reutilizar el bloque de copas en la misma posición de cada sidebar desktop.
+  const copas = document.getElementById('copasSidebar');
+  const nav = document.querySelector('#' + pantallaActiva + 'Screen .dt-nav');
+  if (copas && nav && copas.parentElement !== nav.parentElement) {
+    nav.before(copas);
+  }
+  document.querySelectorAll('.dt-nav-item[data-screen], .panel-nav-item[data-screen]').forEach(function(btn) {
+    btn.classList.toggle('active', btn.dataset.screen === pantallaActiva);
   });
+}
+
+function activarPantalla(pantalla) {
+  if (!estadoListo() || salidaEnCurso) return false;
+  pantallaActiva = pantalla;
+  Object.keys(destinosNavegacion).forEach(function(nombre) {
+    document.getElementById(nombre + 'Screen').style.display = nombre === pantalla ? 'block' : 'none';
+  });
+  actualizarNavegacion();
+  return true;
 }
 
 // ── NAVEGACIÓN ────────────────────────────────────────
 function irAApp() {
-  pantallaActiva = 'app';
-  document.getElementById('appScreen').style.display = 'block';
-  document.getElementById('actividadScreen').style.display = 'none';
-  document.getElementById('historialScreen').style.display = 'none';
-  document.getElementById('rachasScreen').style.display = 'none';
-  document.getElementById('histRachasScreen').style.display = 'none';
-  document.getElementById('configScreen').style.display = 'none';
-  ['dtBtnApp','dtBtnAppFromHist','dtBtnAppFromRachas','dtBtnAppFromHistRachas','dtBtnAppFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.add('active');
-  });
-  ['dtBtnHistorial','dtBtnHistorialFromHist','dtBtnHistorialFromRachas','dtBtnHistorialFromHistRachas','dtBtnHistorialFromConfig',
-   'dtBtnRachas','dtBtnRachasFromHist','dtBtnRachasFromRachas','dtBtnRachasFromHistRachas','dtBtnRachasFromConfig',
-   'dtBtnHistRachas','dtBtnHistRachasFromHist','dtBtnHistRachasFromRachas','dtBtnHistRachasFromHistRachas','dtBtnHistRachasFromConfig',
-   'dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.remove('active');
-  });
-  actualizarNavegacionDesktop();
+  if (!activarPantalla('app')) return;
   renderizar();
 }
 
 
 function irAActividad() {
-  pantallaActiva = 'actividad';
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('actividadScreen').style.display = 'block';
-  document.getElementById('historialScreen').style.display = 'none';
-  document.getElementById('rachasScreen').style.display = 'none';
-  document.getElementById('histRachasScreen').style.display = 'none';
-  document.getElementById('configScreen').style.display = 'none';
-  actualizarNavegacionDesktop();
+  if (!activarPantalla('actividad')) return;
   renderizar();
 }
 
 async function irAHistorial() {
-  pantallaActiva = 'historial';
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('actividadScreen').style.display = 'none';
-  document.getElementById('historialScreen').style.display = 'block';
-  document.getElementById('rachasScreen').style.display = 'none';
-  document.getElementById('histRachasScreen').style.display = 'none';
-  document.getElementById('configScreen').style.display = 'none';
-  ['dtBtnHistorial','dtBtnHistorialFromHist','dtBtnHistorialFromRachas','dtBtnHistorialFromHistRachas','dtBtnHistorialFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.add('active');
-  });
-  ['dtBtnApp','dtBtnAppFromHist','dtBtnAppFromRachas','dtBtnAppFromHistRachas','dtBtnAppFromConfig',
-   'dtBtnRachas','dtBtnRachasFromHist','dtBtnRachasFromRachas','dtBtnRachasFromHistRachas','dtBtnRachasFromConfig',
-   'dtBtnHistRachas','dtBtnHistRachasFromHist','dtBtnHistRachasFromRachas','dtBtnHistRachasFromHistRachas','dtBtnHistRachasFromConfig',
-   'dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.remove('active');
-  });
-  actualizarNavegacionDesktop();
+  if (!activarPantalla('historial')) return;
   await renderizarHistorial();
 }
 
 function irARachas() {
-  pantallaActiva = 'rachas';
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('actividadScreen').style.display = 'none';
-  document.getElementById('historialScreen').style.display = 'none';
-  document.getElementById('rachasScreen').style.display = 'block';
-  document.getElementById('histRachasScreen').style.display = 'none';
-  document.getElementById('configScreen').style.display = 'none';
-  ['dtBtnRachas','dtBtnRachasFromHist','dtBtnRachasFromRachas','dtBtnRachasFromHistRachas','dtBtnRachasFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.add('active');
-  });
-  ['dtBtnApp','dtBtnAppFromHist','dtBtnAppFromRachas','dtBtnAppFromHistRachas','dtBtnAppFromConfig',
-   'dtBtnHistorial','dtBtnHistorialFromHist','dtBtnHistorialFromRachas','dtBtnHistorialFromHistRachas','dtBtnHistorialFromConfig',
-   'dtBtnHistRachas','dtBtnHistRachasFromHist','dtBtnHistRachasFromRachas','dtBtnHistRachasFromHistRachas','dtBtnHistRachasFromConfig',
-   'dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.remove('active');
-  });
-  actualizarNavegacionDesktop();
+  if (!activarPantalla('rachas')) return;
   renderizarRachas();
 }
 
 let archTipoActual = 'temporada'; // 'temporada' o 'rachas'
 
 function abrirModalArchivar(tipoInicial) {
+  if (!estadoListo() || salidaEnCurso) return;
   archTipoActual = (tipoInicial === 'rachas') ? 'rachas' : 'temporada';
   document.getElementById('archivarNombre').value = '';
   _actualizarModalArchivar();
-  document.getElementById('archivarOverlay').classList.add('show');
-  setTimeout(() => document.getElementById('archivarNombre').focus(), 100);
+  abrirDialogo('archivarOverlay', '#archivarNombre', cerrarModalArchivar);
 }
 function cerrarModalArchivar() {
-  document.getElementById('archivarOverlay').classList.remove('show');
+  cerrarDialogo('archivarOverlay');
 }
 function _actualizarModalArchivar() {
   const esTmp = archTipoActual === 'temporada';
   document.getElementById('archTipoTemporada').classList.toggle('selected', esTmp);
+  document.getElementById('archTipoTemporada').setAttribute('aria-pressed', String(esTmp));
+  document.getElementById('archTipoRachas').setAttribute('aria-pressed', String(!esTmp));
   document.getElementById('archTipoRachas').classList.toggle('selected', !esTmp);
   document.getElementById('archDesc').textContent = esTmp
     ? I18N.t('archive.seasonDescription')
@@ -3969,41 +4243,64 @@ function _actualizarModalArchivar() {
     ? I18N.t('archive.seasonPlaceholder')
     : I18N.t('rachas.archivePlaceholder');
 }
-// Compatibilidad con llamadas directas al modal de rachas
-function abrirModalArchivarRachas() { abrirModalArchivar('rachas'); }
-function cerrarModalArchivarRachas() { cerrarModalArchivar(); }
-
 async function logout() {
-  CELEBRACION.detener();
-  await sb.auth.signOut();
-  currentUser = null;
-  state = defaultState();
-  mostrarLogin();
+  if (salidaEnCurso) return;
+  const sesion = capturarSesion();
+  salidaEnCurso = true;
+  document.body.inert = true;
+  try {
+    if (hayCambiosSinGuardar() && !(await vaciarGuardado())) return;
+    if (sesion.usuarioId !== (currentUser && currentUser.id) || sesion.version !== cargaEstadoVersion) return;
+    const { error } = await sb.auth.signOut();
+    if (error) throw error;
+    if (currentUser && sesion.usuarioId === currentUser.id && sesion.version === cargaEstadoVersion) limpiarSesion();
+  } catch (error) {
+    console.error('Error cerrando sesión:', error.message);
+    if (sesion.usuarioId === (currentUser && currentUser.id) && sesion.version === cargaEstadoVersion) flash(I18N.t('persistence.logoutError'), 'red');
+  } finally {
+    salidaEnCurso = false;
+    document.body.inert = false;
+  }
 }
 
 // ── HISTORIAL RENDERIZAR ──────────────────────────────
-function buildTemporadaCard(s) {
-  const fecha = new Date(s.created_at);
-  const fechaStr = String(fecha.getDate()).padStart(2,'0') + '/' +
+// Escape solo al renderizar: conservar los valores originales en memoria y Supabase.
+function escaparHTML(valor) {
+  return String(valor).replace(/[&<>"']/g, function(caracter) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[caracter];
+  });
+}
+
+function fechaArchivo(valor) {
+  if (valor == null || valor === '') return '—';
+  const fecha = new Date(valor);
+  if (Number.isNaN(fecha.getTime())) return '—';
+  return String(fecha.getDate()).padStart(2,'0') + '/' +
                    String(fecha.getMonth()+1).padStart(2,'0') + '/' +
                    String(fecha.getFullYear()).slice(2);
-  return '<div class="temporada-card" data-id="' + s.id + '">' +
+}
+
+function buildTemporadaCard(s) {
+  const fechaStr = fechaArchivo(s.created_at);
+  return '<div class="temporada-card" data-id="' + escaparHTML(s.id) + '">' +
     '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">' +
-      '<div class="temporada-nombre">' + s.name + '</div>' +
-      '<button onclick="eliminarTemporada(\'' + s.id + '\')" style="background:transparent;border:none;cursor:pointer;color:var(--text-dim);padding:2px 4px;border-radius:4px;font-size:0.78rem;line-height:1;flex-shrink:0;transition:color 0.2s;" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text-dim)\'" title="' + I18N.t('common.delete') + '">✕</button>' +
+      '<div class="temporada-nombre">' + escaparHTML(s.name) + '</div>' +
+      '<button style="background:transparent;border:none;cursor:pointer;color:var(--text-dim);padding:2px 4px;border-radius:4px;font-size:0.78rem;line-height:1;flex-shrink:0;transition:color 0.2s;" onmouseover="this.style.color=\'var(--red)\'" onmouseout="this.style.color=\'var(--text-dim)\'" aria-label="' + escaparHTML(I18N.t('common.delete')) + '" title="' + I18N.t('common.delete') + '">✕</button>' +
     '</div>' +
     '<div class="temporada-stats">' +
-      '<div class="temp-stat"><div class="temp-stat-num">' + s.jugados + '</div><div class="temp-stat-label">' + I18N.t('stats.played') + '</div></div>' +
-      '<div class="temp-stat"><div class="temp-stat-num g">' + s.ganados + '</div><div class="temp-stat-label">' + I18N.t('stats.won') + '</div></div>' +
-      '<div class="temp-stat"><div class="temp-stat-num e">' + s.empatados + '</div><div class="temp-stat-label">' + I18N.t('stats.drawn') + '</div></div>' +
-      '<div class="temp-stat"><div class="temp-stat-num p">' + s.perdidos + '</div><div class="temp-stat-label">' + I18N.t('stats.lost') + '</div></div>' +
-      '<div class="temp-stat"><div class="temp-stat-num c">' + s.copas + '</div><div class="temp-stat-label">' + I18N.t('copas.trophiesShort') + '</div></div>' +
+      '<div class="temp-stat"><div class="temp-stat-num">' + escaparHTML(s.jugados) + '</div><div class="temp-stat-label">' + I18N.t('stats.played') + '</div></div>' +
+      '<div class="temp-stat"><div class="temp-stat-num g">' + escaparHTML(s.ganados) + '</div><div class="temp-stat-label">' + I18N.t('stats.won') + '</div></div>' +
+      '<div class="temp-stat"><div class="temp-stat-num e">' + escaparHTML(s.empatados) + '</div><div class="temp-stat-label">' + I18N.t('stats.drawn') + '</div></div>' +
+      '<div class="temp-stat"><div class="temp-stat-num p">' + escaparHTML(s.perdidos) + '</div><div class="temp-stat-label">' + I18N.t('stats.lost') + '</div></div>' +
+      '<div class="temp-stat"><div class="temp-stat-num c">' + escaparHTML(s.copas) + '</div><div class="temp-stat-label">' + I18N.t('copas.trophiesShort') + '</div></div>' +
     '</div>' +
     '<div class="temporada-fecha">' + I18N.t('history.archivedOn', {date: fechaStr}) + '</div>' +
   '</div>';
 }
 
 async function renderizarHistorial() {
+  const sesion = capturarSesion();
+  if (!sesionVigente(sesion)) return;
   const empty = '<div class="hist-empty">' + I18N.t('history.empty') + '</div>';
   const loading = '<div class="hist-empty">' + I18N.t('history.loading') + '</div>';
 
@@ -4014,24 +4311,35 @@ async function renderizarHistorial() {
   if (!currentUser) return;
 
   const { data, error } = await sb.from('seasons').select('*')
-    .eq('user_id', currentUser.id)
+    .eq('user_id', sesion.usuarioId)
     .order('created_at', { ascending: false });
+  if (!sesionVigente(sesion)) return;
 
   const html = error ? '<div class="hist-empty">' + I18N.t('history.loadError') + '</div>'
     : (!data || !data.length) ? empty
     : data.map(buildTemporadaCard).join('');
 
   ['historialListaMob','historialListaDt'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.innerHTML = html;
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = html;
+    el.querySelectorAll('.temporada-card').forEach(function(card) {
+      card.querySelector('button').addEventListener('click', function() {
+        eliminarTemporada(card.dataset.id);
+      });
+    });
   });
 }
 
 async function eliminarTemporada(id) {
+  const sesion = capturarSesion();
+  if (!sesionVigente(sesion)) return;
   const ok = await confirmar(I18N.t('history.deleteTitle'), I18N.t('history.deleteConfirm'));
-  if (!ok) return;
-  const { error } = await sb.from('seasons').delete().eq('id', id).eq('user_id', currentUser.id);
+  if (!ok || !sesionVigente(sesion)) return;
+  const { error } = await sb.from('seasons').delete().eq('id', id).eq('user_id', sesion.usuarioId);
+  if (!sesionVigente(sesion)) return;
   if (error) { flash(I18N.t('history.deleteError'), 'red'); return; }
-  document.querySelectorAll('.temporada-card[data-id="' + id + '"]').forEach(function(c){ c.remove(); });
+  document.querySelectorAll('.temporada-card').forEach(function(c){ if (c.dataset.id === String(id)) c.remove(); });
   flash(I18N.t('history.deleteSuccess'), 'yellow');
   ['historialListaMob','historialListaDt'].forEach(function(id2) {
     const lista = document.getElementById(id2);
@@ -4046,86 +4354,51 @@ async function eliminarTemporada(id) {
 async function reiniciarRachas() {
   const ok = await confirmar(I18N.t('rachas.resetConfirmTitle'), I18N.t('rachas.resetConfirmBody'));
   if (!ok) return;
-  // Marcar el punto de corte: calcRachas ignorará todo lo anterior a este índice
+  // Marcar el punto de corte: la reconstrucción ignorará todo lo anterior a este índice
   state.rachaResetIndex = (state.historial || []).length;
+  // Deshacer puede quitar el partido, pero no anular este reinicio manual.
+  if (state.snapshot) state.snapshot.rachas = null;
   state.rachaWinsActual = 0; state.rachaWinsMax = 0;
   state.rachaLossActual = 0; state.rachaLossMax = 0;
   state.copaCampañaActual = 0; state.copaMejorCampaña = 0; state.copaPeorCampaña = 0;
   state.finalesJugadas = 0; state.finalesGanadas = 0; state.finalesPerdidas = 0;
-  await guardar();
   renderizarRachas();
-  flash(I18N.t('rachas.resetSuccess'), 'yellow');
+  if (await guardar()) flash(I18N.t('rachas.resetSuccess'), 'yellow');
 }
 
 async function irAHistRachas() {
-  pantallaActiva = 'histRachas';
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('actividadScreen').style.display = 'none';
-  document.getElementById('historialScreen').style.display = 'none';
-  document.getElementById('rachasScreen').style.display = 'none';
-  document.getElementById('histRachasScreen').style.display = 'block';
-  document.getElementById('configScreen').style.display = 'none';
-  // Actualizar activos en todos los sidebars
-  ['dtBtnHistRachas','dtBtnHistRachasFromHistRachas','dtBtnHistRachasFromHist','dtBtnHistRachasFromRachas','dtBtnHistRachasFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.add('active');
-  });
-  ['dtBtnApp','dtBtnAppFromHist','dtBtnAppFromRachas','dtBtnAppFromHistRachas','dtBtnAppFromConfig',
-   'dtBtnRachas','dtBtnRachasFromHist','dtBtnRachasFromRachas','dtBtnRachasFromHistRachas','dtBtnRachasFromConfig',
-   'dtBtnHistorial','dtBtnHistorialFromHist','dtBtnHistorialFromRachas','dtBtnHistorialFromHistRachas','dtBtnHistorialFromConfig',
-   'dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.remove('active');
-  });
-  actualizarNavegacionDesktop();
+  if (!activarPantalla('histRachas')) return;
   await renderizarHistRachas();
 }
 
 async function irAConfig() {
-  pantallaActiva = 'config';
-  document.getElementById('appScreen').style.display = 'none';
-  document.getElementById('actividadScreen').style.display = 'none';
-  document.getElementById('historialScreen').style.display = 'none';
-  document.getElementById('rachasScreen').style.display = 'none';
-  document.getElementById('histRachasScreen').style.display = 'none';
-  document.getElementById('configScreen').style.display = 'block';
-  ['dtBtnConfig','dtBtnConfigFromHist','dtBtnConfigFromRachas','dtBtnConfigFromHistRachas','dtBtnConfigFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.add('active');
-  });
-  ['dtBtnApp','dtBtnAppFromHist','dtBtnAppFromRachas','dtBtnAppFromHistRachas','dtBtnAppFromConfig',
-   'dtBtnRachas','dtBtnRachasFromHist','dtBtnRachasFromRachas','dtBtnRachasFromHistRachas','dtBtnRachasFromConfig',
-   'dtBtnHistorial','dtBtnHistorialFromHist','dtBtnHistorialFromRachas','dtBtnHistorialFromHistRachas','dtBtnHistorialFromConfig',
-   'dtBtnHistRachas','dtBtnHistRachasFromHist','dtBtnHistRachasFromRachas','dtBtnHistRachasFromHistRachas','dtBtnHistRachasFromConfig'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.classList.remove('active');
-  });
-  actualizarNavegacionDesktop();
+  if (!activarPantalla('config')) return;
   renderizarConfig();
 }
 
 function buildRachaArchCard(s) {
-  const fecha = new Date(s.created_at);
-  const fechaStr = String(fecha.getDate()).padStart(2,'0') + '/' +
-                   String(fecha.getMonth()+1).padStart(2,'0') + '/' +
-                   String(fecha.getFullYear()).slice(2);
+  const fechaStr = fechaArchivo(s.created_at);
   const d = s.data || {};
-  const sid = s.id;
-  const sname = s.name;
+  const sid = escaparHTML(s.id);
+  const sname = escaparHTML(s.name);
   let html = '<div class="racha-arch-card" data-id="' + sid + '">';
   html += '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">';
   html += '<div class="racha-arch-nombre">' + sname + '</div>';
-  html += '<button onclick="eliminarRachaArch(\'' + sid + '\')" ';
+  html += '<button ';
   html += 'style="background:transparent;border:none;cursor:pointer;color:var(--text-dim);';
   html += 'padding:2px 4px;border-radius:4px;font-size:0.78rem;line-height:1;flex-shrink:0;transition:color 0.2s;"';
-  html += '>✕</button>';
+  html += ' aria-label="' + escaparHTML(I18N.t('common.delete')) + '">✕</button>';
   html += '</div>';
   html += '<div class="racha-arch-grid">';
-  html += '<div class="racha-arch-stat"><div class="racha-arch-num pos">' + (d.rachaWinsMax||0) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.wins') + '</div></div>';
-  html += '<div class="racha-arch-stat"><div class="racha-arch-num neg">' + (d.rachaLossMax||0) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.losses') + '</div></div>';
-  html += '<div class="racha-arch-stat"><div class="racha-arch-num" style="color:var(--yellow);">' + (d.copaMejorCampaña||'—') + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.fastestCup') + '</div></div>';
-  html += '<div class="racha-arch-stat"><div class="racha-arch-num neg">' + (d.copaPeorCampaña||'—') + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.longestCup') + '</div></div>';
+  html += '<div class="racha-arch-stat"><div class="racha-arch-num pos">' + escaparHTML((d.rachaWinsMax||0)) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.wins') + '</div></div>';
+  html += '<div class="racha-arch-stat"><div class="racha-arch-num neg">' + escaparHTML((d.rachaLossMax||0)) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.losses') + '</div></div>';
+  html += '<div class="racha-arch-stat"><div class="racha-arch-num" style="color:var(--yellow);">' + escaparHTML((d.copaMejorCampaña||'—')) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.fastestCup') + '</div></div>';
+  html += '<div class="racha-arch-stat"><div class="racha-arch-num neg">' + escaparHTML((d.copaPeorCampaña||'—')) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.longestCup') + '</div></div>';
   html += '</div>';
   html += '<div class="racha-arch-grid" style="margin-top:8px;">';
-  html += '<div class="racha-arch-stat"><div class="racha-arch-num">' + (d.finalesJugadas||0) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.finals') + '</div></div>';
-  html += '<div class="racha-arch-stat"><div class="racha-arch-num pos">' + (d.finalesGanadas||0) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.won') + '</div></div>';
-  html += '<div class="racha-arch-stat"><div class="racha-arch-num neg">' + (d.finalesPerdidas||0) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.lost') + '</div></div>';
+  html += '<div class="racha-arch-stat"><div class="racha-arch-num">' + escaparHTML((d.finalesJugadas||0)) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.finals') + '</div></div>';
+  html += '<div class="racha-arch-stat"><div class="racha-arch-num pos">' + escaparHTML((d.finalesGanadas||0)) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.won') + '</div></div>';
+  html += '<div class="racha-arch-stat"><div class="racha-arch-num neg">' + escaparHTML((d.finalesPerdidas||0)) + '</div><div class="racha-arch-label">' + I18N.t('streakHistory.lost') + '</div></div>';
   html += '<div class="racha-arch-stat"></div>';
   html += '</div>';
   html += '<div class="racha-arch-fecha">' + I18N.t('streakHistory.archivedOn', {date: fechaStr}) + '</div>';
@@ -4135,6 +4408,8 @@ function buildRachaArchCard(s) {
 
 
 async function renderizarHistRachas() {
+  const sesion = capturarSesion();
+  if (!sesionVigente(sesion)) return;
   const empty = '<div class="hist-empty">' + I18N.t('streakHistory.empty') + '</div>';
   const loading = '<div class="hist-empty">' + I18N.t('streakHistory.loading') + '</div>';
   ['histRachasListaMob','histRachasListaDt'].forEach(function(id) {
@@ -4142,22 +4417,33 @@ async function renderizarHistRachas() {
   });
   if (!currentUser) return;
   const { data, error } = await sb.from('racha_seasons').select('*')
-    .eq('user_id', currentUser.id)
+    .eq('user_id', sesion.usuarioId)
     .order('created_at', { ascending: false });
+  if (!sesionVigente(sesion)) return;
   const html = error ? '<div class="hist-empty">' + I18N.t('streakHistory.loadError') + '</div>'
     : (!data || !data.length) ? empty
     : data.map(buildRachaArchCard).join('');
   ['histRachasListaMob','histRachasListaDt'].forEach(function(id) {
-    const el = document.getElementById(id); if (el) el.innerHTML = html;
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.innerHTML = html;
+    el.querySelectorAll('.racha-arch-card').forEach(function(card) {
+      card.querySelector('button').addEventListener('click', function() {
+        eliminarRachaArch(card.dataset.id);
+      });
+    });
   });
 }
 
 async function eliminarRachaArch(id) {
+  const sesion = capturarSesion();
+  if (!sesionVigente(sesion)) return;
   const ok = await confirmar(I18N.t('streakHistory.deleteTitle'), I18N.t('streakHistory.deleteConfirm'));
-  if (!ok) return;
-  const { error } = await sb.from('racha_seasons').delete().eq('id', id).eq('user_id', currentUser.id);
+  if (!ok || !sesionVigente(sesion)) return;
+  const { error } = await sb.from('racha_seasons').delete().eq('id', id).eq('user_id', sesion.usuarioId);
+  if (!sesionVigente(sesion)) return;
   if (error) { flash(I18N.t('streakHistory.deleteError'), 'red'); return; }
-  document.querySelectorAll('.racha-arch-card[data-id="' + id + '"]').forEach(function(el){ el.remove(); });
+  document.querySelectorAll('.racha-arch-card').forEach(function(el){ if (el.dataset.id === String(id)) el.remove(); });
   flash(I18N.t('streakHistory.deleteSuccess'), 'yellow');
   ['histRachasListaMob','histRachasListaDt'].forEach(function(id2) {
     const lista = document.getElementById(id2);
@@ -4178,95 +4464,52 @@ I18N.onLocaleChange(function() {
 document.addEventListener('DOMContentLoaded', function() {
 
   // Mobile panel
-  document.getElementById('btnAbrirPanel').addEventListener('click', function() {
-    panelAbierto ? cerrarPanel() : abrirPanel();
+  document.querySelectorAll('[data-panel-toggle]').forEach(function(btn) {
+    btn.addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
   });
   document.getElementById('panelOverlay').addEventListener('click', cerrarPanel);
-  document.getElementById('panelBtnApp').addEventListener('click', function() { cerrarPanel(); irAApp(); });
-  document.getElementById('panelBtnActividad').addEventListener('click', function() { cerrarPanel(); irAActividad(); });
-  document.getElementById('panelBtnHistorial').addEventListener('click', async function() { cerrarPanel(); await irAHistorial(); });
-  document.getElementById('panelBtnArchivar').addEventListener('click', function() { cerrarPanel(); abrirModalArchivar(); });
-  document.getElementById('panelBtnLogout').addEventListener('click', async function() { cerrarPanel(); await logout(); });
-  document.getElementById('btnAbrirPanelHistorial').addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
-  document.getElementById('btnAbrirPanelRachas').addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
-  document.getElementById('btnAbrirPanelActividad').addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
-
-  // Panel mobile — Rachas
-  document.getElementById('panelBtnRachas').addEventListener('click', function() { cerrarPanel(); irARachas(); });
-
-  // Desktop sidebar
-  document.getElementById('dtBtnApp').addEventListener('click', irAApp);
-  document.querySelectorAll('[data-screen="actividad"]').forEach(function(btn) { btn.addEventListener('click', irAActividad); });
-  document.getElementById('dtBtnRachas').addEventListener('click', irARachas);
-  document.getElementById('dtBtnHistorial').addEventListener('click', async function() { await irAHistorial(); });
-  document.getElementById('dtBtnArchivar').addEventListener('click', abrirModalArchivar);
-  document.getElementById('dtBtnLogout').addEventListener('click', logout);
-
-  // Desktop historial sidebar
-  document.getElementById('dtBtnAppFromHist').addEventListener('click', irAApp);
-  document.getElementById('dtBtnRachasFromHist').addEventListener('click', irARachas);
-  document.getElementById('dtBtnHistorialFromHist').addEventListener('click', async function() { await irAHistorial(); });
-  document.getElementById('dtBtnHistRachasFromHist').addEventListener('click', async function() { await irAHistRachas(); });
-  document.getElementById('dtBtnArchivarFromHist').addEventListener('click', abrirModalArchivar);
-  document.getElementById('dtBtnLogoutFromHist').addEventListener('click', logout);
-
-  // Desktop rachas sidebar
-  document.getElementById('dtBtnAppFromRachas').addEventListener('click', irAApp);
-  document.getElementById('dtBtnRachasFromRachas').addEventListener('click', irARachas);
-  document.getElementById('dtBtnHistorialFromRachas').addEventListener('click', async function() { await irAHistorial(); });
-  document.getElementById('dtBtnHistRachasFromRachas').addEventListener('click', async function() { await irAHistRachas(); });
-  document.getElementById('dtBtnArchivarFromRachas').addEventListener('click', abrirModalArchivar);
-  document.getElementById('dtBtnLogoutFromRachas').addEventListener('click', logout);
-
-  // Desktop sidebar de ACTIVIDAD
-  document.getElementById('dtBtnAppFromActividad').addEventListener('click', irAApp);
-  document.getElementById('dtBtnRachasFromActividad').addEventListener('click', irARachas);
-  document.getElementById('dtBtnArchivarFromActividad').addEventListener('click', abrirModalArchivar);
-  document.getElementById('dtBtnHistorialFromActividad').addEventListener('click', async function() { await irAHistorial(); });
-  document.getElementById('dtBtnHistRachasFromActividad').addEventListener('click', async function() { await irAHistRachas(); });
-  document.getElementById('dtBtnConfigFromActividad').addEventListener('click', async function() { await irAConfig(); });
-  document.getElementById('dtBtnLogoutFromActividad').addEventListener('click', logout);
+  document.querySelectorAll('.dt-nav-item[data-screen], .panel-nav-item[data-screen]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (btn.closest('#panelLateral')) cerrarPanel();
+      return destinosNavegacion[btn.dataset.screen]();
+    });
+  });
+  const accionesNavegacion = { archivar: abrirModalArchivar, logout: logout };
+  document.querySelectorAll('[data-nav-action]').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      if (btn.closest('#panelLateral')) cerrarPanel();
+      return accionesNavegacion[btn.dataset.navAction]();
+    });
+  });
 
   // Mobile actions
-  document.getElementById('btnUndoMob').addEventListener('click', async function() {
-    if (!state.snapshot) { flash(I18N.t('result.noUndo'), 'cyan'); return; }
-    state = JSON.parse(state.snapshot); state.snapshot = null;
-    await guardar(); renderizar(); flash(I18N.t('result.undoSuccess'), 'cyan');
-  });
-  document.getElementById('btnRenovarMob').addEventListener('click', function() {
-    state.contadorRenov = 1; guardarConDebounce(); renderizar(); flash(I18N.t('plan.renewed'), 'cyan');
-  });
+  document.getElementById('btnUndoMob').addEventListener('click', deshacerUltimoPartido);
+  document.getElementById('btnRenovarMob').addEventListener('click', renovarPlan);
   document.getElementById('btnReiniciarMob').addEventListener('click', async function() {
     const ok = await confirmar(I18N.t('result.resetTournamentConfirmTitle'), I18N.t('result.resetTournamentConfirmBody'), false);
     if (!ok) return;
     state.snapshot = null; state.fase = 'FG'; state.fgResultados = []; state.eliminatoriasDone = [];
-    await guardar(); renderizar(); flash(I18N.t('result.resetTournamentSuccess'), 'yellow');
+    renderizar(); if (await guardar()) flash(I18N.t('result.resetTournamentSuccess'), 'yellow');
   });
   document.getElementById('btnResetStatsMob').addEventListener('click', async function() {
     const ok = await confirmar(I18N.t('result.resetAllConfirmTitle'), I18N.t('result.resetAllConfirmBody'));
     if (!ok) return;
-    reiniciarEstadisticasPrincipales(); await guardar(); renderizar(); flash(I18N.t('result.resetAllSuccess'), 'red');
+    reiniciarEstadisticasPrincipales(); renderizar(); if (await guardar()) flash(I18N.t('result.resetAllSuccess'), 'red');
   });
 
   // Desktop actions
-  document.getElementById('btnUndoDt').addEventListener('click', async function() {
-    if (!state.snapshot) { flash(I18N.t('result.noUndo'), 'cyan'); return; }
-    state = JSON.parse(state.snapshot); state.snapshot = null;
-    await guardar(); renderizar(); flash(I18N.t('result.undoSuccess'), 'cyan');
-  });
-  document.getElementById('btnRenovarDt').addEventListener('click', function() {
-    state.contadorRenov = 1; guardarConDebounce(); renderizar(); flash(I18N.t('plan.renewed'), 'cyan');
-  });
+  document.getElementById('btnUndoDt').addEventListener('click', deshacerUltimoPartido);
+  document.getElementById('btnRenovarDt').addEventListener('click', renovarPlan);
   document.getElementById('btnReiniciarDt').addEventListener('click', async function() {
     const ok = await confirmar(I18N.t('result.resetTournamentConfirmTitle'), I18N.t('result.resetTournamentConfirmBody'), false);
     if (!ok) return;
     state.snapshot = null; state.fase = 'FG'; state.fgResultados = []; state.eliminatoriasDone = [];
-    await guardar(); renderizar(); flash(I18N.t('result.resetTournamentSuccess'), 'yellow');
+    renderizar(); if (await guardar()) flash(I18N.t('result.resetTournamentSuccess'), 'yellow');
   });
   document.getElementById('btnResetStatsDt').addEventListener('click', async function() {
     const ok = await confirmar(I18N.t('result.resetAllConfirmTitle'), I18N.t('result.resetAllConfirmBody'));
     if (!ok) return;
-    reiniciarEstadisticasPrincipales(); await guardar(); renderizar(); flash(I18N.t('result.resetAllSuccess'), 'red');
+    reiniciarEstadisticasPrincipales(); renderizar(); if (await guardar()) flash(I18N.t('result.resetAllSuccess'), 'red');
   });
 
   // Archivar modal unificado
@@ -4281,6 +4524,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === this) cerrarModalArchivar();
   });
   document.getElementById('btnArchivarGuardar').addEventListener('click', async function() {
+    const sesion = capturarSesion();
+    if (!sesionVigente(sesion) || salidaEnCurso) return;
     const nombre = document.getElementById('archivarNombre').value.trim();
     if (!nombre) { document.getElementById('archivarNombre').focus(); return; }
     if (!currentUser) return;
@@ -4288,19 +4533,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (archTipoActual === 'temporada') {
       const { error } = await sb.from('seasons').insert({
-        user_id: currentUser.id, name: nombre,
+        user_id: sesion.usuarioId, name: nombre,
         jugados: state.totalJugados, ganados: state.totalGanados,
         perdidos: state.totalPerdidos, empatados: state.totalEmpatados, copas: state.copas
       });
+      if (!sesionVigente(sesion)) return;
       this.textContent = I18N.t('common.save'); this.disabled = false;
       if (error) { flash(I18N.t('archive.saveError'), 'red'); return; }
       cerrarModalArchivar();
       flash(I18N.t('archive.seasonArchived', {name: nombre}), 'yellow');
     } else {
       // Archivar rachas — snapshot sin modificar estado
-      const { rwa, rwm, rla, rlm, cca, cmej, cpeo, fj, fg, fp } = calcRachas();
+      const { rwm, rlm, cmej, cpeo, fj, fg, fp } = calcRachas();
       const { error } = await sb.from('racha_seasons').insert({
-        user_id: currentUser.id,
+        user_id: sesion.usuarioId,
         name: nombre,
         data: {
           rachaWinsMax: rwm, rachaLossMax: rlm,
@@ -4308,6 +4554,7 @@ document.addEventListener('DOMContentLoaded', function() {
           finalesJugadas: fj, finalesGanadas: fg, finalesPerdidas: fp
         }
       });
+      if (!sesionVigente(sesion)) return;
       this.textContent = I18N.t('common.save'); this.disabled = false;
       if (error) { flash(I18N.t('rachas.archiveError'), 'red'); return; }
       cerrarModalArchivar();
@@ -4321,67 +4568,29 @@ document.addEventListener('DOMContentLoaded', function() {
     if (e.target === this) cerrarModalNombre();
   });
   document.getElementById('btnNombreGuardar').addEventListener('click', async function() {
+    const sesion = capturarSesion();
+    if (!sesionVigente(sesion) || salidaEnCurso) return;
     const nombre = document.getElementById('nombreInput').value.trim();
     state.nombrePerfil = nombre;
     this.textContent = I18N.t('config.nameSaving'); this.disabled = true;
-    await guardar();
+    const guardadoOk = await guardar();
+    if (!sesionVigente(sesion)) return;
     this.textContent = I18N.t('common.save'); this.disabled = false;
     actualizarSubtitulosPerfil();
     renderizarConfig();
+    if (!guardadoOk) return;
     cerrarModalNombre();
     flash(nombre ? I18N.t('config.nameUpdated') : I18N.t('config.nameRemoved'), 'yellow');
   });
 
-  // Historial Rachas — panel mobile
-  document.getElementById('panelBtnHistRachas').addEventListener('click', async function() { cerrarPanel(); await irAHistRachas(); });
-  // Historial Rachas — desktops
-  document.getElementById('dtBtnHistRachas').addEventListener('click', async function() { await irAHistRachas(); });
-  document.getElementById('dtBtnAppFromHistRachas').addEventListener('click', irAApp);
-  document.getElementById('dtBtnRachasFromHistRachas').addEventListener('click', irARachas);
-  document.getElementById('dtBtnArchivarFromHistRachas').addEventListener('click', abrirModalArchivar);
-  document.getElementById('dtBtnHistorialFromHistRachas').addEventListener('click', async function() { await irAHistorial(); });
-  document.getElementById('dtBtnHistRachasFromHistRachas').addEventListener('click', async function() { await irAHistRachas(); });
-  document.getElementById('dtBtnLogoutFromHistRachas').addEventListener('click', logout);
-  // Mobile histRachas header
-  const btnAbrirPanelHistRachas = document.getElementById('btnAbrirPanelHistRachas');
-  if (btnAbrirPanelHistRachas) btnAbrirPanelHistRachas.addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
-
-  // (listeners del modal de rachas eliminados — ahora usa el modal unificado)
-
-  // Configuración — panel mobile
-  document.getElementById('panelBtnConfig').addEventListener('click', async function() { cerrarPanel(); await irAConfig(); });
-  // Configuración — desktops (uno por cada sidebar existente)
-  document.getElementById('dtBtnConfig').addEventListener('click', async function() { await irAConfig(); });
-  document.getElementById('dtBtnConfigFromHist').addEventListener('click', async function() { await irAConfig(); });
-  document.getElementById('dtBtnConfigFromRachas').addEventListener('click', async function() { await irAConfig(); });
-  document.getElementById('dtBtnConfigFromHistRachas').addEventListener('click', async function() { await irAConfig(); });
-  // Sidebar propio de la pantalla Configuración
-  document.getElementById('dtBtnAppFromConfig').addEventListener('click', irAApp);
-  document.getElementById('dtBtnRachasFromConfig').addEventListener('click', irARachas);
-  document.getElementById('dtBtnArchivarFromConfig').addEventListener('click', abrirModalArchivar);
-  document.getElementById('dtBtnHistorialFromConfig').addEventListener('click', async function() { await irAHistorial(); });
-  document.getElementById('dtBtnHistRachasFromConfig').addEventListener('click', async function() { await irAHistRachas(); });
-  document.getElementById('dtBtnConfigFromConfig').addEventListener('click', async function() { await irAConfig(); });
-  document.getElementById('dtBtnLogoutFromConfig').addEventListener('click', logout);
-  // Mobile config header (botón hamburguesa)
-  const btnAbrirPanelConfig = document.getElementById('btnAbrirPanelConfig');
-  if (btnAbrirPanelConfig) btnAbrirPanelConfig.addEventListener('click', function() { panelAbierto ? cerrarPanel() : abrirPanel(); });
-
-  // actualizarPanelActivo: agregar histRachas + config
-  const _origActualizar = actualizarPanelActivo;
-  actualizarPanelActivo = function() {
-    _origActualizar();
-    const btn = document.getElementById('panelBtnHistRachas');
-    if (btn) btn.classList.toggle('active', pantallaActiva === 'histRachas');
-    const btnCfg = document.getElementById('panelBtnConfig');
-    if (btnCfg) btnCfg.classList.toggle('active', pantallaActiva === 'config');
-  };
 
 });
 
 // ── ARRANCAR ──────────────────────────────────────────
 actualizarIconosDeCopa();
 document.getElementById('btnChampionContinue').addEventListener('click', continuarTrasCampeonato);
+document.getElementById('modalOverlay').addEventListener('click', function(e) { if (e.target === this) cancelarEmpate(); });
+document.getElementById('championModalOverlay').addEventListener('click', function(e) { if (e.target === this) continuarTrasCampeonato(); });
 inicializar();
 
 // ── SERVICE WORKER ────────────────────────────────────

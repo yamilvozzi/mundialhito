@@ -1,10 +1,16 @@
 // ── DICCIONARIO: ESPAÑOL ───────────────────────────────
 // Idioma base y fallback de la aplicación: si una clave no existe en el
 // idioma activo, el motor (i18n.js) siempre cae acá.
-// Organizado por pantalla/módulo. Se completa progresivamente a medida que
-// cada pantalla se migra al sistema de i18n — no hace falta llenarlo todo
-// de una sola vez.
+// Organizado por pantalla/módulo; conservar las mismas claves y parámetros
+// en todos los idiomas y en template.js. Verificación: npm test.
 I18N.registrarIdioma('es', {
+  persistence: {
+    saving: 'Guardando…',
+    saved: 'Guardado',
+    error: 'No se guardaron los cambios. No cierres esta pestaña.',
+    sessionEnded: 'La sesión terminó con cambios sin confirmar. Volvé a ingresar y revisá tus últimos datos.',
+    logoutError: 'No se pudo cerrar la sesión. Volvé a intentar.'
+  },
   common: {
     save: 'Guardar',
     cancel: 'Cancelar',
@@ -13,6 +19,9 @@ I18N.registrarIdioma('es', {
     menu: 'Menú'
   },
   login: {
+    startupError: 'No pudimos iniciar la aplicación. Revisá tu conexión y reintentá.',
+    loadError: 'No pudimos cargar tus datos. Reintentá para continuar.',
+    retryLoad: 'Reintentar',
     subtitle: 'Tracker personal',
     emailPlaceholder: 'Email',
     passwordPlaceholder: 'Contraseña',
@@ -100,6 +109,7 @@ I18N.registrarIdioma('es', {
     }
   },
   bracket: {
+    final: "Final",
       r16: 'Octavos',
       qf: 'Cuartos',
       sf: 'Semi'
@@ -131,17 +141,19 @@ I18N.registrarIdioma('es', {
   },
   plan: {
       title: 'Plan de 10 partidos',
-      matchNumber: 'Partido #',
+      matchNumber: 'Completados',
       renew: 'Renovar',
       recentHistory: 'Historial reciente',
       emptyHistory: 'Sin partidos registrados todavía.',
-      renewed: 'Plan renovado desde 1'
+      renewed: 'Plan renovado: 0 de 10 completados',
+    nextMatch: 'Próximo partido: {{number}}'
   },
   championModal: {
       title: 'Campeón del MundialHito',
       continue: 'Continuar'
   },
   coinModal: {
+    flip: 'Tirar moneda',
       title: 'Definición por penales',
       subtitleInitial: 'Empate. Elegí cara o ceca antes de tirar.',
       subtitleChosen: 'Elegiste {{choice}}. Tocá la moneda.',
@@ -220,7 +232,4 @@ I18N.registrarIdioma('es', {
     seasonArchived: 'Temporada "{{name}}" archivada.'
   }
 
-  // Próximas pantallas a migrar: torneo (fase de grupos / eliminatorias),
-  // historial, rachas, modales de archivar y cambiar nombre, etc.
-  // Cada una suma su propia sección acá cuando le toque migrar.
 });

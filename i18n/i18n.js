@@ -8,9 +8,8 @@
 //   I18N.t('config.title')           → obtiene un texto por clave (con fallback a Español)
 //   I18N.translateDOM()              → aplica traducciones a los elementos [data-i18n] ya presentes
 //
-// Agregar un idioma nuevo (mañana, por ejemplo, portugués) NO requiere tocar
-// este archivo: solo se crea i18n/pt.js con I18N.registrarIdioma('pt', {...})
-// y se agrega el <script> correspondiente en el <head>.
+// Para agregar un idioma, copiar template.js, traducirlo y registrar su código.
+// Agregar también el script en <head> y la opción en IDIOMAS (index.html).
 (function (global) {
   'use strict';
 
@@ -31,8 +30,7 @@
 
   // Devuelve el texto traducido para "key" (ej: 'config.title').
   // Si la clave no existe en el idioma activo, cae a Español.
-  // Si tampoco existe en Español, devuelve la propia key (útil para detectar
-  // faltantes durante la migración progresiva de pantallas).
+  // Si tampoco existe en Español, devuelve la propia key para detectar faltantes.
   function t(key, params) {
     const dictActual = DICCIONARIOS[currentLocale] || {};
     const dictFallback = DICCIONARIOS[FALLBACK_LOCALE] || {};
@@ -41,15 +39,13 @@
     if (texto === undefined) return key;
     if (params) {
       Object.keys(params).forEach(function (k) {
-        texto = texto.replace('{{' + k + '}}', params[k]);
+        texto = texto.split('{{' + k + '}}').join(String(params[k]));
       });
     }
     return texto;
   }
 
-  // Traduce los elementos [data-i18n] / [data-i18n-placeholder] / [data-i18n-title]
-  // presentes en el DOM. Las pantallas que todavía no fueron migradas simplemente
-  // no tienen estos atributos, así que no se ven afectadas.
+  // Traduce texto, placeholder, title y aria-label según sus atributos data-i18n.
   function translateDOM(root) {
     root = root || document;
     root.querySelectorAll('[data-i18n]').forEach(function (el) {
